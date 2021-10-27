@@ -25,6 +25,10 @@ def parser():
     bpd_transaction.add_argument("--fiscal-code")
     bpd_transaction.add_argument("--environment")
     bpd_transaction.add_argument("--connection-string")
+    bpd_transaction.add_argument("--award-period")
+    bpd_transaction.add_argument("--number", type=int)
+
+
     #revoke_parser.set_defaults(call=client_revoke)
 
     return argparser

@@ -4,8 +4,9 @@ import importlib
 
 
 def main (args) :
-  transaction_module = importlib.import_module("cstar.cli.bpd.%s" % (args.command))
-  transaction_module.__getattribute__(args.command.lower().capitalize())(args).run()
+  module = importlib.import_module("cstar.cli.bpd.%s" % (args.command))
+  command_manager = module.__getattribute__(args.command.lower().capitalize())(args)
+  command_manager.__getattribute__(args.action.lower())()
 
 if __name__ == '__main__':
     try:
