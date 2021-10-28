@@ -34,16 +34,49 @@ class Transaction():
 
       transactions_df = transactions_df.append(my_transaction, True)
 
-    
-
+  
     # Write Transactions in Winning Transactions
     self._create_transactions(transactions_df)
+  
+  def enable(self):
+
+    award_period_df = self._read_award_period()
+    assert award_period_df.shape[0] > 0, "Award Period n. %s doesn't exist." % (self.args.award_period)
+
+    citizen_df = self._read_fiscal_code()
+    assert citizen_df.shape[0] > 0, "Citizen %s is not onboarded." % (self.args.fiscal_code)
+
+    
+    transactions_disabled_df = self._read_disabled_transactions()
+    print(transactions_disabled_df)
+
+    table = "bpd_winning_transaction.bpd_winning_transaction"
+
+    set_values = (
+      "update_date_t = (%s), "
+      "update_user_s = (%s), "
+      "enabled_b = (%s) ")
+    
+    conditions = (
+      "award_period_id_n = (%s) AND "
+      "fiscal_code_s = (%s) AND "
+      "update_date_t > (%s) AND "
+      "enabled_b = false"
+    )
+
+    #   #create INSERT INTO table (columns) VALUES('%s',...)
+    update_q = "UPDATE {} SET {} WHERE {};".format(
+         table, set_values, conditions)
+    
+    cursor = self.db_connection.cursor()
+    cursor.execute(update_q, ['now()', self.args.update_user, "true", self.args.award_period, self.args.fiscal_code, self.args.from_date])
+    self.db_connection.commit()
+    cursor.close()
 
   
   def update_ranking(self) :
      # Must read all transactions
     summary_df = self._summarize_ranking_by_fiscal_code()
-    print(summary_df)
 
     ranking_df = pd.DataFrame(columns=CITIZEN_RANKING_SCHEMA).append(
       {
@@ -101,8 +134,6 @@ class Transaction():
       insert = "INSERT INTO {} ({}) {}".format(
         "bpd_citizen.bpd_citizen_ranking", ",".join(columns), values)
 
-      print(insert)
-
       cursor = self.db_connection.cursor()
       psycopg2.extras.execute_batch(cursor, insert, ranking_df.values)
       self.db_connection.commit()
@@ -140,6 +171,25 @@ class Transaction():
         
     return pd.read_sql(payment_instruments_q, self.db_connection)
   
+  def _read_disabled_transactions(self):
+    self.db_cursor = self.db_connection.cursor()
+
+    transactions_disabled_q = self.db_cursor.mogrify(
+      "SELECT update_date_t, fiscal_code_s "
+      "FROM bpd_winning_transaction.bpd_winning_transaction " 
+      "WHERE fiscal_code_s = %(fiscal_code)s "
+      "AND update_date_t > %(from_date)s"
+      "AND award_period_id_n = %(award_period)s"
+      "AND enabled_b = false;", 
+      {
+        "fiscal_code": self.args.fiscal_code,
+        "from_date": self.args.from_date,
+        "award_period" : self.args.award_period
+      }
+    )
+        
+    return pd.read_sql(transactions_disabled_q, self.db_connection)
+  
   def _create_transactions(self, transactions_df):
     if len(transactions_df) > 0:
 
@@ -151,8 +201,6 @@ class Transaction():
       #create INSERT INTO table (columns) VALUES('%s',...)
       insert = "INSERT INTO {} ({}) {}".format(
         "bpd_winning_transaction.bpd_winning_transaction", ",".join(columns), values)
-
-      print(insert)
 
       cursor = self.db_connection.cursor()
       psycopg2.extras.execute_batch(cursor, insert, transactions_df.values)

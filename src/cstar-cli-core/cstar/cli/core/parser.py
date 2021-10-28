@@ -27,6 +27,15 @@ def parser():
     bpd_transaction.add_argument("--connection-string")
     bpd_transaction.add_argument("--award-period")
     bpd_transaction.add_argument("--number", type=int)
+    bpd_transaction.add_argument("--from-date")
+    bpd_transaction.add_argument("--update-user")
+
+
+    bpd_award_period = bpd_parser.add_parser("awardperiod")
+
+    bpd_award_period.add_argument("--action")
+    bpd_award_period.add_argument("--id")
+    bpd_award_period.add_argument("--connection-string")
 
 
     #revoke_parser.set_defaults(call=client_revoke)

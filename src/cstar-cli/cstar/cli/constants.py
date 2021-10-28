@@ -9,6 +9,12 @@ CITIZEN_RANKING_SCHEMA = ['fiscal_code_c', 'award_period_id_n', 'cashback_n', 'i
   'insert_user_s', 'update_date_t', 'update_user_s', 'transaction_n',
   'ranking_n','id_trx_pivot', 'cashback_norm_pivot', 'id_trx_min_transaction_number', 'last_trx_timestamp_t']
 
+CITIZEN_RANKING_EXT_SCHEMA = [
+  'award_period_id_n', 'max_transaction_n', 'min_transaction_n',
+  'total_participants','ranking_min_n','period_cashback_max_n','insert_date_t',
+  'insert_user_s','update_date_t','update_user_s'
+]
+
 ACQUIRER_CODES = [ '02008', '32875', '03268', 'EVODE', '01005', '36019', 'STPAY', 'COBAN' ]
 ACQUIRER_ID = [ '02008', '429765', '459814', '434495', '459834', 'ACQ001', '493500', '01002132', '09509']
 CIRCUIT_TYPES = ['02', '10', '09', '00', '01', '03']
