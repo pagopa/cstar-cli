@@ -6,7 +6,7 @@ import pandas.io.sql as psql
 import random
 from datetime import timedelta, datetime, date
 import string
-from cstar.cli.constants import WINNING_TRANSACTION_SCHEMA, CITIZEN_RANKING_SCHEMA, ACQUIRER_CODES, CIRCUIT_TYPES, ACQUIRER_ID, BIN
+from .constants import WINNING_TRANSACTION_SCHEMA, CITIZEN_RANKING_SCHEMA, ACQUIRER_CODES, CIRCUIT_TYPES, ACQUIRER_ID, BIN
 
 
 
@@ -97,7 +97,12 @@ class Transaction():
       , True)
     self._update_ranking(ranking_df)
 
+  def check(self):
+    transactions_df = pd.read_csv(self.args.file, sep=';')
 
+    match = lambda x : self._read_matching_transactions(x)
+   
+    print(transactions_df.apply(match, axis=1))
   
   def _read_transactions_by_fiscal_code(self) :
     self.db_cursor = self.db_connection.cursor()
@@ -110,8 +115,38 @@ class Transaction():
         
     return pd.read_sql(transactions_q, self.db_connection)
   
-  def _summarize_ranking_by_fiscal_code(self) :
+
+
+  def _read_matching_transactions (self, transaction):
+
+    print("\n===========\nTO MATCH: ", transaction)
+
     self.db_cursor = self.db_connection.cursor()
+
+
+    transactions_match_q = self.db_cursor.mogrify(
+      "SELECT trx_timestamp_t, amount_i, fiscal_code_s, id_trx_acquirer_s, id_trx_issuer_s "
+      "FROM bpd_winning_transaction.bpd_winning_transaction " 
+      "WHERE fiscal_code_s = %(fiscal_code)s "
+      # "AND DATE_PART('day', trx_timestamp_t - %(trx_date)s) = 0 "
+      "AND id_trx_acquirer_s = %(id_trx_acquirer)s ;",
+      # "AND amount_i = %(amount)s ;",
+      #"AND enabled_b = true;", 
+      {
+        "fiscal_code": transaction.fiscal_code_s.strip(),
+        "trx_date": datetime.strptime(transaction.trx_date_t, "%m/%d/%y").date().isoformat(),
+        "amount" : transaction.amount_i,
+        "id_trx_acquirer" : transaction.id_trx_acquirer_s.strip()
+      }
+    )
+
+    print("MATCHED: ")
+    if not pd.isna(transaction.id_trx_acquirer_s): 
+      print(pd.read_sql(transactions_match_q, self.db_connection))
+
+
+
+  def _summarize_ranking_by_fiscal_code(self) :
 
     ranking_summary_q = self.db_cursor.mogrify(
       "SELECT sum(amount_i) AS amount, sum(score_n) AS score, count(*) AS transactions_num "
@@ -170,6 +205,8 @@ class Transaction():
       "AND enabled_b = true", {"fiscal_code": self.args.fiscal_code})
         
     return pd.read_sql(payment_instruments_q, self.db_connection)
+
+
   
   def _read_disabled_transactions(self):
     self.db_cursor = self.db_connection.cursor()

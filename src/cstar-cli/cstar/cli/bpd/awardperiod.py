@@ -6,7 +6,7 @@ import pandas.io.sql as psql
 import random
 from datetime import timedelta, datetime, date
 import string
-from cstar.cli.constants import  CITIZEN_RANKING_EXT_SCHEMA
+from .constants import  CITIZEN_RANKING_EXT_SCHEMA
 
 
 class Awardperiod() :

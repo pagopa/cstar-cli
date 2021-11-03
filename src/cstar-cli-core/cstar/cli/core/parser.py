@@ -29,7 +29,7 @@ def parser():
     bpd_transaction.add_argument("--number", type=int)
     bpd_transaction.add_argument("--from-date")
     bpd_transaction.add_argument("--update-user")
-
+    bpd_transaction.add_argument("--file")
 
     bpd_award_period = bpd_parser.add_parser("awardperiod")
 
