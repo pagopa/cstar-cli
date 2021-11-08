@@ -35,7 +35,17 @@ def parser():
 
     bpd_award_period.add_argument("--action")
     bpd_award_period.add_argument("--id")
+    bpd_award_period.add_argument("--grace-period")
     bpd_award_period.add_argument("--connection-string")
+
+    bpd_transaction = bpd_parser.add_parser("citizen")
+
+    bpd_transaction.add_argument("--action")
+    bpd_transaction.add_argument("--fiscal-code")
+    bpd_transaction.add_argument("--environment")
+    bpd_transaction.add_argument("--connection-string")
+    bpd_transaction.add_argument("--award-period")
+    bpd_transaction.add_argument("--file")
 
 
     #revoke_parser.set_defaults(call=client_revoke)
