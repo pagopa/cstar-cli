@@ -104,6 +104,42 @@ class Transaction():
    
     print(transactions_df.apply(match, axis=1))
   
+  def check_unique(self):
+    transactions_df = pd.read_csv(self.args.file, sep=';', dtype={"operation_type_c": str, "acquirer_id_s" : str})
+    transactions_df["unique"] = False
+    check_unique = lambda x : self._read_unique_transaction(x)
+    transactions_df = transactions_df.apply(check_unique, axis=1)
+    result = transactions_df[transactions_df["unique"] == False]
+    if(result.shape[0] > 0 ):
+      print(result.to_csv())
+    else :
+      print ("Check OK")
+
+  def _read_unique_transaction(self, transaction):
+    self.db_cursor = self.db_connection.cursor()
+
+    transactions_unique_q = self.db_cursor.mogrify(
+      "SELECT * "
+      "FROM bpd_winning_transaction.bpd_winning_transaction " 
+      "WHERE trx_timestamp_t = %(trx_timestamp)s "
+      "AND id_trx_acquirer_s = %(id_trx_acquirer)s "
+      "AND acquirer_c = %(acquirer_c)s "
+      "AND acquirer_id_s = %(acquirer_id)s "
+      "AND operation_type_c = %(operation_type)s;", 
+      {
+        "trx_timestamp": transaction.trx_timestamp_t, 
+        "id_trx_acquirer" : transaction.id_trx_acquirer_s,
+        "acquirer_c" : transaction.acquirer_c,
+        "acquirer_id" : transaction.acquirer_id_s,
+        "operation_type" : transaction.operation_type_c 
+      })
+    
+    transaction_db = pd.read_sql(transactions_unique_q, self.db_connection)
+    if transaction_db.shape[0] == 1 :
+      transaction["unique"] = True
+    
+    return transaction
+    
   def _read_transactions_by_fiscal_code(self) :
     self.db_cursor = self.db_connection.cursor()
 
