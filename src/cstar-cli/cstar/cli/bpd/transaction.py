@@ -135,8 +135,7 @@ class Transaction():
       })
     
     transaction_db = pd.read_sql(transactions_unique_q, self.db_connection)
-    if transaction_db.shape[0] == 1 :
-      transaction["unique"] = True
+    transaction["unique"] = transaction_db.shape[0] == 1
     
     return transaction
     
