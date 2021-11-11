@@ -29,6 +29,58 @@ class Citizen():
     citizens_df = citizens_df.apply(next_ranking, axis=1)
 
     print(citizens_df[(citizens_df['ranking_n'] > 100000) & (citizens_df['best_new_ranking_n']  <= 100000)].to_csv())
+  
+  def check_award_received(self):
+    transactions_df = pd.read_csv(self.args.file, sep=';', dtype={"operation_type_c": str, "acquirer_id_s" : str})
+    transactions_df["award_received"] = ""
+    transactions_df["award_amount"] = ""
+    transactions_df["fiscal_code"] = ""
+
+    transactions_df = transactions_df.apply(self._read_fiscal_code_by_hashpan, axis=1)
+    transactions_df = transactions_df.apply(self._read_award_by_fiscal_code, axis=1)
+
+    print(transactions_df.to_csv())
+
+  def _read_award_by_fiscal_code(self, transaction):
+    self.db_cursor = self.db_connection.cursor()
+    award_q = self.db_cursor.mogrify(
+      "SELECT esito_bonifico_s, cashback_n "
+      "FROM bpd_citizen.bpd_award_winner " 
+      "WHERE fiscal_code_s = %(fiscal_code)s "
+      "AND award_period_id_n = %(award_period)s "
+      "AND esito_bonifico_s = 'ORDINE ESEGUITO';",
+      {
+        "fiscal_code": transaction.fiscal_code,
+        "award_period" : self.args.award_period
+      }
+    )
+
+    award_df = pd.read_sql( award_q, self.db_connection )
+
+    transaction.award_received = award_df.at[0,'esito_bonifico_s']
+    transaction.award_amount = award_df.at[0, 'cashback_n']
+
+
+    return transaction
+
+  def _read_fiscal_code_by_hashpan(self, transaction):
+    self.db_cursor = self.db_connection.cursor()
+    fiscal_code_q = self.db_cursor.mogrify(
+      "SELECT fiscal_code_s "
+      "FROM bpd_payment_instrument.bpd_payment_instrument " 
+      "WHERE hpan_s = %(hpan_s)s;",
+      {
+        "hpan_s": transaction.hpan_s,
+      }
+    )
+
+    fiscal_code_df = pd.read_sql(fiscal_code_q, self.db_connection)
+
+    transaction.fiscal_code = fiscal_code_df.at[0,'fiscal_code_s']
+
+    return transaction
+
+
 
   
   def _read_current_ranking(self, citizen):
