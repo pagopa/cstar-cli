@@ -69,6 +69,31 @@ insert into bpd_citizen.bpd_award_winner(
 """ +  SELECT_BPD_AWARD_WINNER 
 
 
+EXTRACT_JACKPOT_WINNERS = """
+ select * 
+ from bpd_citizen.bpd_award_winner 
+ where award_period_id_n = 2
+ and insert_user_s = 'update_bpd_award_winner_supercashback'
+ and fiscal_code_s in (
+
+select
+  bcr.fiscal_code_c 
+from
+	bpd_citizen.bpd_citizen_ranking bcr
+	inner join bpd_citizen.bpd_citizen bc on
+	bcr.fiscal_code_c = bc.fiscal_code_s
+	inner join bpd_award_period.bpd_award_period bap on
+	bcr.award_period_id_n = bap.award_period_id_n
+	inner join bpd_citizen.bpd_ranking_ext bre on
+	bcr.award_period_id_n = bre.award_period_id_n
+where
+	bcr.award_period_id_n = %(award_period)s
+	and bcr.transaction_n >= bap.trx_volume_min_n
+	and bc.enabled_b = true
+  and bcr.ranking_n <= %(top_n)s
+  );
+"""
+
 class Awardwinner() :
   
   def __init__(self, args): 
@@ -101,3 +126,70 @@ class Awardwinner() :
     self.db_cursor.execute(update_jackpot_winners_q)
     self.db_connection.commit()
     self.db_cursor.close()
+  
+  def extract_jackpot_winners(self):
+    self.db_cursor = self.db_connection.cursor()
+    jackpot_winners_q = self.db_cursor.mogrify(
+      EXTRACT_JACKPOT_WINNERS,
+      {
+        "award_period" : self.args.award_period,
+        "top_n" : 100000,
+      })
+    jackpot_winners_df = pd.read_sql(jackpot_winners_q, self.db_connection)
+    jackpot_winners_df = jackpot_winners_df.apply(self._set_payment_reason, axis=1)
+    jackpot_winners_df = jackpot_winners_df[[ 
+      "id_n",
+      "fiscal_code_s",
+      "payoff_instr_s",
+      "account_holder_name_s",
+      "account_holder_surname_s",
+      "amount_n",
+      "pay_reason",
+      "typology_s",
+      "award_period_id_n",
+      "aw_period_start_d",
+      "aw_period_end_d",
+      "cashback_n",
+      "jackpot_n",
+      "check_instr_status_s",
+      "technical_account_holder_s"]]
+    jackpot_winners_df = jackpot_winners_df.apply(self._convert_award_period_dates, axis=1)
+    jackpot_winners_df = jackpot_winners_df.apply(self._amounts_to_cents, axis=1)
+    jackpot_winners_df = jackpot_winners_df.apply(self._pad_award_period, axis=1)
+
+
+    print(jackpot_winners_df.to_csv(index=False, header=False, sep=";"))
+  
+  def _convert_award_period_dates(self, winner):
+    winner.aw_period_start_d = winner.aw_period_start_d.strftime("%d/%m/%Y")
+    winner.aw_period_end_d = winner.aw_period_end_d.strftime("%d/%m/%Y")
+
+    return winner
+  
+  def _pad_award_period(self, winner):
+    winner.award_period_id_n = '%02d' % winner.award_period_id_n
+    return winner
+  
+  def _amounts_to_cents(self, winner):
+    winner.amount_n = int(winner.amount_n * 100)
+    winner.amount_n = winner.amount_n if winner.amount_n >= 100 else '%03d' % winner.amount_n
+    winner.cashback_n = int(winner.cashback_n * 100)
+    winner.cashback_n = winner.cashback_n if winner.cashback_n >= 100 else '%03d' % winner.cashback_n
+    winner.jackpot_n = int(winner.jackpot_n * 100)
+    winner.jackpot_n = winner.jackpot_n if winner.jackpot_n >= 100 else '%03d' % winner.jackpot_n
+    return winner
+
+  def _set_payment_reason(self, winner):
+    pay_reason = "%09d - Cashback di Stato - dal %s  al %s" % (winner.id_n, 
+      winner.aw_period_start_d.strftime("%d/%m/%Y"), winner.aw_period_end_d.strftime("%d/%m/%Y"))
+    
+    if winner.technical_account_holder_s is not None or winner.account_holder_cf_s != winner.fiscal_code_s :
+      pay_reason += " - %s" % winner.fiscal_code_s
+    
+    if winner.technical_account_holder_s is not None and winner.issuer_card_id_s is not None :
+      pay_reason += " - %s" % winner.issuer_card_id_s
+
+    winner['pay_reason'] = pay_reason
+    return winner
+
+
