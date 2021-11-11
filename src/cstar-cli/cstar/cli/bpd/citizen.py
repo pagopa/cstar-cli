@@ -36,11 +36,8 @@ class Citizen():
     transactions_df["award_amount"] = ""
     transactions_df["fiscal_code"] = ""
 
-    read_fiscal_code = lambda x : self._read_fiscal_code_by_hashpan(x)
-    transactions_df = transactions_df.apply(read_fiscal_code, axis=1)
-
-    read_award = lambda x : self._read_award_by_fiscal_code(x)
-    transactions_df = transactions_df.apply(read_award, axis=1)
+    transactions_df = transactions_df.apply(self._read_fiscal_code_by_hashpan, axis=1)
+    transactions_df = transactions_df.apply(self._read_award_by_fiscal_code, axis=1)
 
     print(transactions_df.to_csv())
 
