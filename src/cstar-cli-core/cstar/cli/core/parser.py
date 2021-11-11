@@ -38,6 +38,12 @@ def parser():
     bpd_award_period.add_argument("--grace-period")
     bpd_award_period.add_argument("--connection-string")
 
+    bpd_award_winner = bpd_parser.add_parser("awardwinner")
+
+    bpd_award_winner.add_argument("--action")
+    bpd_award_winner.add_argument("--award-period")
+    bpd_award_winner.add_argument("--connection-string")
+
     bpd_transaction = bpd_parser.add_parser("citizen")
 
     bpd_transaction.add_argument("--action")
