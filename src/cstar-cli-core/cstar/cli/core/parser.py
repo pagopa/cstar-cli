@@ -44,6 +44,7 @@ def parser():
     bpd_award_winner.add_argument("--award-period")
     bpd_award_winner.add_argument("--connection-string")
     bpd_award_winner.add_argument("--file")
+    bpd_award_winner.add_argument("--chunk-file-name")
     bpd_award_winner.add_argument("--commit", action="store_true")
 
     bpd_transaction = bpd_parser.add_parser("citizen")

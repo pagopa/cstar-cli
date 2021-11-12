@@ -70,9 +70,9 @@ insert into bpd_citizen.bpd_award_winner(
 
 
 EXTRACT_JACKPOT_WINNERS = """
- select * 
+ select {} 
  from bpd_citizen.bpd_award_winner 
- where award_period_id_n = 2
+ where award_period_id_n = %(award_period)s
  and insert_user_s = 'update_bpd_award_winner_supercashback'
  and fiscal_code_s in (
 
@@ -91,7 +91,7 @@ where
 	and bcr.transaction_n >= bap.trx_volume_min_n
 	and bc.enabled_b = true
   and bcr.ranking_n <= %(top_n)s
-  );
+  ){}
 """
 
 class Awardwinner() :
@@ -130,7 +130,7 @@ class Awardwinner() :
   def extract_jackpot_winners(self):
     self.db_cursor = self.db_connection.cursor()
     jackpot_winners_q = self.db_cursor.mogrify(
-      EXTRACT_JACKPOT_WINNERS,
+      EXTRACT_JACKPOT_WINNERS.format("*", ";"),
       {
         "award_period" : self.args.award_period,
         "top_n" : 100000,
@@ -159,6 +159,25 @@ class Awardwinner() :
 
 
     print(jackpot_winners_df.to_csv(index=False, header=False, sep=";"))
+  
+  def send_jackpot_winners(self):
+    db_cursor = self.db_connection.cursor()
+    table = "bpd_citizen.bpd_award_winner"
+    set_values = "chunk_filename_s = %(filename)s , status_s = 'SENT' "
+    conditions = "id_n in ({})".format(EXTRACT_JACKPOT_WINNERS.format("id_n", ""))
+    update = "UPDATE {} SET {} WHERE {};".format(
+        table, set_values, conditions)
+    send_jackpot_winners_q = db_cursor.mogrify(update, 
+      {
+        "award_period" : self.args.award_period,
+        "top_n" : 100000,
+        "filename" : self.args.chunk_file_name
+      })
+    print(send_jackpot_winners_q)
+    db_cursor.execute(send_jackpot_winners_q)
+    print("rowcount ", db_cursor.rowcount)
+    self.db_connection.commit()
+    db_cursor.close()
   
   def _convert_award_period_dates(self, winner):
     winner.aw_period_start_d = winner.aw_period_start_d.strftime("%d/%m/%Y")
