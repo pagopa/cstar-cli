@@ -14,7 +14,7 @@ class Awardperiod() :
     self.args = args
     self.db_connection = psycopg2.connect(args.connection_string)
   
-  def extend_grace_period(self):
+  def set_grace_period(self):
     table = "bpd_award_period.bpd_award_period"
     set_values = "aw_grace_period_n = (%s)"
     conditions = "award_period_id_n = (%s)"
