@@ -21,9 +21,10 @@ class Awardperiod() :
     update_q = "UPDATE {} SET {} WHERE {};".format(
          table, set_values, conditions)
 
-    self.db_connection.cursor().execute(update_q, [self.args.grace_period, self.args.id])
+    cursor = self.db_connection.cursor()
+    cursor.execute(update_q, [self.args.grace_period, self.args.id])
     self.db_connection.commit()
-    self.db_connection.cursor().close()
+    cursor.close()
   
   def set_properties(self):
     
