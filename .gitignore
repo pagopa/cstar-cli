@@ -132,4 +132,6 @@ dmypy.json
 *.xlsx
 *.zip
 *.key
+*.pgp
+*.sha256sum
 .DS_Store
