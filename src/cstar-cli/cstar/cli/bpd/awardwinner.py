@@ -179,11 +179,20 @@ class Awardwinner() :
     self.db_connection.commit()
     db_cursor.close()
   
+  def read_state_41(self):
+    transfers_df = pd.read_csv(self.args.file, sep=';')
+    transfers_df = transfers_df.apply(self._extract_transfer_id, axis=1)
+    print(transfers_df.head(5).to_csv(index=False))
+  
   def _convert_award_period_dates(self, winner):
     winner.aw_period_start_d = winner.aw_period_start_d.strftime("%d/%m/%Y")
     winner.aw_period_end_d = winner.aw_period_end_d.strftime("%d/%m/%Y")
 
     return winner
+  
+  def _extract_transfer_id(self, transfer):
+    transfer.idKey = transfer.idKey[2:]
+    return transfer
   
   def _pad_award_period(self, winner):
     winner.award_period_id_n = '%02d' % winner.award_period_id_n
