@@ -184,8 +184,6 @@ class Awardwinner() :
     transfers_df = transfers_df.apply(self._extract_transfer_id, axis=1)
     assert transfers_df.idKey.size == transfers_df.idKey.unique().size, "idKey not unique"
 
-    print(transfers_df)
-
     pagopa_transfers_q = self.db_connection.cursor().mogrify(
       "SELECT id_n, insert_date_t, insert_user_s, update_date_t, "
       "update_user_s, enabled_b, technical_account_holder_s, " 
