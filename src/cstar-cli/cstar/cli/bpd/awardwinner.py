@@ -182,17 +182,59 @@ class Awardwinner() :
   def read_state_41(self):
     transfers_df = pd.read_csv(self.args.file, sep=';')
     transfers_df = transfers_df.apply(self._extract_transfer_id, axis=1)
-    print(transfers_df.head(5).to_csv(index=False))
+    assert transfers_df.idKey.size == transfers_df.idKey.unique().size, "idKey not unique"
+
+    transfers_df = transfers_df[:5]
+    print(transfers_df)
+
+    pagopa_transfers_q = self.db_connection.cursor().mogrify(
+      "SELECT * "
+      "FROM bpd_citizen.bpd_award_winner " 
+      "WHERE id_n in %(id_n_list)s;",
+      {
+        "id_n_list": tuple(transfers_df.idKey.unique()),
+      }
+    )
+
+    pagopa_transfers_df = pd.read_sql(pagopa_transfers_q, self.db_connection)
+    pagopa_transfers_df['id_n'] = pagopa_transfers_df['id_n'].astype(str)
+
+    pagopa_n_tranfers_per_awp_q = self.db_connection.cursor().mogrify(
+      "SELECT baw.id_n, C.pagopa_n_tranfers_per_awp "
+      "FROM bpd_citizen.bpd_award_winner baw "
+      "INNER JOIN "
+      "(SELECT fiscal_code_s, award_period_id_n, count(fiscal_code_s) AS pagopa_n_tranfers_per_awp "
+      "   FROM bpd_citizen.bpd_award_winner "
+      "   WHERE id_n in %(id_n_list)s "
+      "   GROUP BY (fiscal_code_s, award_period_id_n) ) C "
+      "ON baw.fiscal_code_s = C.fiscal_code_s "
+      "AND baw.award_period_id_n = C.award_period_id_n",
+      {
+        "id_n_list": tuple(transfers_df.idKey.unique()),
+      }
+    )
+
+    pagopa_n_tranfers_per_awp_df = pd.read_sql(pagopa_n_tranfers_per_awp_q, self.db_connection)
+    pagopa_n_tranfers_per_awp_df['id_n'] = pagopa_n_tranfers_per_awp_df['id_n'].astype(str)
+
+    transfers_df = transfers_df.set_index('idKey').join(pagopa_transfers_df.set_index('id_n'))
+    transfers_df = transfers_df.join(pagopa_n_tranfers_per_awp_df.set_index('id_n'))
+
+    transfers_df['consap_n_occurrencies'] = ( transfers_df
+      .groupby('fiscalCode')['amount']
+      .transform('size') )
+
+    print(transfers_df.to_csv(sep=';'))
+
+  def _extract_transfer_id(self, transfer):
+    transfer.idKey = str(int(transfer.idKey[2:]))
+    return transfer
   
   def _convert_award_period_dates(self, winner):
     winner.aw_period_start_d = winner.aw_period_start_d.strftime("%d/%m/%Y")
     winner.aw_period_end_d = winner.aw_period_end_d.strftime("%d/%m/%Y")
 
     return winner
-  
-  def _extract_transfer_id(self, transfer):
-    transfer.idKey = transfer.idKey[2:]
-    return transfer
   
   def _pad_award_period(self, winner):
     winner.award_period_id_n = '%02d' % winner.award_period_id_n
