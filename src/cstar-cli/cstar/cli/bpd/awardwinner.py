@@ -184,11 +184,14 @@ class Awardwinner() :
     transfers_df = transfers_df.apply(self._extract_transfer_id, axis=1)
     assert transfers_df.idKey.size == transfers_df.idKey.unique().size, "idKey not unique"
 
-    transfers_df = transfers_df[:5]
     print(transfers_df)
 
     pagopa_transfers_q = self.db_connection.cursor().mogrify(
-      "SELECT * "
+      "SELECT id_n, insert_date_t, insert_user_s, update_date_t, "
+      "update_user_s, enabled_b, technical_account_holder_s, " 
+      "chunk_filename_s, status_s, esito_bonifico_s, cro_s, "
+      "data_esecuzione_t, result_reason_s, to_notify_b, notify_times_n, "
+      "notify_id_s, ticket_id_n, related_id_n, consap_id_n, issuer_card_id_s "
       "FROM bpd_citizen.bpd_award_winner " 
       "WHERE id_n in %(id_n_list)s;",
       {
@@ -223,7 +226,6 @@ class Awardwinner() :
     transfers_df['consap_n_occurrencies'] = ( transfers_df
       .groupby('fiscalCode')['amount']
       .transform('size') )
-
     print(transfers_df.to_csv(sep=';'))
 
   def _extract_transfer_id(self, transfer):
