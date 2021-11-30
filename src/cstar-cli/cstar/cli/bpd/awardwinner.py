@@ -222,12 +222,28 @@ class Awardwinner() :
     transfers_df = transfers_df.join(pagopa_n_tranfers_per_awp_df.set_index('id_n'))
 
     transfers_df['consap_n_occurrencies'] = ( transfers_df
-      .groupby('fiscalCode')['amount']
+      .groupby(['fiscalCode', 'awardPeriod'])['amount']
       .transform('size') )
+
+    # Add transfer status
+    transfers_df['upd_status'] = None 
+    transfers_df = transfers_df.apply(self._set_transfer_status, axis=1)
+
     print(transfers_df.to_csv(sep=';'))
 
   def _extract_transfer_id(self, transfer):
     transfer.idKey = str(int(transfer.idKey[2:]))
+    return transfer
+  
+  def _set_transfer_status(self, transfer):
+    if (transfer.esito_bonifico_s == 'ORDINE ESEGUITO' and 
+      transfer.pagopa_n_tranfers_per_awp == 1 and
+      transfer.consap_n_occurrencies == 1
+      ) :
+      transfer.upd_status = 'TBU'
+    else :
+      transfer.upd_status = 'NOU'
+
     return transfer
   
   def _convert_award_period_dates(self, winner):
