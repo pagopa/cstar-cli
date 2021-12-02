@@ -218,8 +218,23 @@ class Awardwinner() :
     pagopa_n_tranfers_per_awp_df = pd.read_sql(pagopa_n_tranfers_per_awp_q, self.db_connection)
     pagopa_n_tranfers_per_awp_df['id_n'] = pagopa_n_tranfers_per_awp_df['id_n'].astype(str)
 
+    match_current_iban_q = self.db_connection.cursor().mogrify(
+      "SELECT baw.id_n, bc.payoff_instr_s AS current_iban, (bc.payoff_instr_s = baw.payoff_instr_s) AS match_cur_iban "
+      "FROM bpd_citizen.bpd_award_winner baw "
+      "INNER JOIN bpd_citizen.bpd_citizen bc "
+      "ON baw.fiscal_code_s = bc.fiscal_code_s "
+      "WHERE baw.id_n in %(id_n_list)s;",
+      {
+        "id_n_list": tuple(transfers_df.idKey.unique()),
+      }
+    )
+
+    match_cur_iban_df = pd.read_sql(match_current_iban_q, self.db_connection)
+    match_cur_iban_df['id_n'] = match_cur_iban_df['id_n'].astype(str)
+
     transfers_df = transfers_df.set_index('idKey').join(pagopa_transfers_df.set_index('id_n'))
     transfers_df = transfers_df.join(pagopa_n_tranfers_per_awp_df.set_index('id_n'))
+    transfers_df = transfers_df.join(match_cur_iban_df.set_index('id_n'))
 
     transfers_df['consap_n_occurrencies'] = ( transfers_df
       .groupby(['fiscalCode', 'awardPeriod'])['amount']
@@ -227,6 +242,7 @@ class Awardwinner() :
 
     # Add transfer status
     transfers_df['upd_status'] = None 
+    transfers_df['not_status'] = None 
     transfers_df = transfers_df.apply(self._set_transfer_status, axis=1)
 
     print(transfers_df.to_csv(sep=';'))
@@ -243,6 +259,13 @@ class Awardwinner() :
       transfer.upd_status = 'TBU'
     else :
       transfer.upd_status = 'NOU'
+    
+    if (transfer.upd_status == 'TBU' and transfer.match_cur_iban == False) :
+      transfer.not_status = 'SEND'
+    else :
+      transfer.not_status = 'NOT_SEND'
+
+
 
     return transfer
   
