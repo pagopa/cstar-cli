@@ -8,16 +8,7 @@ def parser():
 
     subsystem_parser.add_parser("fa")
 
-    # FA commands
-    # fa_parser.add_argument("intermediate")
-    # fa_parser.add_argument("pem-csr-file", type=argparse.FileType('r'))
-    # fa_parser.add_argument("--ttl", metavar="ttl")
-    # fa_parser.add_argument("--send-email", action="store_true")
-    # fa_parser.add_argument("--no-confirm", action="store_true")
-    #sign_parser.set_defaults(call=client_sign)
-
     bpd_parser = subsystem_parser.add_parser("bpd").add_subparsers(dest="command")
-
 
     bpd_transaction = bpd_parser.add_parser("transaction")
 
@@ -56,10 +47,10 @@ def parser():
     bpd_transaction.add_argument("--award-period")
     bpd_transaction.add_argument("--file")
 
+    bpd_payment_instrument = bpd_parser.add_parser("paymentinstrument")
 
-    #revoke_parser.set_defaults(call=client_revoke)
+    bpd_payment_instrument.add_argument("--action")
+    bpd_payment_instrument.add_argument("--file")
+    bpd_payment_instrument.add_argument("--connection-string")
 
     return argparser
-
-
-

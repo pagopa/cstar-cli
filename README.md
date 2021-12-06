@@ -27,14 +27,17 @@ poetry shell
 If is the first time or changes have been made to the codebase install the packages:
 
 ```bash
-pip install src/cstar-cli-core
-pip install src/cstar-cli
+./install.sh
 ```
 
 Now the cstar CLI is available as _cst_ command:
 
 ```bash
-$ cst
-usage: __main__.py [-h] {fa,bpd} ...
-__main__.py: error: the following arguments are required: subsystem
+cst <VERTICAL> <DOMAIN> --action <ACTION> [COMMAND PARAMETERS ...]
+```
+
+Example(s):
+
+```bash
+cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <INPUT_FILE>
 ```
