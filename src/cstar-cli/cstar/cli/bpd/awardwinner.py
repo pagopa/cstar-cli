@@ -246,6 +246,27 @@ class Awardwinner() :
     transfers_df = transfers_df.apply(self._set_transfer_status, axis=1)
 
     print(transfers_df.to_csv(sep=';'))
+  
+  def update_state_41(self):
+    transfers_df = pd.read_csv(self.args.file, sep=';')
+    transfers_df = transfers_df.apply(self._extract_transfer_id, axis=1)
+    assert transfers_df.idKey.size == transfers_df.idKey.unique().size, "idKey not unique"
+
+    cursor = self.db_connection.cursor()
+    pagopa_update_transfers_q = cursor.mogrify(
+      "UPDATE bpd_citizen.bpd_award_winner "
+      "SET esito_bonifico_s = 'PRESA IN CARICO RIGETTATO', update_date_t=current_timestamp"
+      "WHERE id_n in %(id_n_list)s "
+      "AND esito_bonifico_s = 'ORDINE ESEGUITO'",
+      {
+        "id_n_list": tuple(transfers_df.idKey.unique()),
+      }
+    )
+
+    cursor.execute(pagopa_update_transfers_q)
+    self.db_connection.commit()
+    cursor.close()
+
 
   def _extract_transfer_id(self, transfer):
     transfer.idKey = str(int(transfer.idKey[2:]))
