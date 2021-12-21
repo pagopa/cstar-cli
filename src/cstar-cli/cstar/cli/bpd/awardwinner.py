@@ -255,9 +255,9 @@ class Awardwinner() :
     cursor = self.db_connection.cursor()
     pagopa_update_transfers_q = cursor.mogrify(
       "UPDATE bpd_citizen.bpd_award_winner "
-      "SET esito_bonifico_s = 'PRESA IN CARICO RIGETTATO', update_date_t=current_timestamp"
+      "SET esito_bonifico_s = 'PRESA IN CARICO RIGETTATO', update_date_t=current_timestamp "
       "WHERE id_n in %(id_n_list)s "
-      "AND esito_bonifico_s = 'ORDINE ESEGUITO'",
+      "AND esito_bonifico_s = 'ORDINE ESEGUITO';",
       {
         "id_n_list": tuple(transfers_df.idKey.unique()),
       }
