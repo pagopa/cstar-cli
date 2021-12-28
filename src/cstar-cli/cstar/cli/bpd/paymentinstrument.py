@@ -1,4 +1,5 @@
 import psycopg2
+import psycopg2.extras
 import pandas as pd
 import uuid
 
@@ -11,7 +12,7 @@ class Paymentinstrument():
   
   def enroll(self):
     
-    payment_instruments_df = pd.read_csv(self.args.file, sep=';')
+    payment_instruments_df = pd.read_csv(self.args.file, sep=";")
     if payment_instruments_df.shape[1] != 4:
       raise ValueError(f"Invalid number of column in input file (expected 4, found {payment_instruments_df.shape[1]})")
 
@@ -19,38 +20,19 @@ class Paymentinstrument():
 
     cursor = self.db_connection.cursor()
 
-    for index, row in payment_instruments_df.iterrows():
-
-      print(f"Processing row {index}")
-
-      insert_payment_instrument_q = cursor.mogrify(
-        "INSERT INTO bpd_payment_instrument.bpd_payment_instrument "
-        "  (hpan_s, fiscal_code_s, enrollment_t, status_c, insert_user_s) "
-        "VALUES (%(hpan)s, %(fiscal_code)s, %(enrollment)s, 'ACTIVE', %(insert_user)s)",
-        {
-          "hpan": row.hpan,
-          "fiscal_code": row.fiscal_code,
-          "enrollment": row.enrollment,
-          "insert_user": str(insert_id)
-        }
-      )
-
-      print(f"Executing query: {insert_payment_instrument_q}")
-      cursor.execute(insert_payment_instrument_q)
-
-      insert_payment_instrument_history_q = cursor.mogrify(
-        "INSERT INTO bpd_payment_instrument.bpd_payment_instrument_history "
-        "  (hpan_s, activation_t, insert_user_s)"
-        "VALUES (%(hpan)s, %(activation)s, %(insert_user)s)",
-        {
-          "hpan": row.hpan,
-          "activation": row.activation,
-          "insert_user": str(insert_id)
-        }
-      )
-
-      print(f"Executing query: {insert_payment_instrument_history_q}")
-      cursor.execute(insert_payment_instrument_history_q)
+    sql =  "INSERT INTO bpd_payment_instrument.bpd_payment_instrument "
+    sql += "(hpan_s, fiscal_code_s, enrollment_t, status_c, insert_user_s) "
+    sql += "VALUES (%s, %s, %s, 'ACTIVE', '" + str(insert_id) + "') "
+    sql += "ON CONFLICT DO NOTHING"
+    values_from_cols = ["hpan", "fiscal_code", "enrollment"]
+    psycopg2.extras.execute_batch(cursor, sql, payment_instruments_df[values_from_cols].values, page_size=1000)
+    
+    sql =  "INSERT INTO bpd_payment_instrument.bpd_payment_instrument_history "
+    sql += "(hpan_s, activation_t, insert_user_s) "
+    sql += "VALUES (%s, %s, '" + str(insert_id) + "') "
+    sql += "ON CONFLICT DO NOTHING"
+    values_from_cols = ["hpan", "activation"]
+    psycopg2.extras.execute_batch(cursor, sql, payment_instruments_df[values_from_cols].values, page_size=1000)
     
     self.db_connection.commit()
     cursor.close()
