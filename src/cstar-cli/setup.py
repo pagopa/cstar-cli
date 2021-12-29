@@ -6,9 +6,9 @@ setup(
    description='Cstar Command Line Interface',
    author='Giovanni Mancini',
    author_email='giovanni.mancini@pagopa.it',
-   packages=['cstar.cli', 'cstar.cli.bpd'],  
+   packages=['cstar.cli', 'cstar.cli.bpd', 'cstar.cli.rtd'],  
    install_requires=['cstar-cli-core'], #external packages as dependencies
    scripts=[
-            'cst',
-           ]
+      'cst',
+   ]
 )

@@ -8,7 +8,4 @@ setup(
    author_email='giovanni.mancini@pagopa.it',
    packages=['cstar.cli.core'],  #same as name
    install_requires=[''], #external packages as dependencies
-   # scripts=[
-   #          'cst',
-   #         ]
 )
