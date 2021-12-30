@@ -38,6 +38,13 @@ class Transactionfilter:
           --haspans-qty: the number of hashpans to generate
           --salt: the salt to use when performing PAN hashing
         """
+        if not self.args.pans_prefix:
+            raise ValueError("--pans-prefix is mandatory")
+        if not self.args.hashpans_qty:
+            raise ValueError("--hashpans-qty is mandatory")
+        if not self.args.salt:
+            raise ValueError("--salt is mandatory")
+
         synthetic_pans = [
             f"{self.args.pans_prefix}{i}" for i in range(self.args.hashpans_qty)
         ]
@@ -57,6 +64,15 @@ class Transactionfilter:
           --trx-qty: the number of transactions to generate in output
           --ratio: the ratio between transactions belonging to an enrolled PAN versus unenrolled (expressed as 1/ratio)
         """
+        if not self.args.pans_prefix:
+            raise ValueError("--pans-prefix is mandatory")
+        if not self.args.pans_qty:
+            raise ValueError("--pans-qty is mandatory")
+        if not self.args.trx_qty:
+            raise ValueError("--trx-qty is mandatory")
+        if not self.args.ratio:
+            raise ValueError("--ratio is mandatory")
+
         synthetic_pans_enrolled = [
             f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
         ]
