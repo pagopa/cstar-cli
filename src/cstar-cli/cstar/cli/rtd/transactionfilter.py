@@ -24,114 +24,125 @@ FISCAL_CODE = "FC123456"
 VAT = "12345678901"
 
 
-class Transactionfilter():
-  """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Acquirer"""
-  
-  def __init__(self, args):
-    self.args = args
-    
-  def synthetic_hashpans(self):
-    """Produces a synthetic version of the CSV file obtainable from the RTD /hashed-pans endpoint
-    
-    Parameters:
-      --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
-      --haspans-qty: the number of hashpans to generate
-      --salt: the salt to use when performing PAN hashing
-    """
-    synthetic_pans = [f"{self.args.pans_prefix}{i}" for i in range(self.args.hashpans_qty)]
-    hpans = [sha256(f"{pan}{self.args.salt}".encode()).hexdigest() for pan in synthetic_pans]
-    hashpans_df = pd.DataFrame(hpans, columns = ["hashed_pan"])
-    print(hashpans_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
+class Transactionfilter:
+    """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Acquirer"""
 
-  def synthetic_transactions(self):
-    """Produces a synthetic version of the CSV file produced by the acquirers
-    
-    Parameters:
-      --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
-      --pans-qty: the number of enrolled PANs to use in generated transactions
-      --trx-qty: the number of transactions to generate in output
-      --ratio: the ratio between transactions belonging to an enrolled PAN versus unenrolled (expressed as 1/ratio)
-    """
-    synthetic_pans_enrolled = [f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)]
-    synthetic_pans_not_enrolled = [f"{PAN_UNENROLLED_PREFIX}{i}" for i in range(self.args.pans_qty)]
+    def __init__(self, args):
+        self.args = args
 
-    transactions = []
+    def synthetic_hashpans(self):
+        """Produces a synthetic version of the CSV file obtainable from the RTD /hashed-pans endpoint
 
-    for i in range(self.args.trx_qty):
+        Parameters:
+          --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
+          --haspans-qty: the number of hashpans to generate
+          --salt: the salt to use when performing PAN hashing
+        """
+        synthetic_pans = [
+            f"{self.args.pans_prefix}{i}" for i in range(self.args.hashpans_qty)
+        ]
+        hpans = [
+            sha256(f"{pan}{self.args.salt}".encode()).hexdigest()
+            for pan in synthetic_pans
+        ]
+        hashpans_df = pd.DataFrame(hpans, columns=["hashed_pan"])
+        print(hashpans_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
-        operation_type = "00"
-        if i % PAYMENT_REVERSAL_RATIO == 0:
-          operation_type = "01"
+    def synthetic_transactions(self):
+        """Produces a synthetic version of the CSV file produced by the acquirers
 
-        if i % self.args.ratio == 0:
-          pan = random.choice(synthetic_pans_enrolled)
-        else:
-          pan = random.choice(synthetic_pans_not_enrolled)
+        Parameters:
+          --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
+          --pans-qty: the number of enrolled PANs to use in generated transactions
+          --trx-qty: the number of transactions to generate in output
+          --ratio: the ratio between transactions belonging to an enrolled PAN versus unenrolled (expressed as 1/ratio)
+        """
+        synthetic_pans_enrolled = [
+            f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
+        ]
+        synthetic_pans_not_enrolled = [
+            f"{PAN_UNENROLLED_PREFIX}{i}" for i in range(self.args.pans_qty)
+        ]
 
-        id_trx_acquirer = uuid.uuid4().int
-        id_trx_issuer = uuid.uuid4().int
-        payment_circuit = random.choice(PAYMENT_CIRCUITS)
-        
-        correlation_id = ""
-        if operation_type == "01":
-          correlation_id = uuid.uuid4().int
-        
-        total_amount = random.randint(1, 1000000)
+        transactions = []
 
-        pos_type = "00"
-        if i % POS_PHYSICAL_ECOMMERCE_RATIO == 0:
-          pos_type = "01"
-        
-        vat = VAT
-        if i % PERSON_NATURAL_LEGAL_RATIO == 0:
-          vat = ""
+        for i in range(self.args.trx_qty):
 
-        par = ""
-        if i % PAR_RATIO == 0:
-          par = str(uuid.uuid4())
-        
-        transactions.append([
-          ACQUIRER_CODE,
-          operation_type,
-          payment_circuit,
-          pan,
-          DATE_TIME,
-          id_trx_acquirer,
-          id_trx_issuer,
-          correlation_id,
-          total_amount,
-          CURRENCY_ISO4217,
-          ACQUIRER_ID,
-          MERCHANT_ID,
-          TERMINAL_ID,
-          BIN,
-          MCC,
-          FISCAL_CODE,
-          vat,
-          pos_type,
-          par
-        ])
+            operation_type = "00"
+            if i % PAYMENT_REVERSAL_RATIO == 0:
+                operation_type = "01"
 
-    columns = [
-      "acquirer_code",
-      "operation_type",
-      "circuit_type",
-      "hpan",
-      "date_time",
-      "id_trx_acquirer",
-      "id_trx_issuer",
-      "correlation_id",
-      "total_amount",
-      "currency",
-      "acquirer_id",
-      "merchant_id",
-      "terminal_id",
-      "bin",
-      "mcc",
-      "fiscal_code",
-      "vat",
-      "pos_type",
-      "par"
-      ]
-    trx_df = pd.DataFrame(transactions, columns=columns)
-    print(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
+            if i % self.args.ratio == 0:
+                pan = random.choice(synthetic_pans_enrolled)
+            else:
+                pan = random.choice(synthetic_pans_not_enrolled)
+
+            id_trx_acquirer = uuid.uuid4().int
+            id_trx_issuer = uuid.uuid4().int
+            payment_circuit = random.choice(PAYMENT_CIRCUITS)
+
+            correlation_id = ""
+            if operation_type == "01":
+                correlation_id = uuid.uuid4().int
+
+            total_amount = random.randint(1, 1000000)
+
+            pos_type = "00"
+            if i % POS_PHYSICAL_ECOMMERCE_RATIO == 0:
+                pos_type = "01"
+
+            vat = VAT
+            if i % PERSON_NATURAL_LEGAL_RATIO == 0:
+                vat = ""
+
+            par = ""
+            if i % PAR_RATIO == 0:
+                par = str(uuid.uuid4())
+
+            transactions.append(
+                [
+                    ACQUIRER_CODE,
+                    operation_type,
+                    payment_circuit,
+                    pan,
+                    DATE_TIME,
+                    id_trx_acquirer,
+                    id_trx_issuer,
+                    correlation_id,
+                    total_amount,
+                    CURRENCY_ISO4217,
+                    ACQUIRER_ID,
+                    MERCHANT_ID,
+                    TERMINAL_ID,
+                    BIN,
+                    MCC,
+                    FISCAL_CODE,
+                    vat,
+                    pos_type,
+                    par,
+                ]
+            )
+
+        columns = [
+            "acquirer_code",
+            "operation_type",
+            "circuit_type",
+            "hpan",
+            "date_time",
+            "id_trx_acquirer",
+            "id_trx_issuer",
+            "correlation_id",
+            "total_amount",
+            "currency",
+            "acquirer_id",
+            "merchant_id",
+            "terminal_id",
+            "bin",
+            "mcc",
+            "fiscal_code",
+            "vat",
+            "pos_type",
+            "par",
+        ]
+        trx_df = pd.DataFrame(transactions, columns=columns)
+        print(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
