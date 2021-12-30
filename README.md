@@ -47,7 +47,7 @@ cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <
 ### Creating synthetic hashpans for the Batch Acquirer
 
 ```bash
-cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --hashpans-qty 20000
+cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --hashpans-qty 20000 --salt <SALT>
 ```
 
 ### Creating synthetic transactions for the Batch Acquirer
