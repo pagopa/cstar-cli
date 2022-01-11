@@ -36,8 +36,24 @@ Now the cstar CLI is available as _cst_ command:
 cst <VERTICAL> <DOMAIN> --action <ACTION> [COMMAND PARAMETERS ...]
 ```
 
-Example(s):
+## Example(s)
+
+### Enrolling payment instruments
 
 ```bash
 cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <INPUT_FILE>
+```
+
+### Creating synthetic hashpans for the Batch Acquirer
+
+```bash
+cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --hashpans-qty 20000 --salt <SALT>
+```
+
+### Creating synthetic transactions for the Batch Acquirer
+
+See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
+
+```bash
+cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5
 ```

@@ -53,4 +53,16 @@ def parser():
     bpd_payment_instrument.add_argument("--file")
     bpd_payment_instrument.add_argument("--connection-string")
 
+    rtd_parser = subsystem_parser.add_parser("rtd").add_subparsers(dest="command")
+
+    rtd_transaction_filter = rtd_parser.add_parser("transactionfilter")
+
+    rtd_transaction_filter.add_argument("--action")
+    rtd_transaction_filter.add_argument("--salt")
+    rtd_transaction_filter.add_argument("--pans-prefix")
+    rtd_transaction_filter.add_argument("--pans-qty", type=int)
+    rtd_transaction_filter.add_argument("--hashpans-qty", type=int)
+    rtd_transaction_filter.add_argument("--trx-qty", type=int)
+    rtd_transaction_filter.add_argument("--ratio", type=int)
+
     return argparser
