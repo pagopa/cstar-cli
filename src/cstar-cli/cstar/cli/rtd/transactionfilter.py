@@ -14,7 +14,11 @@ PAR_RATIO = 7
 ACQUIRER_CODE = "99999"
 CURRENCY_ISO4217 = "978"
 PAYMENT_CIRCUITS = [f"{i:02}" for i in range(11)]
-DATE_TIME = "2020-08-06T12:19:16.000+00:00"
+DATE_TIMES = [
+    "2020-08-06T12:19:16.000+00:00",
+    "2020-09-06T12:19:16.000+00:00",
+    "2020-10-06T12:19:16.000+00:00"
+]
 ACQUIRER_ID = "09509"
 MERCHANT_ID = "400000080205"
 TERMINAL_ID = "80205005"
@@ -63,6 +67,7 @@ class Transactionfilter:
           --pans-qty: the number of enrolled PANs to use in generated transactions
           --trx-qty: the number of transactions to generate in output
           --ratio: the ratio between transactions belonging to an enrolled PAN versus unenrolled (expressed as 1/ratio)
+          --pos-number: how many different synthetic POS must be created
         """
         if not self.args.pans_prefix:
             raise ValueError("--pans-prefix is mandatory")
@@ -72,6 +77,8 @@ class Transactionfilter:
             raise ValueError("--trx-qty is mandatory")
         if not self.args.ratio:
             raise ValueError("--ratio is mandatory")
+        if not self.args.pos_number:
+            raise ValueError("--pos-number is mandatory")
 
         synthetic_pans_enrolled = [
             f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
@@ -80,9 +87,26 @@ class Transactionfilter:
             f"{PAN_UNENROLLED_PREFIX}{i}" for i in range(self.args.pans_qty)
         ]
 
+        synthetic_pos = []
+        for i in range(self.args.pos_number):
+            synthetic_pos.append([
+                str(1000000 + i),  # terminal_id
+                str(2000000 + i),  # merchant_id,
+                "CF" + str(3000000 + i),  # fiscal_code
+                VAT if i % PERSON_NATURAL_LEGAL_RATIO == 0 else "",  # vat
+                "00" if i % POS_PHYSICAL_ECOMMERCE_RATIO == 0 else "01",  # pos_type
+            ])
+
         transactions = []
 
         for i in range(self.args.trx_qty):
+
+            pos = random.choice(synthetic_pos)
+            terminal_id = pos[0]
+            merchant_id = pos[1]
+            fiscal_code = pos[2]
+            vat = pos[3]
+            pos_type = pos[4]
 
             operation_type = "00"
             if i % PAYMENT_REVERSAL_RATIO == 0:
@@ -96,20 +120,13 @@ class Transactionfilter:
             id_trx_acquirer = uuid.uuid4().int
             id_trx_issuer = uuid.uuid4().int
             payment_circuit = random.choice(PAYMENT_CIRCUITS)
+            date_time = random.choice(DATE_TIMES)
 
             correlation_id = ""
             if operation_type == "01":
                 correlation_id = uuid.uuid4().int
 
-            total_amount = random.randint(1, 1000000)
-
-            pos_type = "00"
-            if i % POS_PHYSICAL_ECOMMERCE_RATIO == 0:
-                pos_type = "01"
-
-            vat = VAT
-            if i % PERSON_NATURAL_LEGAL_RATIO == 0:
-                vat = ""
+            total_amount = random.randint(100, 100000)
 
             par = ""
             if i % PAR_RATIO == 0:
@@ -121,18 +138,18 @@ class Transactionfilter:
                     operation_type,
                     payment_circuit,
                     pan,
-                    DATE_TIME,
+                    date_time,
                     id_trx_acquirer,
                     id_trx_issuer,
                     correlation_id,
                     total_amount,
                     CURRENCY_ISO4217,
                     ACQUIRER_ID,
-                    MERCHANT_ID,
-                    TERMINAL_ID,
+                    merchant_id,
+                    terminal_id,
                     BIN,
                     MCC,
-                    FISCAL_CODE,
+                    fiscal_code,
                     vat,
                     pos_type,
                     par,
