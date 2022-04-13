@@ -64,5 +64,6 @@ def parser():
     rtd_transaction_filter.add_argument("--hashpans-qty", type=int)
     rtd_transaction_filter.add_argument("--trx-qty", type=int)
     rtd_transaction_filter.add_argument("--ratio", type=int)
+    rtd_transaction_filter.add_argument("--pos-number", type=int)
 
     return argparser
