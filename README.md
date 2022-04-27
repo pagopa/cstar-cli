@@ -6,9 +6,12 @@ Command Line Interface to manage cstar platform and its verticals
 
 The project is managed with [Poetry](https://python-poetry.org/): installation instructions for all platforms are available [here](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions).
 
-## Virtualenv initialization
+If you are using an **M1 MacBook**: install [postgresql](https://www.postgresql.org/) first.
+ ```bash
+brew install postgresql
+```
 
-Open a shell and type the following:
+## Virtualenv initialization
 
 ```bash
 poetry install
