@@ -197,7 +197,7 @@ class Transactionfilter:
             f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
         if self.args.pgp:
-            encrypt_file(trx_file_path, "./public.key");
+            encrypt_file(trx_file_path, self.args.key)
 
         print(f"Done")
 
