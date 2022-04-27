@@ -58,5 +58,5 @@ cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --
 See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
 
 ```bash
-cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5
+cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix" --pans-qty 20000 --trx-qty 100 --ratio 5
 ```
