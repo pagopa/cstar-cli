@@ -2,9 +2,19 @@ from hashlib import sha256
 import random
 import uuid
 import pandas as pd
+import logging
+import os
+import gnupg
+from tempfile import TemporaryDirectory
+from datetime import datetime
 
 CSV_SEPARATOR = ";"
-PAN_UNENROLLED_PREFIX = "pan_unknown_"
+PAN_UNENROLLED_PREFIX = "panUnknown"
+
+TRANSACTION_FILE_EXTENSION = ".csv"
+ENCRIPTED_FILE_EXTENSION = ".pgp"
+TRANSACTION_FILE_NAME = "CSTAR.09999.TRNLOG." + datetime.today().strftime(
+    '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
 
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
@@ -79,6 +89,8 @@ class Transactionfilter:
             raise ValueError("--ratio is mandatory")
         if not self.args.pos_number:
             raise ValueError("--pos-number is mandatory")
+
+        output_dir = self.args.output
 
         synthetic_pans_enrolled = [
             f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
@@ -178,4 +190,55 @@ class Transactionfilter:
             "par",
         ]
         trx_df = pd.DataFrame(transactions, columns=columns)
-        print(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
+        trx_file_path = output_dir + "/" + TRANSACTION_FILE_NAME
+
+        os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
+        with open(trx_file_path, "w") as f:
+            f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
+
+        if self.args.pgp:
+            encrypt_file(trx_file_path, "./public.key");
+
+        print(f"Done")
+
+
+def encrypt_file(
+        file_path: str,
+        encryption_key: str,
+        *,
+        remove_plaintext: bool = False,
+        file_extension: str = ENCRIPTED_FILE_EXTENSION,
+) -> None:
+    """Encrypt a file using provided encryption key.
+
+    :param file_path: path of file to be encrypted
+    :type file_path: str
+    :param encryption_key: path of the key file to use
+    :type encryption_key: str
+    :param remove_plaintext: remove plaintext file after encryption? Defaults to False
+    :type remove_plaintext: bool
+    :param file_extension: extension to add to encrypted files. Defaults to '.pgp'
+    :type file_extension: str
+    :raises RuntimeError:
+    """
+    with TemporaryDirectory() as temp_gpg_home:
+        logging.debug(f"Setting temporary GPG home to {temp_gpg_home}")
+        gpg = gnupg.GPG(gnupghome=temp_gpg_home)
+        key_data = open(encryption_key).read()
+        import_result = gpg.import_keys(key_data)
+        logging.info(f"GPG import keys: {import_result.results}")
+        with open(file_path, "rb") as f:
+            status = gpg.encrypt_file(
+                file=f,
+                recipients=import_result.results[0]["fingerprint"],
+                output=f"{file_path}{ENCRIPTED_FILE_EXTENSION}",
+                extra_args=["--openpgp", "--trust-model", "always"],
+                armor=False,
+            )
+        if status.ok:
+            if remove_plaintext:
+                os.remove(file_path)
+            logging.info(f"Encrypted file as {file_path}{ENCRIPTED_FILE_EXTENSION}")
+        else:
+            logging.info(f"Failed to encrypt")
+            raise RuntimeError(status)
