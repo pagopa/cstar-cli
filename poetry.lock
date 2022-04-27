@@ -120,6 +120,14 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 six = ">=1.5"
 
 [[package]]
+name = "python-gnupg"
+version = "0.4.8"
+description = "A wrapper for the Gnu Privacy Guard (GPG or GnuPG)"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pytz"
 version = "2022.1"
 description = "World timezone definitions, modern and historical"
@@ -287,6 +295,10 @@ psycopg2-binary = [
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
     {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
+]
+python-gnupg = [
+    {file = "python-gnupg-0.4.8.tar.gz", hash = "sha256:b64de1ae5cedf872b437201a566fa2c62ce0c95ea2e30177eb53aee1258507d7"},
+    {file = "python_gnupg-0.4.8-py2.py3-none-any.whl", hash = "sha256:93a521501d6c2785d96b190aec7125ba89c1c2fe708b0c98af3fb32b59026ab8"},
 ]
 pytz = [
     {file = "pytz-2022.1-py2.py3-none-any.whl", hash = "sha256:e68985985296d9a66a881eb3193b0906246245294a881e7c8afe623866ac6a5c"},
