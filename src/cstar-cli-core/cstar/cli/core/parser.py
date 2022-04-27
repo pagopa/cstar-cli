@@ -65,5 +65,7 @@ def parser():
     rtd_transaction_filter.add_argument("--trx-qty", type=int)
     rtd_transaction_filter.add_argument("--ratio", type=int)
     rtd_transaction_filter.add_argument("--pos-number", type=int)
+    rtd_transaction_filter.add_argument("--pgp", action="store_true")
+    rtd_transaction_filter.add_argument("-o", "--output", type=str, default=".")
 
     return argparser
