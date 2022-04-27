@@ -6,7 +6,7 @@ Command Line Interface to manage cstar platform and its verticals
 
 The project is managed with [Poetry](https://python-poetry.org/): installation instructions for all platforms are available [here](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions).
 
-If you are using an **M1 MacBook**: install [postgresql](https://www.postgresql.org/) first.
+If you are using a **M1 MacBook**: install [postgresql](https://www.postgresql.org/) first.
  ```bash
 brew install postgresql
 ```
@@ -59,4 +59,9 @@ See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acqui
 
 ```bash
 cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000
+```
+
+Create also the encrypted transactions file:
+```bash
+cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix" --pans-qty 20000 --trx-qty 7 --ratio 5 --pos-number 10000 --out-dir /tmp --pgp --key ~/certificates/public.key
 ```
