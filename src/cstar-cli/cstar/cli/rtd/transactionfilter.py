@@ -90,8 +90,6 @@ class Transactionfilter:
         if not self.args.pos_number:
             raise ValueError("--pos-number is mandatory")
 
-        output_dir = self.args.output
-
         synthetic_pans_enrolled = [
             f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
         ]
@@ -190,7 +188,7 @@ class Transactionfilter:
             "par",
         ]
         trx_df = pd.DataFrame(transactions, columns=columns)
-        trx_file_path = output_dir + "/" + TRANSACTION_FILE_NAME
+        trx_file_path = self.args.out_dir + "/" + TRANSACTION_FILE_NAME
 
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
         with open(trx_file_path, "w") as f:

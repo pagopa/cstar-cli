@@ -66,7 +66,7 @@ def parser():
     rtd_transaction_filter.add_argument("--ratio", type=int)
     rtd_transaction_filter.add_argument("--pos-number", type=int)
     rtd_transaction_filter.add_argument("--pgp", action="store_true")
-    rtd_transaction_filter.add_argument("-o", "--output", type=str, default=".")
+    rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default=".")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
 
     return argparser
