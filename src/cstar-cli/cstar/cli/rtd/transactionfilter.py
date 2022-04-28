@@ -9,7 +9,7 @@ from tempfile import TemporaryDirectory
 from datetime import datetime
 
 CSV_SEPARATOR = ";"
-PAN_UNENROLLED_PREFIX = "panUnknown"
+PAN_UNENROLLED_PREFIX = "pan_unknown_"
 
 TRANSACTION_FILE_EXTENSION = ".csv"
 ENCRIPTED_FILE_EXTENSION = ".pgp"
