@@ -12,6 +12,7 @@ brew install postgresql
 ```
 
 ## Virtualenv initialization
+Open a shell and type the following:
 
 ```bash
 poetry install
