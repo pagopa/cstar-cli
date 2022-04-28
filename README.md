@@ -53,15 +53,17 @@ cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <
 cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --hashpans-qty 20000 --salt <SALT>
 ```
 
-### Creating synthetic transactions for the Batch Acquirer
+### Creating unencrypted synthetic transactions for the Batch Acquirer.
 
 See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
 
+#### Unencrypted
 ```bash
-cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --out-dir /tmp
+cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT>
 ```
 
-Create also the encrypted transactions file:
+#### Encrypted, with specified output directory and public key file.
+
 ```bash
 cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --out-dir /tmp --pgp --key ~/certificates/public.key
 ```
