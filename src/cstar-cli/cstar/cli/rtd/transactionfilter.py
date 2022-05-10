@@ -15,6 +15,7 @@ TRANSACTION_FILE_EXTENSION = ".csv"
 ENCRIPTED_FILE_EXTENSION = ".pgp"
 TRANSACTION_FILE_NAME = "CSTAR.09999.TRNLOG." + datetime.today().strftime(
     '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
+CHECKSUM_PREFIX = "#sha256sum:"
 
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
@@ -191,7 +192,10 @@ class Transactionfilter:
         trx_file_path = self.args.out_dir + "/" + TRANSACTION_FILE_NAME
 
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
-        with open(trx_file_path, "w") as f:
+
+        with open(trx_file_path, "a") as f:
+            f.write(CHECKSUM_PREFIX + sha256(
+                f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest() + "\n")
             f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
         if self.args.pgp:
