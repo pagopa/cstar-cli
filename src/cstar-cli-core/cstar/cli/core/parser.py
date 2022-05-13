@@ -58,7 +58,7 @@ def parser():
     rtd_transaction_filter = rtd_parser.add_parser("transactionfilter")
 
     rtd_transaction_filter.add_argument("--action")
-    rtd_transaction_filter.add_argument("--salt")
+    rtd_transaction_filter.add_argument("--salt", default="SALT876")
     rtd_transaction_filter.add_argument("--pans-prefix")
     rtd_transaction_filter.add_argument("--pans-qty", type=int)
     rtd_transaction_filter.add_argument("--hashpans-qty", type=int)
