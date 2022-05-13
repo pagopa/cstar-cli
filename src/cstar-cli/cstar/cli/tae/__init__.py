@@ -1,1 +1,1 @@
-from .transactionaggregate import Transactionaggregate
+from .transactionaggregates import Transactionaggregate
