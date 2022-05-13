@@ -82,5 +82,6 @@ def parser():
     tae_transaction_aggregate.add_argument("--shuffle", action="store_true")
     tae_transaction_aggregate.add_argument("--ratio-no-pos-type", type=int)
     tae_transaction_aggregate.add_argument("--ratio-no-vat", type=int)
+    tae_transaction_aggregate.add_argument("--key", type=str, default="./public.key")
 
     return argparser
