@@ -12,9 +12,9 @@ CSV_SEPARATOR = ";"
 PAN_UNENROLLED_PREFIX = "pan_unknown_"
 
 TRANSACTION_FILE_EXTENSION = ".csv"
-ENCRIPTED_FILE_EXTENSION = ".pgp"
-TRANSACTION_FILE_NAME = "CSTAR.09999.TRNLOG." + datetime.today().strftime(
-    '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
+ENCRYPTED_FILE_EXTENSION = ".pgp"
+APPLICATION_PREFIX_FILE_NAME = "CSTAR"
+TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
 
 PAYMENT_REVERSAL_RATIO = 100
@@ -71,7 +71,7 @@ class Transactionfilter:
         print(hashpans_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
     def synthetic_transactions(self):
-        """Produces a synthetic version of the CSV file produced by the acquirers
+        """Produces a synthetic version of the CSV file produced by the acquirers for RTD
 
         Parameters:
           --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
@@ -189,7 +189,9 @@ class Transactionfilter:
             "par",
         ]
         trx_df = pd.DataFrame(transactions, columns=columns)
-        trx_file_path = self.args.out_dir + "/" + TRANSACTION_FILE_NAME
+
+        trx_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + ACQUIRER_CODE + "." + TRANSACTION_LOG_FIXED_SEGMENT + datetime.today().strftime(
+            '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
 
@@ -209,7 +211,7 @@ def encrypt_file(
         encryption_key: str,
         *,
         remove_plaintext: bool = False,
-        file_extension: str = ENCRIPTED_FILE_EXTENSION,
+        file_extension: str = ENCRYPTED_FILE_EXTENSION,
 ) -> None:
     """Encrypt a file using provided encryption key.
 
@@ -233,14 +235,14 @@ def encrypt_file(
             status = gpg.encrypt_file(
                 file=f,
                 recipients=import_result.results[0]["fingerprint"],
-                output=f"{file_path}{ENCRIPTED_FILE_EXTENSION}",
+                output=f"{file_path}{ENCRYPTED_FILE_EXTENSION}",
                 extra_args=["--openpgp", "--trust-model", "always"],
                 armor=False,
             )
         if status.ok:
             if remove_plaintext:
                 os.remove(file_path)
-            logging.info(f"Encrypted file as {file_path}{ENCRIPTED_FILE_EXTENSION}")
+            logging.info(f"Encrypted file as {file_path}{ENCRYPTED_FILE_EXTENSION}")
         else:
             logging.info(f"Failed to encrypt")
             raise RuntimeError(status)
