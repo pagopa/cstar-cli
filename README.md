@@ -54,7 +54,7 @@ cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <
 cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --hashpans-qty 20000 --salt <SALT>
 ```
 
-### Creating unencrypted synthetic transactions for the Batch Acquirer.
+### Creating synthetic transactions for the Batch Acquirer.
 
 See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
 
@@ -67,4 +67,21 @@ cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_
 
 ```bash
 cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --out-dir /tmp --pgp --key ~/certificates/public.key
+```
+
+### Creating synthetic aggregations like the ones produced by the Batch Acquirer for AdE.
+
+To generate 1MB of aggregates it takes about 9K aggregations.
+
+With the shuffling flag it takes more time to generate the file.
+
+#### Unencrypted
+```bash
+cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --revers-ratio 100 --ratio-no-pos-type 30 --ratio-no-vat 20 --shuffle
+```
+
+#### Encrypted, with specified output directory and public key file.
+
+```bash
+cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --revers-ratio 100 --ratio-no-pos-type 30 --ratio-no-vat 20 --shuffle --out-dir /tmp --pgp --key ~/certificates/public.key
 ```
