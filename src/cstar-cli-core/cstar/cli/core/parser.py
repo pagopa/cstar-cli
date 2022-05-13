@@ -69,4 +69,18 @@ def parser():
     rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default=".")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
 
+    tae_parser = subsystem_parser.add_parser("tae").add_subparsers(dest="command")
+
+    tae_transaction_aggregate = tae_parser.add_parser("transactionaggregate")
+
+    tae_transaction_aggregate.add_argument("--action")
+    tae_transaction_aggregate.add_argument("--aggr-qty", type=int)
+    tae_transaction_aggregate.add_argument("--acquirer", default=99999)
+    tae_transaction_aggregate.add_argument("--revers-ratio", type=int)
+    tae_transaction_aggregate.add_argument("-o", "--out-dir", type=str, default=".")
+    tae_transaction_aggregate.add_argument("--pgp", action="store_true")
+    tae_transaction_aggregate.add_argument("--shuffle", action="store_true")
+    tae_transaction_aggregate.add_argument("--ratio-no-pos-type", type=int)
+    tae_transaction_aggregate.add_argument("--ratio-no-vat", type=int)
+
     return argparser
