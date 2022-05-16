@@ -133,7 +133,7 @@ class Transactionaggregate:
 
         trx_df = pd.DataFrame(transactions, columns=columns)
         trx_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(
-            acquirer_code) + "." + TRANSACTION_LOG_FIXED_SEGMENT + datetime.today().strftime(
+            acquirer_code) + "." + TRANSACTION_LOG_FIXED_SEGMENT + "." + datetime.today().strftime(
             '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
