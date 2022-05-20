@@ -1,4 +1,5 @@
 from hashlib import sha256
+import time
 import random
 import uuid
 import pandas as pd
@@ -10,6 +11,9 @@ from datetime import datetime
 
 CSV_SEPARATOR = ";"
 PAN_UNENROLLED_PREFIX = "pan_unknown_"
+
+SECONDS_IN_DAY = 86400
+MAX_DAYS_BACK = 3
 
 TRANSACTION_FILE_EXTENSION = ".csv"
 ENCRYPTED_FILE_EXTENSION = ".pgp"
@@ -25,10 +29,12 @@ PAR_RATIO = 7
 ACQUIRER_CODE = "99999"
 CURRENCY_ISO4217 = "978"
 PAYMENT_CIRCUITS = [f"{i:02}" for i in range(11)]
-DATE_TIMES = [
-    "2020-08-06T12:19:16.000+00:00",
-    "2020-09-06T12:19:16.000+00:00",
-    "2020-10-06T12:19:16.000+00:00"
+# Epoch tra oggi e ieri
+OFFSETS = [
+    ".000Z",
+    ".000+01:00",
+    ".000+0200",
+    ".500+01:30"
 ]
 ACQUIRER_ID = "09509"
 MERCHANT_ID = "400000080205"
@@ -91,6 +97,9 @@ class Transactionfilter:
         if not self.args.pos_number:
             raise ValueError("--pos-number is mandatory")
 
+        # Set the acquirer code (common to all aggregates)
+        acquirer_code = self.args.acquirer
+
         synthetic_pans_enrolled = [
             f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
         ]
@@ -131,7 +140,10 @@ class Transactionfilter:
             id_trx_acquirer = uuid.uuid4().int
             id_trx_issuer = uuid.uuid4().int
             payment_circuit = random.choice(PAYMENT_CIRCUITS)
-            date_time = random.choice(DATE_TIMES)
+
+            # Set the transaction date from 0 to MAX_DAYS_BACK days back compared to transmission_date
+            date_time = time.strftime('%Y-%m-%dT%H:%M:%S' + random.choice(OFFSETS), time.localtime(
+                datetime.today().timestamp() - SECONDS_IN_DAY * random.random() * MAX_DAYS_BACK))
 
             correlation_id = ""
             if operation_type == "01":
@@ -145,7 +157,7 @@ class Transactionfilter:
 
             transactions.append(
                 [
-                    ACQUIRER_CODE,
+                    acquirer_code,
                     operation_type,
                     payment_circuit,
                     pan,
