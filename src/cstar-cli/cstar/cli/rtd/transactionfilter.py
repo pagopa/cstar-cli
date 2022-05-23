@@ -29,7 +29,7 @@ PAR_RATIO = 7
 ACQUIRER_CODE = "99999"
 CURRENCY_ISO4217 = "978"
 PAYMENT_CIRCUITS = [f"{i:02}" for i in range(11)]
-# Epoch tra oggi e ieri
+
 OFFSETS = [
     ".000Z",
     ".000+01:00",
