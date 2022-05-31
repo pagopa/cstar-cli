@@ -100,10 +100,10 @@ class Results:
             esito = random.randint(0, 4)
             match esito:
                 case 2:
-                    for bad_field in random.sample(SCARTI, random.randint(1, 13)):
+                    for bad_field in random.sample(SCARTI, random.randint(1, 14)):
                         lista_errori = lista_errori + random.choice(bad_field) + '|'
                 case 4:
-                    for bad_field in random.sample(SCARTI, random.randint(1, 13)):
+                    for bad_field in random.sample(SEGNALAZIONI, random.randint(1, 2)):
                         lista_errori = lista_errori + random.choice(bad_field) + '|'
                 case _:
                     pass
