@@ -97,7 +97,7 @@ class Results:
 
             lista_errori = ''
 
-            esito = random.randint(1, 4)
+            esito = random.randint(0, 4)
             match esito:
                 case 2:
                     for bad_field in random.sample(SCARTI, random.randint(1, 13)):
