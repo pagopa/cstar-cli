@@ -53,6 +53,8 @@ def parser():
     bpd_payment_instrument.add_argument("--file")
     bpd_payment_instrument.add_argument("--connection-string")
 
+###
+
     rtd_parser = subsystem_parser.add_parser("rtd").add_subparsers(dest="command")
 
     rtd_transaction_filter = rtd_parser.add_parser("transactionfilter")
@@ -70,6 +72,8 @@ def parser():
     rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default=".")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
 
+###
+
     tae_parser = subsystem_parser.add_parser("tae").add_subparsers(dest="command")
 
     tae_transaction_aggregate = tae_parser.add_parser("transactionaggregate")
@@ -84,5 +88,19 @@ def parser():
     tae_transaction_aggregate.add_argument("--ratio-no-pos-type", type=int)
     tae_transaction_aggregate.add_argument("--ratio-no-vat", type=int)
     tae_transaction_aggregate.add_argument("--key", type=str, default="./public.key")
+
+    tae_results = tae_parser.add_parser("results")
+
+    tae_results.add_argument("--action")
+    tae_results.add_argument("--res-qty", type=int)
+    tae_results.add_argument("-o", "--out-dir", type=str, default=".")
+    tae_results.add_argument("--gzip", action="store_true")
+
+    tae_results = tae_parser.add_parser("registryreports")
+
+    tae_results.add_argument("--action")
+    tae_results.add_argument("--rep-qty", type=int)
+    tae_results.add_argument("--acquirer", default=99999)
+    tae_results.add_argument("-o", "--out-dir", type=str, default=".")
 
     return argparser
