@@ -85,3 +85,21 @@ cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --r
 ```bash
 cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --revers-ratio 100 --ratio-no-pos-type 30 --ratio-no-vat 20 --shuffle --out-dir /tmp --pgp --key ~/certificates/public.key
 ```
+
+### Creating synthetic acks like the ones sent by AdE to CSTAR, according to the interface agreement.
+
+#### Unzipped
+```bash
+cst tae results --action synthetic_results --res-qty 100
+```
+#### Zipped
+
+```bash
+cst tae results --action synthetic_results --res-qty 100 --gzip
+```
+
+### Creating synthetic wrong record reports like the ones sent by Cstar to senders.
+
+```bash
+cst tae registryreports --action synthetic_reports --rep-qty 100
+```
