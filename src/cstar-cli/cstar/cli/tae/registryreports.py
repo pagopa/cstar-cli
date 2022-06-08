@@ -4,9 +4,7 @@ import pandas as pd
 import os
 from datetime import datetime
 
-
 CSV_SEPARATOR = ";"
-
 
 APPLICATION_PREFIX_FILE_NAME = "CSTAR"
 ADE_ACK_FIXED_SEGMENT = "ADEACK"
@@ -14,6 +12,8 @@ RESULTS_FILE_EXTENSION = ".csv"
 ZIPPED_FILE_EXTENSION = ".gzip"
 
 ACQUIRER_CODE = "99999"
+PERSON_NATURAL_LEGAL_RATIO = 3
+
 
 class Registryreports:
     """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Acquirer"""
@@ -36,19 +36,22 @@ class Registryreports:
         reports = []
 
         for i in range(self.args.rep_qty):
-
             reports.append(
                 [
                     sha256(f"{'terminal_id'}{i}".encode()).hexdigest(),
-                    sha256(f"{'merchant_id'}{i}".encode()).hexdigest()
+                    sha256(f"{'merchant_id'}{i}".encode()).hexdigest(),
+                    "CF" + str(i).zfill(15 - len(str(i))) if i % PERSON_NATURAL_LEGAL_RATIO == 0 else "PI" + str(
+                        i).zfill(10 - len(str(i)))
                 ])
 
         columns = [
             "terminal_id",
-            "merchant_id"
+            "merchant_id",
+            "anagrafica"
         ]
         reports_df = pd.DataFrame(reports, columns=columns)
-        reports_df_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(self.args.acquirer) + "." + ADE_ACK_FIXED_SEGMENT + "." + datetime.today().strftime(
+        reports_df_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(
+            self.args.acquirer) + "." + ADE_ACK_FIXED_SEGMENT + "." + datetime.today().strftime(
             '%Y%m%d.%H%M%S') + ".001" + RESULTS_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(reports_df_path), exist_ok=True)
