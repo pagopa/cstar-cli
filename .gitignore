@@ -135,3 +135,5 @@ dmypy.json
 *.pgp
 *.sha256sum
 .DS_Store
+.idea
+*.gzip
