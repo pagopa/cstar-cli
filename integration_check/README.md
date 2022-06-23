@@ -10,8 +10,8 @@ Choose the tool you want to use to test API calls (Postaman or Bash) according t
 The Postman folder must be [imported as a collection in Postman](https://learning.postman.com/docs/getting-started/importing-and-exporting-data).
 
 ### Add certificate to Postman
-After importing the collection:
-- open an API call inside the collection
+To add the certificate to Postman you must follow the steps below:
+- open an API call inside the imported collection
 - go to the "Settings" tab.
 - click on "Settings" under the switch of the entry "Enable SSL certificate verification"
   
@@ -26,12 +26,22 @@ After importing the collection:
 
 ![Certificate settings](screenshots_instructions/certificate_settings.png)
 
+### Set API Key
+To set the API Key you must follow the steps below:
+- click on the imported collection
+- go to "Variables" tab
+- populate the "API_KEY" INITIAL VALUE field with your API Key.
+
+![Certificate settings](screenshots_instructions/API_Key_setting.png)
+
 ### Run Postman collection
 Right click on the collection and click "Run Collection".
 
 Leave default values and run the collection with the button `Run Check integration...`
 
-Check whether the API calls are working as expected.
+Check whether all the test are passed.
+
+![Certificate settings](screenshots_instructions/test_passed.png)
 
 ## Bash
 
@@ -43,6 +53,18 @@ This can be assessed with a call to an [enpoint](https://api.uat.cstar.pagopa.it
 
 From the project root run the script with the following command:
 ```bash
-bash ./integration_check/scripts/001-mAuth-check/script.sh /path/to/ACME.certificate.pem /path/to/ACME.key
+bash ./integration_check/scripts/001-mAuth-check/script.sh /PATH/TO/ACME.certificate.pem /PATH/TO/ACME.key
+```
+The execution will print the result of the check.
+
+## 2. API Key validity check
+
+The second steps checks the validity of the API Key.
+
+This can be assessed with a call to an [enpoint](https://api.uat.cstar.pagopa.it/rtd/api-key/check) with a valid API Key.
+
+From the project root run the script with the following command:
+```bash
+bash ./integration_check/scripts/002-API-key-check/script.sh /PATH/TO/ACME.certificate.pem /PATH/TO/ACME.key API_KEY
 ```
 The execution will print the result of the check.
