@@ -30,9 +30,11 @@ To add the certificate to Postman you must follow the steps below:
 To set the API Key you must follow the steps below:
 - click on the imported collection
 - go to "Variables" tab
-- populate the "API_KEY" INITIAL VALUE field with your API Key.
+- populate the "API_KEY" INITIAL VALUE field with your API Key
 
 ![Certificate settings](screenshots_instructions/API_Key_setting.png)
+
+- save the changes (click on the "Save" button with floppy icon).
 
 ### Run Postman collection
 Right click on the collection and click "Run Collection".
