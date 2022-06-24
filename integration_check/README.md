@@ -7,11 +7,11 @@ Every test results in either `PASS` (200 as response status) or `FAIL` (400 or 4
 Choose the tool you want to use to test API calls (Postaman or Bash) according to the capabilities of your system.
 
 ## Postman
-The Postman folder must be [imported as a collection in Postman](https://learning.postman.com/docs/getting-started/importing-and-exporting-data).
+The `postman` folder must be [imported as a collection in Postman](https://learning.postman.com/docs/getting-started/importing-and-exporting-data).
 
-### Add certificate to Postman
-To add the certificate to Postman you must follow the steps below:
-- open an API call inside the imported collection
+### Add mutual authentication certificate to Postman
+To add the mutual authentication certificate to Postman you must follow the steps below:
+- open any of the two endpoint calls inside the imported collection
 - go to the "Settings" tab.
 - click on "Settings" under the switch of the entry "Enable SSL certificate verification"
   
@@ -26,8 +26,8 @@ To add the certificate to Postman you must follow the steps below:
 
 ![Certificate settings](screenshots_instructions/certificate_settings.png)
 
-### Set API Key
-To set the API Key you must follow the steps below:
+### Set RTD API Key
+To set the RTD API Key you must follow the steps below:
 - click on the imported collection
 - go to "Variables" tab
 - populate the "API_KEY" INITIAL VALUE field with your API Key
