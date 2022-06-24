@@ -2,7 +2,7 @@
 
 In this file are documented the steps to follow in order to fulfill the first two steps of integration with CSTAR.
 
-Every test results in either `PASS` (200 as response status) or `FAIL` (400 as response status).
+Every test results in either `PASS` (200 as response status) or `FAIL` (400 or 401 as response status).
 
 Choose the tool you want to use to test API calls (Postaman or Bash) according to the capabilities of your system.
 
