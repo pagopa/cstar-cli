@@ -103,4 +103,15 @@ def parser():
     tae_results.add_argument("--acquirer", default=99999)
     tae_results.add_argument("-o", "--out-dir", type=str, default=".")
 
+### SENDER ###
+    
+    sender_parser = subsystem_parser.add_parser("sender").add_subparsers(dest="command")
+
+    sender_aggregates_parser = sender_parser.add_parser("aggregates")
+    sender_aggregates_parser.add_argument("--action")
+    sender_aggregates_parser.add_argument("--sender", default=99999)
+    sender_aggregates_parser.add_argument("--qty", type=int)
+    sender_aggregates_parser.add_argument("--type", type=str, default="sender")
+    sender_aggregates_parser.add_argument("-o", "--out-dir", type=str, default=".")
+
     return argparser
