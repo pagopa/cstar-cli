@@ -48,7 +48,7 @@ class Registryreports:
         columns = [
             "terminal_id",
             "merchant_id",
-            "fiscal_code"
+            "fiscal_code",
             "vat",
             "acquirer_code"
         ]
