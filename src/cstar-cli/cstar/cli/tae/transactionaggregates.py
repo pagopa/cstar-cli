@@ -89,44 +89,80 @@ class Transactionaggregate:
                     pos_type = "99"
                 else:
                     pos_type = "00"
-                else:
-                    pos_type = "01"
             else:
-                pos_type = "00" if i % POS_PHYSICAL_ECOMMERCE_RATIO == 0 else "01"
+                pos_type = "00"
 
-            transactions.append(
-                [
-                    acquirer_code,
-                    operation_type,
-                    transmission_date,
-                    accounting_date,
-                    num_trx,
-                    total_amount,
-                    CURRENCY_ISO4217,
-                    ACQUIRER_ID,
-                    merchant_id,
-                    terminal_id,
-                    fiscal_code,
-                    vat,
-                    pos_type,
-                ]
+            if self.args.to_ade:
+                record_id = sha256(f"recordID{i}".encode()).hexdigest()
+                aggregates.append(
+                    [
+                        record_id,
+                        sender_code,
+                        operation_type,
+                        transmission_date,
+                        accounting_date,
+                        num_trx,
+                        total_amount,
+                        CURRENCY_ISO4217,
+                        sender_code,
+                        merchant_id,
+                        terminal_id,
+                        fiscal_code,
+                        vat,
+                        pos_type,
+                    ]
+                )
+            else:
+                aggregates.append(
+                    [
+                        sender_code,
+                        operation_type,
+                        transmission_date,
+                        accounting_date,
+                        num_trx,
+                        total_amount,
+                        CURRENCY_ISO4217,
+                        sender_code,
+                        merchant_id,
+                        terminal_id,
+                        fiscal_code,
+                        vat,
+                        pos_type,
+                    ]
             )
-
-        columns = [
-            "acquirer_code",
-            "operation_type",
-            "transmission_date",
-            "accounting_date",
-            "num_trx",
-            "total_amount",
-            "currency",
-            "acquirer_id",
-            "merchant_id",
-            "terminal_id",
-            "fiscal_code",
-            "vat",
-            "pos_type"
-        ]
+        if self.args.to_ade:
+            columns = [
+                "record_ID",
+                "sender_code",
+                "operation_type",
+                "transmission_date",
+                "accounting_date",
+                "num_trx",
+                "total_amount",
+                "currency",
+                "sender_id",
+                "merchant_id",
+                "terminal_id",
+                "fiscal_code",
+                "vat",
+                "pos_type"
+            ]
+        else:
+            columns = [
+                "sender_code",
+                "operation_type",
+                "transmission_date",
+                "accounting_date",
+                "num_trx",
+                "total_amount",
+                "currency",
+                "sender_id",
+                "merchant_id",
+                "terminal_id",
+                "fiscal_code",
+                "vat",
+                "pos_type"
+            ]
 
         if self.args.shuffle:
             random.shuffle(transactions)
@@ -139,8 +175,10 @@ class Transactionaggregate:
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
 
         with open(trx_file_path, "a") as f:
-            f.write(CHECKSUM_PREFIX + sha256(
-                f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest() + "\n")
+            #If the file is for AdE, there is no need to insert the hash at the beginning of it
+            if not self.args.to_ade:
+                f.write(CHECKSUM_PREFIX + sha256(
+                    f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest() + "\n")
             f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
         if self.args.pgp:
