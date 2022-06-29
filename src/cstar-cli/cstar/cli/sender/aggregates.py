@@ -127,10 +127,12 @@ class Aggregates:
             "pos_type"
         ]
 
+        now_timestamp = datetime.today().strftime('%Y%m%d.%H%M%S')
+
         aggr_df = pd.DataFrame(aggregates, columns=columns)
+
         aggr_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(
-            sender_code) + "." + "OUTEXAMPLE" + "." + datetime.today().strftime(
-            '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
+            sender_code) + "." + "OUTEXAMPLE" + "." + now_timestamp + ".001" + TRANSACTION_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(aggr_file_path), exist_ok=True)
 
@@ -224,9 +226,8 @@ class Aggregates:
             random.shuffle(transactions)
 
         trx_df = pd.DataFrame(transactions, columns=columns)
-        trx_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(
-            sender_code) + "." + TRANSACTION_LOG_FIXED_SEGMENT + "." + datetime.today().strftime(
-            '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
+        trx_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(sender_code) + "." \
+                        + TRANSACTION_LOG_FIXED_SEGMENT + "." + now_timestamp + ".001" + TRANSACTION_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
 
@@ -240,7 +241,7 @@ class Aggregates:
                 f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest().rstrip(
                 '\r\n') + '\n' + content)
 
-    print(f"Done")
+        print(f"Done")
 
 
 def sort_file(filename):
