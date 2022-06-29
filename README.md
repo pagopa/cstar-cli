@@ -103,3 +103,9 @@ cst tae results --action synthetic_results --res-qty 100 --gzip
 ```bash
 cst tae registryreports --action synthetic_reports --rep-qty 100
 ```
+
+### Creating input transactions and corresponding aggregates' file (like the one produced by a run of batch service).
+
+```bash
+cst sender aggregates --action trx_and_aggr --qty 100 --out-dir /tmp
+```
