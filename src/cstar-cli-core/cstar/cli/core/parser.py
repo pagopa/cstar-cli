@@ -108,11 +108,15 @@ def parser():
     sender_parser = subsystem_parser.add_parser("sender").add_subparsers(dest="command")
 
     sender_aggregates_parser = sender_parser.add_parser("aggregates")
-    sender_aggregates_parser.add_argument("--action")
-    sender_aggregates_parser.add_argument("--sender", default=99999)
-    sender_aggregates_parser.add_argument("--qty", type=int)
-    sender_aggregates_parser.add_argument("--type", type=str, default="sender")
-    sender_aggregates_parser.add_argument("-o", "--out-dir", type=str, default=".")
-    sender_aggregates_parser.add_argument("--shuffle", action="store_true")
+    sender_aggregates_parser.add_argument("--action", required=True,
+                                          help="Action to perform with the invocation of the command")
+    sender_aggregates_parser.add_argument("--qty", type=int, required=True, help="Aggregates quantity to generate")
+    sender_aggregates_parser.add_argument("--sender", default=99999, help="Sender code")
+    sender_aggregates_parser.add_argument("--avg-trx", type=int, default=10, help="Average transaction number per aggregation")
+    sender_aggregates_parser.add_argument("--type", type=str, default="sender", help="Type of sender", choices=["acquirer", "schema"])
+    sender_aggregates_parser.add_argument("-o", "--out-dir", type=str, default=".", help="Output directory of both files")
+    sender_aggregates_parser.add_argument("--shuffle", action="store_true", help="Flag for shuffling transactions file")
+
+    sender_aggregates_parser.add_argument('-f', '--files', nargs=2, help="Files to compare for equality")
 
     return argparser
