@@ -2,6 +2,7 @@ from hashlib import sha256
 import time
 import random
 import uuid
+import filecmp
 
 import numpy as np
 import pandas as pd
@@ -47,7 +48,19 @@ class Aggregates:
     def __init__(self, args):
         self.args = args
 
-    def example_out(self):
+    def diff(self):
+        if not self.args.files:
+            raise ValueError("--files is mandatory")
+        if not len(self.args.files) == 2:
+            raise ValueError("--files accepts only two files")
+
+        sorted_first = sort_file(self.args.files[0])
+        sorted_second = sort_file(self.args.files[1])
+
+        result = filecmp.cmp(sorted_first, sorted_second)
+        print(result)
+
+    def trx_and_aggr(self):
         if not self.args.qty:
             raise ValueError("--qty is mandatory")
 
