@@ -42,11 +42,15 @@ cst <VERTICAL> <DOMAIN> --action <ACTION> [COMMAND PARAMETERS ...]
 
 ## Example(s)
 
+## BPD
+
 ### Enrolling payment instruments
 
 ```bash
 cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <INPUT_FILE>
 ```
+---
+## RTD
 
 ### Creating synthetic hashpans for the Batch Service
 
@@ -56,8 +60,8 @@ cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --
 
 ### Creating synthetic transactions for the Batch Service.
 
-See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
-
+> See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
+ 
 #### Unencrypted
 ```bash
 cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT>
@@ -69,11 +73,14 @@ cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_
 cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --out-dir /tmp --pgp --key ~/certificates/public.key
 ```
 
-### Creating synthetic aggregations like the ones produced by the Batch Acquirer for AdE.
+---
 
-To generate 1MB of aggregates it takes about 9K aggregations.
+## TAE
+#### Creating synthetic aggregations like the ones produced by the Batch Acquirer for AdE.
 
-With the shuffling flag it takes more time to generate the file.
+> To generate 1MB of aggregates it takes about 9K aggregations.
+
+> With the shuffling flag it takes more time to generate the file.
 
 #### Unencrypted
 ```bash
@@ -104,8 +111,18 @@ cst tae results --action synthetic_results --res-qty 100 --gzip
 cst tae registryreports --action synthetic_reports --rep-qty 100
 ```
 
-### Creating input transactions and corresponding aggregates' file (like the one produced by a run of batch service).
+---
+
+## Sender
+
+### Creating input transactions and corresponding aggregates' files (like the one produced by a run of batch service).
 
 ```bash
 cst sender aggregates --action trx_and_aggr --qty 100 --out-dir /tmp
+```
+
+### Check the equality of the generated files with the ones produced by the batch service.
+
+```bash
+cst sender aggregates --action diff --files /path/to/files/produced/by/batch/service /path/to/files/produced/by/CSTAR/CLI
 ```
