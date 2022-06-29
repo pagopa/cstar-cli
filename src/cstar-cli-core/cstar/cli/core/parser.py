@@ -113,5 +113,6 @@ def parser():
     sender_aggregates_parser.add_argument("--qty", type=int)
     sender_aggregates_parser.add_argument("--type", type=str, default="sender")
     sender_aggregates_parser.add_argument("-o", "--out-dir", type=str, default=".")
+    sender_aggregates_parser.add_argument("--shuffle", action="store_true")
 
     return argparser
