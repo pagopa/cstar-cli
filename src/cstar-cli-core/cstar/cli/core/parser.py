@@ -101,7 +101,7 @@ def parser():
 
     tae_results.add_argument("--action")
     tae_results.add_argument("--rep-qty", type=int)
-    tae_results.add_argument("--acquirer", default=99999)
+    tae_results.add_argument("--sender", default=99999)
     tae_results.add_argument("-o", "--out-dir", type=str, default=".")
 
 ### SENDER ###
