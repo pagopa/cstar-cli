@@ -20,24 +20,22 @@ TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 
 CHECKSUM_PREFIX = "#sha256sum:"
 
-POS_PHYSICAL_ECOMMERCE_RATIO = 5
 PERSON_NATURAL_LEGAL_RATIO = 3
 
-ACQUIRER_ID = "09509"
 CURRENCY_ISO4217 = "978"
 
 class Transactionaggregate:
-    """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Acquirer"""
+    """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Service"""
 
     def __init__(self, args):
         self.args = args
 
     def aggregate_transactions(self):
-        """Produces a synthetic version of the CSV file produced by the acquirers for AdE
+        """Produces a synthetic version of the CSV file produced by the sender for AdE
 
         Parameters:
           --aggr-qty: synthetic aggregates will be generated.
-          --acquirer: ABI of the acquirer, default is "99999"
+          --sender: ABI of the sender, default is "99999"
           --revers-ratio: the ratio between normal and reversal transactions
           -o, --out-dir: path to the directory where the file will be created, default is "."
           --pgp: if set also an encrypted version of the file is created
@@ -49,13 +47,13 @@ class Transactionaggregate:
         if not self.args.aggr_qty:
             raise ValueError("--aggr-qty is mandatory")
 
-        # Set the acquirer code (common to all aggregates)
-        acquirer_code = self.args.acquirer
+        # Set the sender code (common to all aggregates)
+        sender_code = self.args.sender
 
         # Set the transmission date (common to all aggregates)
         transmission_date = datetime.today().strftime('%Y-%m-%d')
 
-        transactions = []
+        aggregates = []
 
         for i in range(self.args.aggr_qty):
 
@@ -165,11 +163,11 @@ class Transactionaggregate:
             ]
 
         if self.args.shuffle:
-            random.shuffle(transactions)
+            random.shuffle(aggregates)
 
-        trx_df = pd.DataFrame(transactions, columns=columns)
+        trx_df = pd.DataFrame(aggregates, columns=columns)
         trx_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(
-            acquirer_code) + "." + TRANSACTION_LOG_FIXED_SEGMENT + "." + datetime.today().strftime(
+            sender_code) + "." + TRANSACTION_LOG_FIXED_SEGMENT + "." + datetime.today().strftime(
             '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
