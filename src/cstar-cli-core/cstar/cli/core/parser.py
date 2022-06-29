@@ -97,12 +97,12 @@ def parser():
     tae_results.add_argument("-o", "--out-dir", type=str, default=".")
     tae_results.add_argument("--gzip", action="store_true")
 
-    tae_results = tae_parser.add_parser("registryreports")
+    tae_reports = tae_parser.add_parser("registryreports")
 
-    tae_results.add_argument("--action")
-    tae_results.add_argument("--rep-qty", type=int)
-    tae_results.add_argument("--sender", default=99999)
-    tae_results.add_argument("-o", "--out-dir", type=str, default=".")
+    tae_reports.add_argument("--action")
+    tae_reports.add_argument("--rep-qty", type=int)
+    tae_reports.add_argument("--acquirer", default=99999)
+    tae_reports.add_argument("-o", "--out-dir", type=str, default=".")
 
 ### SENDER ###
     
