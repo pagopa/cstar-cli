@@ -71,7 +71,7 @@ class Aggregates:
                 datetime.today().timestamp() - SECONDS_IN_DAY * random.randint(0, MAX_DAYS_BACK)))
 
             # Set random number of transactions
-            num_trx = random.randint(1, 20)
+            num_trx = random.randint(1, self.args.avg_trx*2)
 
             # Set random amount
             total_amount = num_trx * random.randint(2000, 500000)
