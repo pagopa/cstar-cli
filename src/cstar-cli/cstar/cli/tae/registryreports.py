@@ -48,7 +48,9 @@ class Registryreports:
         columns = [
             "terminal_id",
             "merchant_id",
-            "anagrafica"
+            "fiscal_code"
+            "vat",
+            "acquirer_code"
         ]
         reports_df = pd.DataFrame(reports, columns=columns)
         reports_df_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(
