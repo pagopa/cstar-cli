@@ -85,8 +85,9 @@ def parser():
     tae_transaction_aggregate.add_argument("-o", "--out-dir", type=str, default=".")
     tae_transaction_aggregate.add_argument("--pgp", action="store_true")
     tae_transaction_aggregate.add_argument("--shuffle", action="store_true")
-    tae_transaction_aggregate.add_argument("--ratio-no-pos-type", type=int)
-    tae_transaction_aggregate.add_argument("--ratio-no-vat", type=int)
+    tae_transaction_aggregate.add_argument("--to-ade", action="store_true")
+    tae_transaction_aggregate.add_argument("--ratio-dirty-pos-type", type=int)
+    tae_transaction_aggregate.add_argument("--ratio-dirty-vat", type=int)
     tae_transaction_aggregate.add_argument("--key", type=str, default="./public.key")
 
     tae_results = tae_parser.add_parser("results")
