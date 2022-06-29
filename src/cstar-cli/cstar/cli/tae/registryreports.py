@@ -16,13 +16,13 @@ PERSON_NATURAL_LEGAL_RATIO = 3
 
 
 class Registryreports:
-    """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Acquirer"""
+    """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Service"""
 
     def __init__(self, args):
         self.args = args
 
     def synthetic_reports(self):
-        """Produces a synthetic version of the CSV file produced by the acquirers for RTD
+        """Produces a synthetic version of the CSV file produced by CSTAR for senders
 
         Parameters:
             --res-qty: the number of results generated
@@ -40,8 +40,9 @@ class Registryreports:
                 [
                     sha256(f"{'terminal_id'}{i}".encode()).hexdigest(),
                     sha256(f"{'merchant_id'}{i}".encode()).hexdigest(),
-                    "CF" + str(i).zfill(15 - len(str(i))) if i % PERSON_NATURAL_LEGAL_RATIO == 0 else "PI" + str(
-                        i).zfill(10 - len(str(i)))
+                    "CF" + str(i).zfill(15 - len(str(i))),
+                    "PI" + str(i).zfill(10 - len(str(i))),
+                    self.args.acquirer
                 ])
 
         columns = [
