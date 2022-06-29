@@ -26,7 +26,6 @@ POS_PHYSICAL_ECOMMERCE_RATIO = 5
 PERSON_NATURAL_LEGAL_RATIO = 3
 PAR_RATIO = 7
 
-ACQUIRER_CODE = "99999"
 CURRENCY_ISO4217 = "978"
 PAYMENT_CIRCUITS = [f"{i:02}" for i in range(11)]
 
@@ -36,7 +35,7 @@ OFFSETS = [
     ".000+0200",
     ".500+01:30"
 ]
-ACQUIRER_ID = "09509"
+
 MERCHANT_ID = "400000080205"
 TERMINAL_ID = "80205005"
 BIN = "40236010"
@@ -46,7 +45,7 @@ VAT = "12345678903"
 
 
 class Transactionfilter:
-    """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Acquirer"""
+    """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Service"""
 
     def __init__(self, args):
         self.args = args
@@ -77,7 +76,7 @@ class Transactionfilter:
         print(hashpans_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
     def synthetic_transactions(self):
-        """Produces a synthetic version of the CSV file produced by the acquirers for RTD
+        """Produces a synthetic version of the CSV file produced by the senders for RTD
 
         Parameters:
           --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
@@ -97,8 +96,8 @@ class Transactionfilter:
         if not self.args.pos_number:
             raise ValueError("--pos-number is mandatory")
 
-        # Set the acquirer code (common to all aggregates)
-        acquirer_code = self.args.acquirer
+        # Set the sender code (common to all transactions)
+        sender_code = self.args.sender
 
         synthetic_pans_enrolled = [
             f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
@@ -157,7 +156,7 @@ class Transactionfilter:
 
             transactions.append(
                 [
-                    acquirer_code,
+                    sender_code,
                     operation_type,
                     payment_circuit,
                     pan,
@@ -167,7 +166,7 @@ class Transactionfilter:
                     correlation_id,
                     total_amount,
                     CURRENCY_ISO4217,
-                    ACQUIRER_ID,
+                    sender_code,
                     merchant_id,
                     terminal_id,
                     BIN,
@@ -180,7 +179,7 @@ class Transactionfilter:
             )
 
         columns = [
-            "acquirer_code",
+            "sender_code",
             "operation_type",
             "circuit_type",
             "hpan",
@@ -190,7 +189,7 @@ class Transactionfilter:
             "correlation_id",
             "total_amount",
             "currency",
-            "acquirer_id",
+            "sender_id",
             "merchant_id",
             "terminal_id",
             "bin",
@@ -202,7 +201,7 @@ class Transactionfilter:
         ]
         trx_df = pd.DataFrame(transactions, columns=columns)
         trx_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(
-            acquirer_code) + "." + TRANSACTION_LOG_FIXED_SEGMENT + "." + datetime.today().strftime(
+            sender_code) + "." + TRANSACTION_LOG_FIXED_SEGMENT + "." + datetime.today().strftime(
             '%Y%m%d.%H%M%S') + ".001" + TRANSACTION_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)

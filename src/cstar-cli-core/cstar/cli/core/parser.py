@@ -1,7 +1,7 @@
 import argparse
 
-def parser():
 
+def parser():
     argparser = argparse.ArgumentParser()
     subsystem_parser = argparser.add_subparsers(dest="subsystem")
     subsystem_parser.required = True
@@ -53,7 +53,7 @@ def parser():
     bpd_payment_instrument.add_argument("--file")
     bpd_payment_instrument.add_argument("--connection-string")
 
-###
+    ###
 
     rtd_parser = subsystem_parser.add_parser("rtd").add_subparsers(dest="command")
 
@@ -61,7 +61,7 @@ def parser():
 
     rtd_transaction_filter.add_argument("--action")
     rtd_transaction_filter.add_argument("--salt", default="SALT876")
-    rtd_transaction_filter.add_argument("--acquirer", default=99999)
+    rtd_transaction_filter.add_argument("--sender", default=99999)
     rtd_transaction_filter.add_argument("--pans-prefix")
     rtd_transaction_filter.add_argument("--pans-qty", type=int)
     rtd_transaction_filter.add_argument("--hashpans-qty", type=int)
@@ -72,7 +72,7 @@ def parser():
     rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default=".")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
 
-###
+    ###
 
     tae_parser = subsystem_parser.add_parser("tae").add_subparsers(dest="command")
 
