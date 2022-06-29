@@ -241,3 +241,20 @@ class Aggregates:
                 '\r\n') + '\n' + content)
 
     print(f"Done")
+
+
+def sort_file(filename):
+    infile = open(filename)
+    words = []
+    for line in infile:
+        temp = line.split()
+        for i in temp:
+            words.append(i)
+    infile.close()
+    words.sort()
+    outfile = open(filename, "w")
+    for i in words:
+        outfile.writelines(i)
+        outfile.writelines("\n")
+    outfile.close()
+    return filename
