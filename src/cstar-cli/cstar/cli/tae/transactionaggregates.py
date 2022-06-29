@@ -24,6 +24,7 @@ PERSON_NATURAL_LEGAL_RATIO = 3
 
 CURRENCY_ISO4217 = "978"
 
+
 class Transactionaggregate:
     """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Service"""
 
@@ -78,12 +79,12 @@ class Transactionaggregate:
             fiscal_code = str(i).zfill(11)
 
             if self.args.ratio_dirty_vat:
-                vat = "###na###" if (i+2) % self.args.ratio_dirty_vat == 0 else str(i).zfill(11)
+                vat = "###na###" if (i + 2) % self.args.ratio_dirty_vat == 0 else str(i).zfill(11)
             else:
                 vat = str(i).zfill(11)
 
             if self.args.ratio_dirty_pos_type:
-                if (i+3) % self.args.ratio_dirty_pos_type == 0:
+                if (i + 3) % self.args.ratio_dirty_pos_type == 0:
                     pos_type = "99"
                 else:
                     pos_type = "00"
@@ -127,7 +128,7 @@ class Transactionaggregate:
                         vat,
                         pos_type,
                     ]
-            )
+                )
         if self.args.to_ade:
             columns = [
                 "record_ID",
@@ -173,7 +174,7 @@ class Transactionaggregate:
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
 
         with open(trx_file_path, "a") as f:
-            #If the file is for AdE, there is no need to insert the hash at the beginning of it
+            # If the file is for AdE, there is no need to insert the hash at the beginning of it
             if not self.args.to_ade:
                 f.write(CHECKSUM_PREFIX + sha256(
                     f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest() + "\n")

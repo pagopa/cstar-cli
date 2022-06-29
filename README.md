@@ -48,13 +48,13 @@ cst <VERTICAL> <DOMAIN> --action <ACTION> [COMMAND PARAMETERS ...]
 cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <INPUT_FILE>
 ```
 
-### Creating synthetic hashpans for the Batch Acquirer
+### Creating synthetic hashpans for the Batch Service
 
 ```bash
 cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --hashpans-qty 20000 --salt <SALT>
 ```
 
-### Creating synthetic transactions for the Batch Acquirer.
+### Creating synthetic transactions for the Batch Service.
 
 See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
 
@@ -77,13 +77,13 @@ With the shuffling flag it takes more time to generate the file.
 
 #### Unencrypted
 ```bash
-cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --revers-ratio 100 --ratio-no-pos-type 30 --ratio-no-vat 20 --shuffle
+cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --reverse-ratio 100 --ratio-dirty-pos-type 30 --ratio-dirty-vat 20 --shuffle
 ```
 
 #### Encrypted, with specified output directory and public key file.
 
 ```bash
-cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --revers-ratio 100 --ratio-no-pos-type 30 --ratio-no-vat 20 --shuffle --out-dir /tmp --pgp --key ~/certificates/public.key
+cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --reverse-ratio 100 --ratio-dirty-pos-type 30 --ratio-dirty-vat 20 --shuffle --out-dir /tmp --pgp --key ~/certificates/public.key
 ```
 
 ### Creating synthetic acks like the ones sent by AdE to CSTAR, according to the interface agreement.
