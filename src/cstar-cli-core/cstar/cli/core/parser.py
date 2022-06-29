@@ -80,8 +80,8 @@ def parser():
 
     tae_transaction_aggregate.add_argument("--action")
     tae_transaction_aggregate.add_argument("--aggr-qty", type=int)
-    tae_transaction_aggregate.add_argument("--acquirer", default=99999)
-    tae_transaction_aggregate.add_argument("--revers-ratio", type=int)
+    tae_transaction_aggregate.add_argument("--sender", default=99999)
+    tae_transaction_aggregate.add_argument("--reverse-ratio", type=int)
     tae_transaction_aggregate.add_argument("-o", "--out-dir", type=str, default=".")
     tae_transaction_aggregate.add_argument("--pgp", action="store_true")
     tae_transaction_aggregate.add_argument("--shuffle", action="store_true")
