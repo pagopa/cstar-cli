@@ -79,15 +79,15 @@ class Transactionaggregate:
 
             fiscal_code = str(i).zfill(11)
 
-            if self.args.ratio_no_vat:
-                vat = "###na###" if i % self.args.ratio_no_vat == 0 else str(i).zfill(11)
+            if self.args.ratio_dirty_vat:
+                vat = "###na###" if (i+2) % self.args.ratio_dirty_vat == 0 else str(i).zfill(11)
             else:
                 vat = str(i).zfill(11)
 
-            if self.args.ratio_no_pos_type:
-                if i % self.args.ratio_no_pos_type == 0:
-                    pos_type = "127"
-                elif i % POS_PHYSICAL_ECOMMERCE_RATIO == 0:
+            if self.args.ratio_dirty_pos_type:
+                if (i+3) % self.args.ratio_dirty_pos_type == 0:
+                    pos_type = "99"
+                else:
                     pos_type = "00"
                 else:
                     pos_type = "01"
