@@ -21,8 +21,8 @@ TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
 
 PAYMENT_REVERSAL_RATIO = 10
-NO_VAT_RATIO = 50
-NO_POS_TYPE_RATIO = 50
+DIRTY_VAT_RATIO = 50
+DIRTY_POS_TYPE_RATIO = 50
 PERSON_NATURAL_LEGAL_RATIO = 3
 PAR_RATIO = 7
 
@@ -35,8 +35,6 @@ OFFSETS = [
     ".500+01:30"
 ]
 SENDER_ID = "09509"
-MERCHANT_ID = "400000080205"
-TERMINAL_ID = "80205005"
 BIN = "40236010"
 MCC = "4900"
 FISCAL_CODE = "RSSMRA80A01H501U"
@@ -83,14 +81,17 @@ class Aggregates:
 
             fiscal_code = str(i).zfill(11)
 
-            if i % NO_VAT_RATIO == 0:
-                vat = ""
+            if i % DIRTY_VAT_RATIO == 2:
+                vat = "###na###"
+                # Grants that at least 2 transactions are aggregated in case of dirty VAT
+                num_trx = num_trx + 1
             else:
                 vat = str(i).zfill(11)
 
-            if i % NO_POS_TYPE_RATIO == 0:
-                # pos_type = "127"
-                pos_type = "00"
+            if i % DIRTY_POS_TYPE_RATIO == 3:
+                pos_type = "99"
+                # Grants that at least 2 transactions are aggregated in case of dirty pos_type
+                num_trx = num_trx + 1
             else:
                 pos_type = "00"
 
@@ -151,7 +152,7 @@ class Aggregates:
 
             for i in range(0, int(aggr[4])):
 
-                operation_type = aggr[1];
+                operation_type = aggr[1]
                 payment_circuit = random.choice(PAYMENT_CIRCUITS)
 
                 date_time = time.strftime(aggr[3] + 'T%H:%M:%S' + random.choice(OFFSETS), time.localtime(
@@ -164,12 +165,22 @@ class Aggregates:
                 if aggr[1] == "01":
                     correlation_id = uuid.uuid4().int
 
-                merchant_id = aggr[8];
-                terminal_id = aggr[9];
-                fiscal_code = aggr[10];
+                merchant_id = aggr[8]
+                terminal_id = aggr[9]
+                fiscal_code = aggr[10]
 
-                vat = aggr[11];
-                pos_type = aggr[12];
+                vat = aggr[11]
+                if vat == "###na###":
+                    if i == 0:
+                        vat = "12345678901"
+                    else:
+                        vat = VAT
+
+                pos_type = aggr[12]
+                if pos_type == "99" and i == 0:
+                    pos_type = "01"
+                else:
+                    pos_type = "00"
 
                 par = ''
                 if i % PAR_RATIO == 0:
