@@ -58,8 +58,8 @@ class Transactionaggregate:
 
         for i in range(self.args.aggr_qty):
 
-            if i % self.args.reverse_ratio == 0:
-                operation_type = "01"
+            if self.args.reverse_ratio:
+                operation_type = "01" if i % self.args.reverse_ratio == 0 else "00"
             else:
                 operation_type = "00"
 

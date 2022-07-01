@@ -119,7 +119,7 @@ def parser():
 
     sender_aggregates_parser.add_argument("--action", required=True,
                                           help="Action to perform with the invocation of the command")
-    sender_aggregates_parser.add_argument("--qty", type=int, required=True, help="Aggregates quantity to generate")
+    sender_aggregates_parser.add_argument("--qty", type=int, help="Aggregates quantity to generate")
     sender_aggregates_parser.add_argument("--sender", default=99999, help="Sender code")
     sender_aggregates_parser.add_argument("--avg-trx", type=int, default=10,
                                           help="Average transaction number per aggregation")
