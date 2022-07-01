@@ -35,11 +35,24 @@ OFFSETS = [
     ".000+01:00",
     ".500+01:30"
 ]
-SENDER_ID = "09509"
+
 BIN = "40236010"
 MCC = "4900"
 FISCAL_CODE = "RSSMRA80A01H501U"
 VAT = "12345678903"
+
+FISCAL_CODE_TO_FAKE_ABI = {
+    "IE9813461A": "EVODE",
+    "LU30726739": "STPAY",
+    "04949971008": "BPAY1",
+}
+
+BANCOMAT_ACQUIRERS_SENDER_ID = [
+    "02008",
+    "01005",
+    "03069",
+    "04949971008",
+]
 
 
 class Aggregates:
@@ -84,10 +97,19 @@ class Aggregates:
                 datetime.today().timestamp() - SECONDS_IN_DAY * random.randint(0, MAX_DAYS_BACK)))
 
             # Set random number of transactions
-            num_trx = random.randint(1, self.args.avg_trx*2)
+            num_trx = random.randint(1, self.args.avg_trx * 2)
 
             # Set random amount
             total_amount = num_trx * random.randint(2000, 500000)
+
+            if self.args.sender == "COBAN":
+                acquirer_id = random.choice(BANCOMAT_ACQUIRERS_SENDER_ID)
+            elif self.args.sender == "STPAY":
+                acquirer_id = "LU30726739"
+            elif self.args.sender == "EVODE":
+                acquirer_id = "IE9813461A"
+            else:
+                acquirer_id = sender_code
 
             merchant_id = abs(hash(sha256(f"merchant{i}".encode()).hexdigest()))
             terminal_id = abs(hash(sha256(f"terminal{i}".encode()).hexdigest()))
@@ -117,7 +139,7 @@ class Aggregates:
                     num_trx,
                     total_amount,
                     CURRENCY_ISO4217,
-                    sender_code,
+                    acquirer_id,
                     merchant_id,
                     terminal_id,
                     fiscal_code,
@@ -178,6 +200,13 @@ class Aggregates:
                 if aggr[1] == "01":
                     correlation_id = uuid.uuid4().int
 
+                aggregate_acquirer_id = aggr[7]
+
+                if aggregate_acquirer_id in FISCAL_CODE_TO_FAKE_ABI:
+                    acquirer_id = FISCAL_CODE_TO_FAKE_ABI.get(aggregate_acquirer_id)
+                else:
+                    acquirer_id = aggregate_acquirer_id
+
                 merchant_id = aggr[8]
                 terminal_id = aggr[9]
                 fiscal_code = aggr[10]
@@ -211,7 +240,7 @@ class Aggregates:
                         correlation_id,
                         amounts[i],
                         CURRENCY_ISO4217,
-                        sender_code,
+                        acquirer_id,
                         merchant_id,
                         terminal_id,
                         BIN,
