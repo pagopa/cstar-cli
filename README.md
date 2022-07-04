@@ -117,9 +117,21 @@ cst tae registryreports --action synthetic_reports --rep-qty 100
 
 ### Creating input transactions and corresponding aggregates' files (like the one produced by a run of batch service).
 
+**For acquirers:**
+
 ```bash
-cst sender aggregates --action trx_and_aggr --qty 100 --out-dir /tmp
+cst sender aggregates --sender <ABI> --action trx_and_aggr --qty 100 --out-dir /tmp
 ```
+
+---
+**For schemas (Bancomat) and technical senders (Satispay, Sumup):**
+
+```bash
+cst sender aggregates --sender {COBAN, STPAY, EVODE} --action trx_and_aggr --qty 100 --out-dir /tmp
+```
+This will also test the translation of technical ABI to acquirer fiscal code.
+
+---
 
 ### Check the equality of the generated files with the ones produced by the batch service.
 
