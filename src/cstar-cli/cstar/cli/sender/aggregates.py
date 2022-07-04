@@ -10,15 +10,18 @@ import os
 from datetime import datetime
 
 CSV_SEPARATOR = ";"
-PAN_UNENROLLED_PREFIX = "pan_unknown_"
 
 SECONDS_IN_DAY = 86400
 MAX_DAYS_BACK = 3
 
 TRANSACTION_FILE_EXTENSION = ".csv"
 ENCRYPTED_FILE_EXTENSION = ".pgp"
-APPLICATION_PREFIX_FILE_NAME = "CSTAR"
+OUTPUT_EXPECTED_EXTENSION = ".expected"
+
+CSTAR_FILE_PREFIX_FILE_NAME = "CSTAR"
+ADE_FILE_PREFIX_FILE_NAME = "ADE"
 TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
+
 CHECKSUM_PREFIX = "#sha256sum:"
 
 PAYMENT_REVERSAL_RATIO = 10
@@ -167,8 +170,9 @@ class Aggregates:
 
         aggr_df = pd.DataFrame(aggregates, columns=columns)
 
-        aggr_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(
-            sender_code) + "." + "OUTEXAMPLE" + "." + now_timestamp + ".001" + TRANSACTION_FILE_EXTENSION
+        aggr_file_path = self.args.out_dir + "/" + ADE_FILE_PREFIX_FILE_NAME + "." + str(
+            sender_code) + "." + "TRNLOG" + "." + now_timestamp + ".001" + TRANSACTION_FILE_EXTENSION \
+                         + OUTPUT_EXPECTED_EXTENSION
 
         os.makedirs(os.path.dirname(aggr_file_path), exist_ok=True)
 
@@ -279,7 +283,7 @@ class Aggregates:
             random.shuffle(transactions)
 
         trx_df = pd.DataFrame(transactions, columns=columns)
-        trx_file_path = self.args.out_dir + "/" + APPLICATION_PREFIX_FILE_NAME + "." + str(sender_code) + "." \
+        trx_file_path = self.args.out_dir + "/" + CSTAR_FILE_PREFIX_FILE_NAME + "." + str(sender_code) + "." \
                         + TRANSACTION_LOG_FIXED_SEGMENT + "." + now_timestamp + ".001" + TRANSACTION_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
