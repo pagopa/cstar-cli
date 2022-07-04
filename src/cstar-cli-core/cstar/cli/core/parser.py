@@ -123,8 +123,6 @@ def parser():
     sender_aggregates_parser.add_argument("--sender", default=99999, help="Sender code")
     sender_aggregates_parser.add_argument("--avg-trx", type=int, default=10,
                                           help="Average transaction number per aggregation")
-    sender_aggregates_parser.add_argument("--type", type=str, default="sender", help="Type of sender",
-                                          choices=["acquirer", "BANCOMAT", "SATISPAY", "EVODE"])
     sender_aggregates_parser.add_argument("-o", "--out-dir", type=str, default=".",
                                           help="Output directory of both files")
     sender_aggregates_parser.add_argument("--shuffle", action="store_true", help="Flag for shuffling transactions file")
