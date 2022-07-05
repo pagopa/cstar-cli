@@ -42,3 +42,18 @@ From the project root, run the script with the following (properly customized) c
 sh ./integration_check/scripts/003-expected-file-check-UAT/script.sh /PATH/TO/EXPERECTED_FILE.csv.expected /PATH/TO/PRODUCED_FILE.csv
 ```
 The execution will print the result of the check.
+
+## 4. Equality check between produced and deposited remote files
+
+The forth step checks for correct functioning of the batch service.
+
+Once the previous test is passed, pass the path to the file generated with the batch service to the script.
+
+> Note that the backend needs time to process the file.
+> Therefore, the 
+
+From the project root, run the script with the following (properly customized) command:
+```bash
+sh ./integration_check/scripts/004-remote-file-check-UAT/script.sh /PATH/TO/LOCAL_FILE.csv /PATH/TO/ACME_UAT.certificate.pem /PATH/TO/ACME_UAT.key UAT_API_KEY
+```
+The execution will print the result of the check.
