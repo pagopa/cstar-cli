@@ -1,5 +1,5 @@
 #!/bin/sh
-# 5 - Generated file equality check
+# GENERATED FILE LOCAL EQUALITY CHECK
 # This script is used to check whether the generated file is equal to the expected file.
 
 if [ $# -ne 2 ]; then
