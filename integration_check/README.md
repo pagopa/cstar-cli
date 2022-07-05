@@ -27,3 +27,18 @@ From the project root run the script with the following command:
 bash ./integration_check/scripts/002-API-key-check/script.sh /PATH/TO/ACME.certificate.pem /PATH/TO/ACME.key API_KEY
 ```
 The execution will print the result of the check.
+
+## 3. Equality check between produced and expected files
+
+The third steps checks for correct functioning of the batch service.
+
+Given the previously generated input file (see root README in Sender section), you can run the batch service.
+Once the process is completed, shut the instance down and locate the ADE output file.
+
+Then pass the path to it, in pair with the previously produced expected output, to the script.
+
+From the project root, run the script with the following (properly customized) command:
+```bash
+sh ./integration_check/scripts/003-expected-file-check-UAT/script.sh /PATH/TO/EXPERECTED_FILE.csv.expected /PATH/TO/PRODUCED_FILE.csv
+```
+The execution will print the result of the check.
