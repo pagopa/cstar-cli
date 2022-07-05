@@ -115,8 +115,8 @@ cst tae registryreports --action synthetic_reports --rep-qty 100
 
 ## Sender
 
-### Creating input transactions and corresponding aggregates' files (like the one produced by a run of batch service).
-
+### Create input transactions and corresponding aggregates' output files (like the one produced by a run of batch service).
+# NON PRODURRE FILES PIU' GRANDI DI X RIGHE (CON X THRESHOLD), ALTRIMENTI NON FUNZIONA IL RETRIEVE DELL'AGGREGATO
 **For acquirers:**
 
 ```bash
