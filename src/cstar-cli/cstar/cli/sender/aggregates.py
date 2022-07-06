@@ -77,8 +77,10 @@ class Aggregates:
         print(result)
 
     def trx_and_aggr(self):
-        if not self.args.qty:
-            raise ValueError("--qty is mandatory")
+        if not self.args.aggr_qty:
+            raise ValueError("--aggr-qty is mandatory")
+        if len(self.args.sender) is not 5:
+            raise ValueError("--sender must be of length 5")
 
         # Set the sender code (common to all aggregates)
         sender_code = self.args.sender
@@ -88,7 +90,7 @@ class Aggregates:
 
         aggregates = []
 
-        for i in range(self.args.qty):
+        for i in range(self.args.aggr_qty):
 
             if i % PAYMENT_REVERSAL_RATIO == 0:
                 operation_type = "01"
