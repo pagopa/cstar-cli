@@ -14,11 +14,5 @@ CERT=$1
 # Path to client private key with .key extension
 KEY=$2
 
-status_code=$(curl -s -o /dev/null -w "%{http_code}" --cert "$CERT" --key "$KEY" https://api.uat.cstar.pagopa.it/rtd/mauth/check)
-
-if [ "${status_code}" -eq 200 ]
-then
-  echo PASS
-else
-  echo FAIL
-fi
+# Make a CURL to UAT endpoint with the certificate and key
+curl -v --cert "$CERT" --key "$KEY" https://api.uat.cstar.pagopa.it/rtd/mauth/check
