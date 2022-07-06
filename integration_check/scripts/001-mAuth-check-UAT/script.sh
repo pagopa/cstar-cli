@@ -8,7 +8,10 @@ if [ $# -ne 2 ] ; then
     exit 2
 fi
 
+# Parameters:
+# Path to client certificate with .pem extension
 CERT=$1
+# Path to client private key with .key extension
 KEY=$2
 
 status_code=$(curl -s -o /dev/null -w "%{http_code}" --cert "$CERT" --key "$KEY" https://api.uat.cstar.pagopa.it/rtd/mauth/check)
