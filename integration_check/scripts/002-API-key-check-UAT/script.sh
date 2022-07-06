@@ -2,8 +2,9 @@
 # API Key UAT CHECK
 # This script is used to check the validity of UAT mAuth  certificate and API Key.
 
-if [ $# -ne 3 ]; then
-    echo "Illegal number of parameters (expected 3)" >&2
+if [ $# -ne 3 ] ; then
+    echo "Illegal number of parameters (3 mandatory, was $#)" >&2
+    echo "usage: script.sh /PATH/TO/ACME_UAT.pem /PATH/TO/ACME_UAT.key API_KEY" >&2
     exit 2
 fi
 
