@@ -2,8 +2,9 @@
 # GENERATED FILE LOCAL EQUALITY CHECK
 # This script is used to check whether the generated file is equal to the expected file.
 
-if [ $# -ne 2 ]; then
-    echo "Illegal number of parameters" >&2
+if [ $# -ne 2 ] ; then
+    echo "Illegal number of parameters (2 mandatory, was $#)" >&2
+    echo "usage: script.sh /PATH/TO/EXPECTED_OUTPUT.expected /PATH/TO/ACTUAL_OUTPUT.key" >&2
     exit 2
 fi
 
