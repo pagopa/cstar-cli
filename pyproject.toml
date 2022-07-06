@@ -3,8 +3,7 @@ name = "cstar-cli"
 version = "0.0.1"
 description = "Cstar Command Line Interface"
 authors = [
-	"Giovanni Mancini <giovanni.mancini@pagopa.it>",
-	"Alberto Re <alberto.re@pagopa.it>"
+	"CSTAR Team <cstar@pagopa.it>"
 ]
 license = "MIT"
 
