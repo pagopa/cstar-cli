@@ -47,6 +47,8 @@ class Transactionaggregate:
 
         if not self.args.aggr_qty:
             raise ValueError("--aggr-qty is mandatory")
+        if len(self.args.sender) is not 5:
+            raise ValueError("--sender must be of length 5")
 
         # Set the sender code (common to all aggregates)
         sender_code = self.args.sender

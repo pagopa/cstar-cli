@@ -95,6 +95,8 @@ class Transactionfilter:
             raise ValueError("--ratio is mandatory")
         if not self.args.pos_number:
             raise ValueError("--pos-number is mandatory")
+        if len(self.args.sender) is not 5:
+            raise ValueError("--sender must be of length 5")
 
         # Set the sender code (common to all transactions)
         sender_code = self.args.sender
