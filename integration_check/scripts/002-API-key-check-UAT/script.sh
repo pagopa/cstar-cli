@@ -7,8 +7,12 @@ if [ $# -ne 3 ]; then
     exit 2
 fi
 
+# Parameters:
+# Path to client certificate with .pem extension
 CERT=$1
+# Path to client private key with .key extension
 KEY=$2
+# API Key for RTD Products
 API_KEY=$3
 
 # Make a CURL to UAT endpoint with the certificate, key and API Key
