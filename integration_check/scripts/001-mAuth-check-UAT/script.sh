@@ -3,7 +3,8 @@
 # This script is used to check the validity of UAT mAuth certificate.
 
 if [ $# -ne 2 ] ; then
-    echo "Illegal number of parameters (expected 2)" >&2
+    echo "Illegal number of parameters (2 mandatory, was $#)" >&2
+    echo "usage: script.sh /PATH/TO/ACME_UAT.pem /PATH/TO/ACME_UAT.key" >&2
     exit 2
 fi
 
