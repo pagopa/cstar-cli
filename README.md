@@ -116,14 +116,14 @@ cst tae registryreports --action synthetic_reports --rep-qty 100
 **For acquirers:**
 
 ```bash
-cst sender aggregates --sender <ABI> --action trx_and_aggr --qty 100 --out-dir /tmp
+cst sender aggregates --sender <ABI> --action trx_and_aggr --aggr-qty 10 --out-dir /tmp
 ```
 
 ---
 **For schemas (Bancomat) and technical senders (Satispay, Sumup):**
 
 ```bash
-cst sender aggregates --sender {COBAN, STPAY, EVODE} --action trx_and_aggr --qty 100 --out-dir /tmp
+cst sender aggregates --sender {COBAN, STPAY, EVODE} --action trx_and_aggr --aggr-qty 10 --out-dir /tmp
 ```
 This will also test the translation of technical ABI to acquirer fiscal code.
 

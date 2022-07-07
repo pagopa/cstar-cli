@@ -10,21 +10,26 @@ The first step checks the validity of the client certificate.
 
 This can be assessed with a call to an [enpoint](https://api.uat.cstar.pagopa.it/rtd/mauth/check) with a valid certificate and key.
 
-From the project root run the script with the following command:
+From the project root move to the directory ./scripts/001-mAuth-check-UAT .
+
+Then run the script with the following command (after customization):
 ```bash
-bash ./integration_check/scripts/001-mAuth-check-UAT/script.sh /PATH/TO/ACME_UAT.certificate.pem /PATH/TO/ACME_UAT.key
+sh ./integration_check/scripts/001-mAuth-check-UAT/script.sh /PATH/TO/ACME_UAT.certificate.pem /PATH/TO/ACME_UAT.key
 ```
+
 The execution will print the result of the check.
 
 ## 2. API Key validity check UAT
 
-The second step checks the validity of the API Key.
+The second step checks the validity of the client certificate and API Key.
 
 This can be assessed with a call to an [enpoint](https://api.uat.cstar.pagopa.it/rtd/api-key/check) with a valid API Key.
 
-From the project root run the script with the following command:
+From the project root move to the directory ./scripts/002-API-key-check-UAT.
+
+Then run the script with the following command (after customization):
 ```bash
-bash ./integration_check/scripts/002-API-key-check-UAT/script.sh /PATH/TO/ACME_UAT.certificate.pem /PATH/TO/ACME_UAT.key UAT_API_KEY
+sh ./integration_check/scripts/002-API-key-check-UAT/script.sh /PATH/TO/ACME_UAT.certificate.pem /PATH/TO/ACME_UAT.key UAT_API_KEY
 ```
 The execution will print the result of the check.
 
@@ -66,7 +71,7 @@ This can be assessed with a call to an [enpoint](https://api.cstar.pagopa.it/rtd
 
 From the project root run the script with the following command:
 ```bash
-bash ./integration_check/scripts/005-mAuth-check-PROD/script.sh /PATH/TO/ACME_PROD.certificate.pem /PATH/TO/ACME_PROD.key
+sh ./integration_check/scripts/005-mAuth-check-PROD/script.sh /PATH/TO/ACME_PROD.certificate.pem /PATH/TO/ACME_PROD.key
 ```
 The execution will print the result of the check.
 
@@ -78,6 +83,6 @@ This can be assessed with a call to an [enpoint](https://api.cstar.pagopa.it/rtd
 
 From the project root run the script with the following command:
 ```bash
-bash ./integration_check/scripts/006-API-key-check-PROD/script.sh /PATH/TO/ACME_PROD.certificate.pem /PATH/TO/ACME_PROD.key PROD_API_KEY
+sh ./integration_check/scripts/006-API-key-check-PROD/script.sh /PATH/TO/ACME_PROD.certificate.pem /PATH/TO/ACME_PROD.key PROD_API_KEY
 ```
 The execution will print the result of the check.
