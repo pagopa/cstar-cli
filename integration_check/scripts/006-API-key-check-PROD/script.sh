@@ -16,5 +16,12 @@ CERT_KEY=$2
 # API Key for RTD Products
 API_KEY=$3
 
+URL="https://api.cstar.pagopa.it/rtd/api-key/check"
+
 # Make a wget to PROD endpoint with the certificate, key and API Key
-wget --verbose -O - --certificate "$CERT" --private-key "$CERT_KEY" --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" https://api.cstar.pagopa.it/rtd/api-key/check
+wget --verbose \
+    -O - \
+    --certificate "$CERT" \
+    --private-key "$CERT_KEY" \
+    --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" \
+    $URL
