@@ -14,9 +14,5 @@ CERT=$1
 # Path to client private key with .key extension
 CERT_KEY=$2
 
-if [ "${status_code}" -eq 200 ]
-then
-  echo PASS
-else
-  echo FAIL
-fi
+# Make a CURL to PROD endpoint with the certificate and key
+wget --verbose -O - --certificate "$CERT" --private-key "$CERT_KEY" https://api.cstar.pagopa.it/rtd/mauth/check
