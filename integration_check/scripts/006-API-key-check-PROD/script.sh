@@ -16,9 +16,5 @@ CERT_KEY=$2
 # API Key for RTD Products
 API_KEY=$3
 
-if [ "${status_code}" -eq 200 ]
-then
-  echo PASS
-else
-  echo FAIL
-fi
+# Make a wget to PROD endpoint with the certificate, key and API Key
+wget --verbose -O - --certificate "$CERT" --private-key "$CERT_KEY" --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" https://api.cstar.pagopa.it/rtd/api-key/check
