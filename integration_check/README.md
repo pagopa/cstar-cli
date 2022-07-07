@@ -14,7 +14,7 @@ From the project root move to the directory ./scripts/001-mAuth-check-UAT .
 
 Then run the script with the following command (after customization):
 ```bash
-sh ./integration_check/scripts/001-mAuth-check-UAT/script.sh /PATH/TO/ACME_UAT.certificate.pem /PATH/TO/ACME_UAT.key
+sh ./integration_check/scripts/001-mAuth-check-UAT/script.sh /PATH/TO/COMPANY_NAME_UAT.certificate.pem /PATH/TO/COMPANY_NAME_UAT.key
 ```
 
 The execution will print the result of the check.
@@ -29,7 +29,7 @@ From the project root move to the directory ./scripts/002-API-key-check-UAT.
 
 Then run the script with the following command (after customization):
 ```bash
-sh ./integration_check/scripts/002-API-key-check-UAT/script.sh /PATH/TO/ACME_UAT.certificate.pem /PATH/TO/ACME_UAT.key UAT_API_KEY
+sh ./integration_check/scripts/002-API-key-check-UAT/script.sh /PATH/TO/COMPANY_NAME_UAT.certificate.pem /PATH/TO/COMPANY_NAME_UAT.key UAT_API_KEY
 ```
 The execution will print the result of the check.
 
@@ -59,7 +59,7 @@ Once the previous test is passed, pass the path to the file generated with the b
 
 From the project root, run the script with the following (properly customized) command:
 ```bash
-sh ./integration_check/scripts/004-remote-file-check-UAT/script.sh /PATH/TO/LOCAL_FILE.csv /PATH/TO/ACME_UAT.certificate.pem /PATH/TO/ACME_UAT.key UAT_API_KEY
+sh ./integration_check/scripts/004-remote-file-check-UAT/script.sh /PATH/TO/LOCAL_FILE.csv /PATH/TO/COMPANY_NAME_UAT.certificate.pem /PATH/TO/COMPANY_NAME_UAT.key UAT_API_KEY
 ```
 The execution will print the result of the check.
 
@@ -71,7 +71,7 @@ This can be assessed with a call to an [enpoint](https://api.cstar.pagopa.it/rtd
 
 From the project root run the script with the following command:
 ```bash
-sh ./integration_check/scripts/005-mAuth-check-PROD/script.sh /PATH/TO/ACME_PROD.certificate.pem /PATH/TO/ACME_PROD.key
+sh ./integration_check/scripts/005-mAuth-check-PROD/script.sh /PATH/TO/COMPANY_NAME_PROD.certificate.pem /PATH/TO/COMPANY_NAME_PROD.key
 ```
 The execution will print the result of the check.
 
@@ -83,6 +83,6 @@ This can be assessed with a call to an [enpoint](https://api.cstar.pagopa.it/rtd
 
 From the project root run the script with the following command:
 ```bash
-sh ./integration_check/scripts/006-API-key-check-PROD/script.sh /PATH/TO/ACME_PROD.certificate.pem /PATH/TO/ACME_PROD.key PROD_API_KEY
+sh ./integration_check/scripts/006-API-key-check-PROD/script.sh /PATH/TO/COMPANY_NAME_PROD.certificate.pem /PATH/TO/COMPANY_NAME_PROD.key PROD_API_KEY
 ```
 The execution will print the result of the check.

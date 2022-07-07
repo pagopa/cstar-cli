@@ -10,9 +10,9 @@ req_extensions = v3_req
 countryName         = IT
 stateOrProvinceName = Yourcity
 localityName        = Yourcity
-organizationName    = ACME S.p.A.
-commonName          = Certificato client Batch Service - ACME S.p.A.
-emailAddress        = support@acme.it
+organizationName    = COMPANY_NAME S.p.A.
+commonName          = Certificato client Batch Service - COMPANY_NAME S.p.A.
+emailAddress        = support@COMPANY_NAME.it
 
 [ v3_req ]
 extendedKeyUsage = critical, clientAuth

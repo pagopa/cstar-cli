@@ -4,7 +4,7 @@
 
 if [ $# -ne 3 ] ; then
     echo "Illegal number of parameters (3 mandatory, was $#)" >&2
-    echo "usage: script.sh /PATH/TO/ACME_UAT.pem /PATH/TO/ACME_UAT.key API_KEY" >&2
+    echo "usage: script.sh /PATH/TO/COMPANY_NAME_UAT.pem /PATH/TO/COMPANY_NAME_UAT.key API_KEY" >&2
     exit 2
 fi
 
