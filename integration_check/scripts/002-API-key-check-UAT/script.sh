@@ -16,5 +16,5 @@ CERT_KEY=$2
 # API Key for RTD Products
 API_KEY=$3
 
-# Make a CURL to UAT endpoint with the certificate, key and API Key
+# Make a wget to UAT endpoint with the certificate, key and API Key
 wget --verbose -O - --certificate "$CERT" --private-key "$CERT_KEY" --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" https://api.uat.cstar.pagopa.it/rtd/api-key/check

@@ -14,5 +14,5 @@ CERT=$1
 # Path to client private key with .key extension
 CERT_KEY=$2
 
-# Make a CURL to UAT endpoint with the certificate and key
+# Make a wget to UAT endpoint with the certificate and key
 wget --verbose -O - --certificate "$CERT" --private-key "$CERT_KEY" https://api.uat.cstar.pagopa.it/rtd/mauth/check

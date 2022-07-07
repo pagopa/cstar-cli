@@ -20,16 +20,19 @@ API_KEY=$4
 
 URL="https://api.dev.cstar.pagopa.it/rtd/sftp-retrieve/"
 
+# Extract the file name from the path
 FILE_NAME="${LOCAL##*/}"
 
+# Use timestamp to make temporary directory name unique
 NOW=$(date +%s)
 TEMPORARY_DIR="temporary"$NOW
 
-
+# Create a temporary directory and files
 mkdir ./"$TEMPORARY_DIR" > /dev/null
 touch ./"$TEMPORARY_DIR"/local.csv
 touch ./"$TEMPORARY_DIR"/remote.csv
 
+# Make a wget to retrieve the remote file uploaded by the Batch Service
 wget --verbose \
      -O ./"$TEMPORARY_DIR"/remote.csv \
      --certificate "$CERT" \
