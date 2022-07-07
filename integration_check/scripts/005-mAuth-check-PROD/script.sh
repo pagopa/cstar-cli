@@ -4,7 +4,7 @@
 
 if [ $# -ne 2 ] ; then
     echo "Illegal number of parameters (2 mandatory, was $#)" >&2
-    echo "usage: script.sh /PATH/TO/ACME_PROD.pem /PATH/TO/ACME_PROD.key" >&2
+    echo "usage: script.sh /PATH/TO/COMPANY_NAME_PROD.pem /PATH/TO/COMPANY_NAME_PROD.key" >&2
     exit 2
 fi
 

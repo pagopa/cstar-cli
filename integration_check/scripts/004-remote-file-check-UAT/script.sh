@@ -4,7 +4,7 @@
 
 if [ $# -ne 4 ] ; then
     echo "Illegal number of parameters (4 mandatory, was $#)" >&2
-    echo "usage: script.sh /PATH/TO/LOCAL_OUTPUT.csv /PATH/TO/ACME_UAT.pem /PATH/TO/ACME_UAT.key API_KEY" >&2
+    echo "usage: script.sh /PATH/TO/LOCAL_OUTPUT.csv /PATH/TO/COMPANY_NAME_UAT.pem /PATH/TO/COMPANY_NAME_UAT.key API_KEY" >&2
     exit 2
 fi
 
