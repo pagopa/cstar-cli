@@ -30,14 +30,14 @@ sort < "$PATH_TO_ACTUAL" > ./"$TEMPORARY_DIR"/actual.csv
 # Check for content of temporary files
 if [ -z "$(cat ./"$TEMPORARY_DIR"/expected.csv)" ]
 then
-  echo "FAIL, ${PATH_TO_EXPECTED##*/} file is empty or does not exist"
+  echo "FAIL, ${PATH_TO_EXPECTED##*/} file is empty or does not exist."
   rm -r ./"$TEMPORARY_DIR"
   exit 2
 fi
 
 if [ -z "$(cat ./"$TEMPORARY_DIR"/actual.csv)" ]
 then
-  echo "FAIL, ${PATH_TO_ACTUAL##*/} file is empty or does not exist"
+  echo "FAIL, ${PATH_TO_ACTUAL##*/} file is empty or does not exist."
   rm -r ./"$TEMPORARY_DIR"
   exit 2
 fi
@@ -48,7 +48,7 @@ diff ./"$TEMPORARY_DIR"/expected.csv ./"$TEMPORARY_DIR"/actual.csv > ./"$TEMPORA
 # Check if there are differences
 if [ -z "$(cat ./"$TEMPORARY_DIR"/diff.txt)" ]
 then
-  echo "PASS, the files are equal"
+  echo "PASS, the files are equal!"
   rm -r ./"$TEMPORARY_DIR"
 else
   echo "FAIL, found the following differences:"
