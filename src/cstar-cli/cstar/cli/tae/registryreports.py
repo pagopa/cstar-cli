@@ -41,15 +41,13 @@ class Registryreports:
                     sha256(f"{'terminal_id'}{i}".encode()).hexdigest(),
                     sha256(f"{'merchant_id'}{i}".encode()).hexdigest(),
                     "CF" + str(i).zfill(15 - len(str(i))),
-                    "PI" + str(i).zfill(10 - len(str(i))),
                     self.args.acquirer
                 ])
 
         columns = [
-            "terminal_id",
             "merchant_id",
+            "terminal_id",
             "fiscal_code",
-            "vat",
             "acquirer_code"
         ]
         reports_df = pd.DataFrame(reports, columns=columns)
