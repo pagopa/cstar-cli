@@ -18,7 +18,7 @@ CERT_KEY=$3
 # API Key for RTD Products
 API_KEY=$4
 
-URL="https://api.dev.cstar.pagopa.it/rtd/sftp-retrieve/"
+URL="https://api.uat.cstar.pagopa.it/rtd/sftp-retrieve/"
 
 # Extract the file name from the path
 FILE_NAME="${LOCAL##*/}"
