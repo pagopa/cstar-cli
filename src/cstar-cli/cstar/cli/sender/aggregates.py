@@ -1,12 +1,9 @@
-import logging
 from hashlib import sha256
 import time
 import random
 import uuid
 import filecmp
-from tempfile import TemporaryDirectory
 
-import gnupg
 import numpy as np
 import pandas as pd
 import os
@@ -303,9 +300,6 @@ class Aggregates:
                 f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest().rstrip(
                 '\r\n') + '\n' + content)
 
-        if self.args.pgp:
-            encrypt_file(aggr_file_path, self.args.key)
-
         print(f"Done")
 
 
@@ -324,41 +318,3 @@ def sort_file(filename):
         outfile.writelines("\n")
     outfile.close()
     return filename
-
-def encrypt_file(
-        file_path: str,
-        encryption_key: str,
-        *,
-        remove_plaintext: bool = False,
-) -> None:
-    """Encrypt a file using provided encryption key.
-
-    :param file_path: path of file to be encrypted
-    :type file_path: str
-    :param encryption_key: path of the key file to use
-    :type encryption_key: str
-    :param remove_plaintext: remove plaintext file after encryption? Defaults to False
-    :type remove_plaintext: bool
-    :raises RuntimeError:
-    """
-    with TemporaryDirectory() as temp_gpg_home:
-        logging.debug(f"Setting temporary GPG home to {temp_gpg_home}")
-        gpg = gnupg.GPG(gnupghome=temp_gpg_home)
-        key_data = open(encryption_key).read()
-        import_result = gpg.import_keys(key_data)
-        logging.info(f"GPG import keys: {import_result.results}")
-        with open(file_path, "rb") as f:
-            status = gpg.encrypt_file(
-                file=f,
-                recipients=import_result.results[0]["fingerprint"],
-                output=f"{file_path}{ENCRYPTED_FILE_EXTENSION}",
-                extra_args=["--openpgp", "--trust-model", "always"],
-                armor=False,
-            )
-        if status.ok:
-            if remove_plaintext:
-                os.remove(file_path)
-            logging.info(f"Encrypted file as {file_path}{ENCRYPTED_FILE_EXTENSION}")
-        else:
-            logging.info(f"Failed to encrypt")
-            raise RuntimeError(status)
