@@ -7,6 +7,8 @@ Command Line Interface to manage cstar platform and its verticals
 The project is managed with [Poetry](https://python-poetry.org/): installation instructions for all platforms are available [here](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions).
 
 ## Virtualenv initialization
+> Make sure to be in the root of this project.
+
 Open a shell and type the following:
 
 ```bash
@@ -116,7 +118,7 @@ cst tae registryreports --action synthetic_reports --rep-qty 100
 **For acquirers:**
 
 ```bash
-cst sender aggregates --sender <ABI> --action trx_and_aggr --aggr-qty 10 --out-dir /tmp
+cst sender aggregates --sender <ABI> --action trx_and_aggr --aggr-qty 10
 ```
 
 ---
