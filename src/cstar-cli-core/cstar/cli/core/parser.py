@@ -66,7 +66,7 @@ def parser():
 
     rtd_transaction_filter.add_argument("--action")
     rtd_transaction_filter.add_argument("--salt", default="SALT876")
-    rtd_transaction_filter.add_argument("--sender", default=99999)
+    rtd_transaction_filter.add_argument("--sender", default="99999")
     rtd_transaction_filter.add_argument("--pans-prefix")
     rtd_transaction_filter.add_argument("--pans-qty", type=int)
     rtd_transaction_filter.add_argument("--hashpans-qty", type=int)
@@ -85,9 +85,9 @@ def parser():
 
     tae_transaction_aggregates.add_argument("--action")
     tae_transaction_aggregates.add_argument("--aggr-qty", type=int)
-    tae_transaction_aggregates.add_argument("--sender", default=99999)
+    tae_transaction_aggregates.add_argument("--sender", default="99999")
     tae_transaction_aggregates.add_argument("--reverse-ratio", type=int)
-    tae_transaction_aggregates.add_argument("-o", "--out-dir", type=str, default=".")
+    tae_transaction_aggregates.add_argument("-o", "--out-dir", type=str, default="./generated")
     tae_transaction_aggregates.add_argument("--pgp", action="store_true")
     tae_transaction_aggregates.add_argument("--shuffle", action="store_true")
     tae_transaction_aggregates.add_argument("--to-ade", action="store_true")
@@ -108,7 +108,7 @@ def parser():
 
     tae_reports.add_argument("--action")
     tae_reports.add_argument("--rep-qty", type=int)
-    tae_reports.add_argument("--acquirer", default=99999)
+    tae_reports.add_argument("--acquirer", default="99999")
     tae_reports.add_argument("-o", "--out-dir", type=str, default=".")
 
     # SENDER
@@ -120,7 +120,7 @@ def parser():
     sender_aggregates_parser.add_argument("--action", required=True,
                                           help="Action to perform with the invocation of the command")
     sender_aggregates_parser.add_argument("--aggr-qty", type=int, help="Aggregates quantity to generate")
-    sender_aggregates_parser.add_argument("--sender", default=99999, help="Sender code")
+    sender_aggregates_parser.add_argument("--sender", default="99999", help="Sender code")
     sender_aggregates_parser.add_argument("--avg-trx", type=int, default=10,
                                           help="Average transaction number per aggregation")
     sender_aggregates_parser.add_argument("-o", "--out-dir", type=str, default="./generated",
