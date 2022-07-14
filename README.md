@@ -125,7 +125,7 @@ cst sender aggregates --sender <ABI> --action trx_and_aggr --aggr-qty 10
 **For schemas (Bancomat) and technical senders (Satispay, Sumup):**
 
 ```bash
-cst sender aggregates --sender {COBAN, STPAY, EVODE} --action trx_and_aggr --aggr-qty 10 --out-dir /tmp
+cst sender aggregates --sender {COBAN, STPAY, EVODE} --action trx_and_aggr --aggr-qty 10 
 ```
 This will also test the translation of technical ABI to acquirer fiscal code.
 
