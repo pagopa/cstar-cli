@@ -1,7 +1,7 @@
 #!/bin/sh
 
-apt-get install -y software-properties-common python3-distutils
 apt-get update
+apt-get install -y software-properties-common python3-distutils
 add-apt-repository -y ppa:deadsnakes/ppa
 echo "8 41" | apt install -yq python3.9
 apt-get install -y python3.9-distutils
