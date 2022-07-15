@@ -30,15 +30,16 @@ TEMPORARY_DIR="temporary"$NOW
 # Create a temporary directory and files
 mkdir ./"$TEMPORARY_DIR" > /dev/null
 touch ./"$TEMPORARY_DIR"/local.csv
-touch ./"$TEMPORARY_DIR"/remote.csv
 
 # Make a wget to retrieve the remote file uploaded by the Batch Service
 wget --verbose \
-    -O ./"$TEMPORARY_DIR"/remote.csv \
+    -O ./"$TEMPORARY_DIR"/remote.csv.gz \
     --certificate "$CERT" \
     --private-key "$CERT_KEY" \
     --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" \
-    "$URL$FILE_NAME.pgp.0.decrypted"
+    "$URL$FILE_NAME.pgp.0.decrypted.gz"
+
+gunzip ./"$TEMPORARY_DIR"/remote.csv.gz
 
 # Remove CR at the end of the downloaded file, remove record_id columns and sort it
 tr -d '\015' < ./"$TEMPORARY_DIR"/remote.csv | cut -d";" -f2- | sort > ./"$TEMPORARY_DIR"/remote_no_record_id.csv
