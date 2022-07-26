@@ -137,3 +137,7 @@ dmypy.json
 .DS_Store
 .idea
 *.gzip
+*.gz
+*.pem
+*.decrypted
+*.expected
