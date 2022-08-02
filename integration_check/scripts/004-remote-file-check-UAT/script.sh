@@ -28,7 +28,8 @@ NOW=$(date +%s)
 TEMPORARY_DIR="temporary"$NOW
 
 # Create a temporary directory and files
-mkdir ./"$TEMPORARY_DIR" > /dev/null
+mkdir -p ./"$TEMPORARY_DIR"
+mkdir -p ./deposited-remotely
 touch ./"$TEMPORARY_DIR"/local.csv
 
 # Make a wget to retrieve the remote file uploaded by the Batch Service
@@ -40,6 +41,7 @@ wget --verbose \
     "$URL$FILE_NAME.pgp.0.decrypted.gz"
 
 gunzip ./"$TEMPORARY_DIR"/remote.csv.gz
+cp ./"$TEMPORARY_DIR"/remote.csv ./deposited-remotely/"$FILE_NAME"
 
 # Remove CR at the end of the downloaded file, remove record_id columns and sort it
 tr -d '\015' < ./"$TEMPORARY_DIR"/remote.csv | cut -d";" -f2- | sort > ./"$TEMPORARY_DIR"/remote_no_record_id.csv
