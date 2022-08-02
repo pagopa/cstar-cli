@@ -46,10 +46,8 @@ tr -d '\015' < "./$TEMPORARY_DIR/extracted_lines.csv" | sed 's/\xef\xbb\xbf//g' 
 
 # Generate a fake ADE ACK record for each line
 while read -r p; do
-  echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";0101|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+  echo "$p" | awk -F ";" '{print($1";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
 done < "./$TEMPORARY_DIR/extracted_lines_cleaned.csv"
-
-cat "./$TEMPORARY_DIR/$ADE_ACK_NAME"
 
 # Check for content of temporary file
 if [ -z "$(cat "./$TEMPORARY_DIR/$ADE_ACK_NAME")" ]
@@ -58,18 +56,20 @@ then
   exit 2
 fi
 
+# Save the file in the generated directory for the next script
+cp "./$TEMPORARY_DIR/$ADE_ACK_NAME" "./generated/ade-acks/$ADE_ACK_NAME"
+
+gzip "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+
 # Upload the file through the APIM
 wget --verbose \
     -O - \
     --method=PUT \
-    --body-file "./$TEMPORARY_DIR/$ADE_ACK_NAME" \
+    --body-file "./$TEMPORARY_DIR/$ADE_ACK_NAME.gz" \
     --certificate "$CERT" \
     --private-key "$CERT_KEY" \
     --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" \
-    "$URL$ADE_ACK_NAME"
-
-# Save the file in the generated directory for the next script
-cp "./$TEMPORARY_DIR/$ADE_ACK_NAME" "./generated/ade-acks/$ADE_ACK_NAME"
+    "$URL$ADE_ACK_NAME.gz"
 
 # Check for content of temporary file
 if [ -z "$(cat "./generated/ade-acks/$ADE_ACK_NAME")" ]
