@@ -47,6 +47,7 @@ tr -d '\015' < "./$TEMPORARY_DIR/extracted_lines.csv" | sed 's/\xef\xbb\xbf//g' 
 # Generate a fake ADE ACK record for each line
 while read -r p; do
   echo "$p" | awk -F ";" '{print($1";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+  echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
 done < "./$TEMPORARY_DIR/extracted_lines_cleaned.csv"
 
 # Check for content of temporary file
@@ -56,8 +57,14 @@ then
   exit 2
 fi
 
+if [ -z "$(cat "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected")" ]
+then
+  echo "FAIL, ./$TEMPORARY_DIR/$ADE_ACK_NAME.expected file is empty or does not exist."
+  exit 2
+fi
+
 # Save the file in the generated directory for the next script
-cp "./$TEMPORARY_DIR/$ADE_ACK_NAME" "./generated/ade-acks/$ADE_ACK_NAME"
+cp "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected" "./generated/ade-acks/$ADE_ACK_NAME.expected"
 
 gzip "./$TEMPORARY_DIR/$ADE_ACK_NAME"
 
@@ -72,9 +79,9 @@ wget --verbose \
     "$URL$ADE_ACK_NAME.gz"
 
 # Check for content of temporary file
-if [ -z "$(cat "./generated/ade-acks/$ADE_ACK_NAME")" ]
+if [ -z "$(cat "./generated/ade-acks/$ADE_ACK_NAME.expected")" ]
 then
-  echo "FAIL, ./generated/ade-acks/$ADE_ACK_NAME file is empty or does not exist."
+  echo "FAIL, ./generated/ade-acks/$ADE_ACK_NAME.expected file is empty or does not exist."
   exit 2
 fi
 
