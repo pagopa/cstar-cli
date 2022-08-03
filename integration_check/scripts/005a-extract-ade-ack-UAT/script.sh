@@ -3,11 +3,11 @@
 # This script is used to extract a fake ADE ACK file from the file deposited from the batch service to SFTP.
 # Once extracted the file is uploaded to the SFTP server where the batch service will download it.
 
-#if [ $# -ne 4 ] ; then
-#    echo "Illegal number of parameters (4 mandatory, was $#)" >&2
-#    echo "usage: script.sh /PATH/TO/DOWNLOADED.csv /PATH/TO/COMPANY_NAME_UAT.pem /PATH/TO/COMPANY_NAME_UAT.key API_KEY" >&2
-#    exit 2
-#fi
+if [ $# -ne 4 ] ; then
+    echo "Illegal number of parameters (4 mandatory, was $#)" >&2
+    echo "usage: script.sh /PATH/TO/DOWNLOADED.csv /PATH/TO/COMPANY_NAME_UAT.pem /PATH/TO/COMPANY_NAME_UAT.key API_KEY" >&2
+    exit 2
+fi
 
 ## Parameters:
 ## Path to local output file downloaded during the previous script.
@@ -87,14 +87,14 @@ cp "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected" "./generated/ade-acks/$ADE_ACK_NAME
 gzip "./$TEMPORARY_DIR/$ADE_ACK_NAME"
 
 # Upload the file through the APIM
-#wget --verbose \
-#    -O - \
-#    --method=PUT \
-#    --body-file "./$TEMPORARY_DIR/$ADE_ACK_NAME.gz" \
-#    --certificate "$CERT" \
-#    --private-key "$CERT_KEY" \
-#    --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" \
-#    "$URL$ADE_ACK_NAME.gz"
+wget --verbose \
+    -O - \
+    --method=PUT \
+    --body-file "./$TEMPORARY_DIR/$ADE_ACK_NAME.gz" \
+    --certificate "$CERT" \
+    --private-key "$CERT_KEY" \
+    --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" \
+    "$URL$ADE_ACK_NAME.gz"
 
 # Check for content of temporary file
 if [ -z "$(cat "./generated/ade-acks/$ADE_ACK_NAME.expected")" ]
