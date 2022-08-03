@@ -28,7 +28,7 @@ URL="https://api.uat.cstar.pagopa.it/rtd/sftp-deposit/"
 FILE_NAME="${LOCAL##*/}"
 
 # Compose the ADE ACK filename
-ADE_ACK_NAME="CSTAR.ADEACK.$(echo "$FILE_NAME" | cut -d'.' -f2 -f5 -f6 -f7)"
+ADE_ACK_NAME="CSTAR.ADEACK.$(echo "$FILE_NAME" | cut -d'.' -f2 -f4 -f5 -f6 -f7)"
 
 # Use timestamp to make temporary directory name unique
 NOW=$(date +%s)
