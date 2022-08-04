@@ -51,21 +51,24 @@ i=0
 while read -r p; do
   if [ $i -eq 0 ]
     then
-      echo "$p" | awk -F ";" '{print($1";0;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"  else
-  fi
-  if [ $i -eq 1 ]
-    then
-      echo "$p" | awk -F ";" '{print($1";1;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"  else
-      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";1;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
-  fi
-  if [ $i -eq 2 ]
-    then
-      echo "$p" | awk -F ";" '{print($1";3;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"  else
-      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";3;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
+      echo "$p" | awk -F ";" '{print($1";0;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+  else
+    if [ $i -eq 1 ]
+      then
+        echo "$p" | awk -F ";" '{print($1";1;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+        echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";1;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
     else
-      echo "$p" | awk -F ";" '{print($1";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
+      if [ $i -eq 2 ]
+        then
+          echo "$p" | awk -F ";" '{print($1";3;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+          echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";3;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
+        else
+          echo "$p" | awk -F ";" '{print($1";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+          echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
+      fi
+    fi
   fi
+  i=$((i+1))
 done < "./$TEMPORARY_DIR/extracted_lines_cleaned.csv"
 
 # Check for content of temporary file
