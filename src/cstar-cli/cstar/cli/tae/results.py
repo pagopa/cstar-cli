@@ -1,4 +1,5 @@
 import gzip
+import uuid
 from hashlib import sha256
 import random
 
@@ -108,7 +109,7 @@ class Results:
 
             results.append(
                 [
-                    sha256(f"{i}{'MYSALT'}".encode()).hexdigest(),
+                    str(uuid.uuid4()),
                     esito,
                     lista_errori
                 ])
