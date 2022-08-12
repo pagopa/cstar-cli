@@ -1,4 +1,5 @@
 import gzip
+import uuid
 from hashlib import sha256
 import random
 
@@ -97,18 +98,26 @@ class Results:
 
             esito = random.randint(0, 4)
             match esito:
+                case 1:
+                    lista_errori = "1206"
+                case 3:
+                    lista_errori = "1201"
                 case 2:
                     for bad_field in random.sample(SCARTI, random.randint(1, 14)):
                         lista_errori = lista_errori + random.choice(bad_field) + '|'
+                    print(lista_errori)
+                    lista_errori = lista_errori.removesuffix("|")
+                    print(lista_errori)
                 case 4:
                     for bad_field in random.sample(SEGNALAZIONI, random.randint(1, 2)):
                         lista_errori = lista_errori + random.choice(bad_field) + '|'
-                case _:
-                    pass
+                    print(lista_errori)
+                    lista_errori = lista_errori.removesuffix("|")
+                    print(lista_errori)
 
             results.append(
                 [
-                    sha256(f"{i}{'MYSALT'}".encode()).hexdigest(),
+                    str(uuid.uuid4()),
                     esito,
                     lista_errori
                 ])

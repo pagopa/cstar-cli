@@ -1,10 +1,10 @@
 #!/bin/sh
 # GENERATED FILE LOCAL EQUALITY CHECK
-# This script is used to check whether the generated file is equal to the expected file.
+# This script is used to check whether the generated file is equal to the expected one.
 
 if [ $# -ne 2 ] ; then
     echo "Illegal number of parameters (2 mandatory, was $#)" >&2
-    echo "usage: script.sh /PATH/TO/EXPECTED_OUTPUT.expected /PATH/TO/ACTUAL_OUTPUT.key" >&2
+    echo "usage: script.sh /PATH/TO/EXPECTED_OUTPUT.csv.expected /PATH/TO/ACTUAL_OUTPUT.csv" >&2
     exit 2
 fi
 
@@ -19,7 +19,7 @@ NOW=$(date +%s)
 TEMPORARY_DIR="temporary"$NOW
 
 # Create a temporary directory and files
-mkdir ./"$TEMPORARY_DIR" > /dev/null
+mkdir -p ./"$TEMPORARY_DIR"
 touch ./"$TEMPORARY_DIR"/expected.csv
 touch ./"$TEMPORARY_DIR"/actual.csv
 

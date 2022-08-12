@@ -136,3 +136,11 @@ This will also test the translation of technical ABI to acquirer fiscal code.
 ```bash
 cst sender aggregates --action diff --files /path/to/files/produced/by/batch/service /path/to/files/produced/by/CSTAR/CLI
 ```
+
+## Regression testing
+
+### To check for execution errors on commands you can run the following:
+
+```bash
+sh ./src/test/run-all.sh
+```
