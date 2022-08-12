@@ -74,10 +74,12 @@ This check is divided into two steps:
 
 From the project root run the script with the following command:
 ```bash
-sh ./integration_check/scripts/005a-extract-ade-ack-UAT/script.sh /PATH/TO/deposited-remotely/DOWNLOADED_FILE.csv /PATH/TO/COMPANY_NAME_UAT.certificate.pem /PATH/TO/COMPANY_NAME_UAT.key UAT_API_KEY
+sh ./integration_check/scripts/005a-extract-ade-ack-UAT/script.sh ./deposited-remotely/DOWNLOADED_FILE.csv /PATH/TO/COMPANY_NAME_UAT.certificate.pem /PATH/TO/COMPANY_NAME_UAT.key UAT_API_KEY
 ```
 
 The execution will print the HTTP status code of the upload request and generates a file inside the folder `./generated/ade-acks` (referred as `EXPECTED_ADE_ACK.csv` in the next step).
+
+Passed with status 201 Created
 
 ### 5b. Equality check between expected and downloaded error files from Agenzia delle Entrate
 
