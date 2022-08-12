@@ -98,6 +98,10 @@ class Results:
 
             esito = random.randint(0, 4)
             match esito:
+                case 1:
+                    lista_errori = "1206"
+                case 3:
+                    lista_errori = "1201"
                 case 2:
                     for bad_field in random.sample(SCARTI, random.randint(1, 14)):
                         lista_errori = lista_errori + random.choice(bad_field) + '|'
