@@ -74,7 +74,7 @@ def parser():
     rtd_transaction_filter.add_argument("--ratio", type=int)
     rtd_transaction_filter.add_argument("--pos-number", type=int)
     rtd_transaction_filter.add_argument("--pgp", action="store_true")
-    rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default=".")
+    rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default="./generated")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
 
     # TAE
@@ -100,7 +100,7 @@ def parser():
 
     tae_results.add_argument("--action")
     tae_results.add_argument("--res-qty", type=int)
-    tae_results.add_argument("-o", "--out-dir", type=str, default=".")
+    tae_results.add_argument("-o", "--out-dir", type=str, default="./generated")
     tae_results.add_argument("--gzip", action="store_true")
 
     # -REPORTS
@@ -109,7 +109,7 @@ def parser():
     tae_reports.add_argument("--action")
     tae_reports.add_argument("--rep-qty", type=int)
     tae_reports.add_argument("--acquirer", default="99999")
-    tae_reports.add_argument("-o", "--out-dir", type=str, default=".")
+    tae_reports.add_argument("-o", "--out-dir", type=str, default="./generated")
 
     # SENDER
     sender_parser = subsystem_parser.add_parser("sender").add_subparsers(dest="command")
