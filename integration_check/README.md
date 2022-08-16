@@ -79,14 +79,16 @@ sh ./integration_check/scripts/005a-extract-ade-ack-UAT/script.sh ./deposited-re
 
 The execution will print the HTTP status code of the upload request and generates a file inside the folder `./generated/ade-acks` (referred as `EXPECTED_ADE_ACK.csv` in the next step).
 
-Passed with status 201 Created
+Passed with status 201 Created.
 
 ### 5b. Equality check between expected and downloaded error files from Agenzia delle Entrate
 
 
-> Please wait at **least 30 minutes** after the run of script **5a**, then start the Batch Service.
+> Please wait at **least 30 minutes** after the run of script **5a**, then:
+> - make sure to empty the Batch Service's AdE errors folder,
+> - start the Batch Service.
 
-Make sure to run the following command after a successful run of the Batch Service where ADE error files are downloaded.
+Make sure to run the following command after a successful run of the Batch Service where AfE error files are downloaded.
 
 From the project root run the script with the following command:
 ```bash
