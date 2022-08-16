@@ -29,7 +29,6 @@ ACK_FILES="$PATH_TO_ACKS/*"
 # Aggregate all the downloaded ADE error files into one file
 for f in $ACK_FILES
 do
-  echo "Processing $f file..."
   cat "$f" >> ./"$TEMPORARY_DIR"/actual_aggr.csv
 done
 
