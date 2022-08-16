@@ -66,18 +66,18 @@ insert into bpd_citizen.bpd_award_winner(
 	technical_account_holder_s,
 	issuer_card_id_s
 )
-""" +  SELECT_BPD_AWARD_WINNER 
+""" +  SELECT_BPD_AWARD_WINNER
 
 
 EXTRACT_JACKPOT_WINNERS = """
- select {} 
- from bpd_citizen.bpd_award_winner 
+ select {}
+ from bpd_citizen.bpd_award_winner
  where award_period_id_n = %(award_period)s
  and insert_user_s = 'update_bpd_award_winner_supercashback'
  and fiscal_code_s in (
 
 select
-  bcr.fiscal_code_c 
+  bcr.fiscal_code_c
 from
 	bpd_citizen.bpd_citizen_ranking bcr
 	inner join bpd_citizen.bpd_citizen bc on
@@ -95,11 +95,11 @@ where
 """
 
 class Awardwinner() :
-  
-  def __init__(self, args): 
+
+  def __init__(self, args):
     self.args = args
     self.db_connection = psycopg2.connect(args.connection_string)
-  
+
   def create_winners(self):
     self.db_cursor = self.db_connection.cursor()
 
@@ -126,7 +126,7 @@ class Awardwinner() :
     self.db_cursor.execute(update_jackpot_winners_q)
     self.db_connection.commit()
     self.db_cursor.close()
-  
+
   def extract_jackpot_winners(self):
     self.db_cursor = self.db_connection.cursor()
     jackpot_winners_q = self.db_cursor.mogrify(
@@ -137,7 +137,7 @@ class Awardwinner() :
       })
     jackpot_winners_df = pd.read_sql(jackpot_winners_q, self.db_connection)
     jackpot_winners_df = jackpot_winners_df.apply(self._set_payment_reason, axis=1)
-    jackpot_winners_df = jackpot_winners_df[[ 
+    jackpot_winners_df = jackpot_winners_df[[
       "id_n",
       "fiscal_code_s",
       "payoff_instr_s",
@@ -159,7 +159,7 @@ class Awardwinner() :
 
 
     print(jackpot_winners_df.to_csv(index=False, header=False, sep=";"))
-  
+
   def send_jackpot_winners(self):
     db_cursor = self.db_connection.cursor()
     table = "bpd_citizen.bpd_award_winner"
@@ -167,7 +167,7 @@ class Awardwinner() :
     conditions = "id_n in ({})".format(EXTRACT_JACKPOT_WINNERS.format("id_n", ""))
     update = "UPDATE {} SET {} WHERE {};".format(
         table, set_values, conditions)
-    send_jackpot_winners_q = db_cursor.mogrify(update, 
+    send_jackpot_winners_q = db_cursor.mogrify(update,
       {
         "award_period" : self.args.award_period,
         "top_n" : 100000,
@@ -178,7 +178,7 @@ class Awardwinner() :
     print("rowcount ", db_cursor.rowcount)
     self.db_connection.commit()
     db_cursor.close()
-  
+
   def read_state_41(self):
     transfers_df = pd.read_csv(self.args.file, sep=';')
     transfers_df = transfers_df.apply(self._extract_transfer_id, axis=1)
@@ -186,11 +186,11 @@ class Awardwinner() :
 
     pagopa_transfers_q = self.db_connection.cursor().mogrify(
       "SELECT id_n, insert_date_t, insert_user_s, update_date_t, "
-      "update_user_s, enabled_b, technical_account_holder_s, " 
+      "update_user_s, enabled_b, technical_account_holder_s, "
       "chunk_filename_s, status_s, esito_bonifico_s, cro_s, "
       "data_esecuzione_t, result_reason_s, to_notify_b, notify_times_n, "
       "notify_id_s, ticket_id_n, related_id_n, consap_id_n, issuer_card_id_s "
-      "FROM bpd_citizen.bpd_award_winner " 
+      "FROM bpd_citizen.bpd_award_winner "
       "WHERE id_n in %(id_n_list)s;",
       {
         "id_n_list": tuple(transfers_df.idKey.unique()),
@@ -241,12 +241,12 @@ class Awardwinner() :
       .transform('size') )
 
     # Add transfer status
-    transfers_df['upd_status'] = None 
-    transfers_df['not_status'] = None 
+    transfers_df['upd_status'] = None
+    transfers_df['not_status'] = None
     transfers_df = transfers_df.apply(self._set_transfer_status, axis=1)
 
     print(transfers_df.to_csv(sep=';'))
-  
+
   def update_state_41(self):
     transfers_df = pd.read_csv(self.args.file, sep=';')
     transfers_df = transfers_df.apply(self._extract_transfer_id, axis=1)
@@ -271,16 +271,16 @@ class Awardwinner() :
   def _extract_transfer_id(self, transfer):
     transfer.idKey = str(int(transfer.idKey[2:]))
     return transfer
-  
+
   def _set_transfer_status(self, transfer):
-    if (transfer.esito_bonifico_s == 'ORDINE ESEGUITO' and 
+    if (transfer.esito_bonifico_s == 'ORDINE ESEGUITO' and
       transfer.pagopa_n_tranfers_per_awp == 1 and
       transfer.consap_n_occurrencies == 1
       ) :
       transfer.upd_status = 'TBU'
     else :
       transfer.upd_status = 'NOU'
-    
+
     if (transfer.upd_status == 'TBU' and transfer.match_cur_iban == False) :
       transfer.not_status = 'SEND'
     else :
@@ -289,17 +289,17 @@ class Awardwinner() :
 
 
     return transfer
-  
+
   def _convert_award_period_dates(self, winner):
     winner.aw_period_start_d = winner.aw_period_start_d.strftime("%d/%m/%Y")
     winner.aw_period_end_d = winner.aw_period_end_d.strftime("%d/%m/%Y")
 
     return winner
-  
+
   def _pad_award_period(self, winner):
     winner.award_period_id_n = '%02d' % winner.award_period_id_n
     return winner
-  
+
   def _amounts_to_cents(self, winner):
     winner.amount_n = int(winner.amount_n * 100)
     winner.amount_n = winner.amount_n if winner.amount_n >= 100 else '%03d' % winner.amount_n
@@ -310,16 +310,14 @@ class Awardwinner() :
     return winner
 
   def _set_payment_reason(self, winner):
-    pay_reason = "%09d - Cashback di Stato - dal %s  al %s" % (winner.id_n, 
+    pay_reason = "%09d - Cashback di Stato - dal %s  al %s" % (winner.id_n,
       winner.aw_period_start_d.strftime("%d/%m/%Y"), winner.aw_period_end_d.strftime("%d/%m/%Y"))
-    
+
     if winner.technical_account_holder_s is not None or winner.account_holder_cf_s != winner.fiscal_code_s :
       pay_reason += " - %s" % winner.fiscal_code_s
-    
+
     if winner.technical_account_holder_s is not None and winner.issuer_card_id_s is not None :
       pay_reason += " - %s" % winner.issuer_card_id_s
 
     winner['pay_reason'] = pay_reason
     return winner
-
-

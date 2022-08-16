@@ -14,7 +14,7 @@ class Citizen():
   def __init__(self, args):
     self.args = args
     self.db_connection = psycopg2.connect(args.connection_string)
-  
+
   def check_ranking(self):
     citizens_df = (pd.read_csv(self.args.file, sep=';')
       .groupby(by='fiscal_code_s')
@@ -24,12 +24,12 @@ class Citizen():
 
     current_ranking = lambda x : self._read_current_ranking(x)
     citizens_df = citizens_df.apply(current_ranking, axis=1)
-    
+
     next_ranking = lambda x : self._read_next_ranking(x)
     citizens_df = citizens_df.apply(next_ranking, axis=1)
 
     print(citizens_df[(citizens_df['ranking_n'] > 100000) & (citizens_df['best_new_ranking_n']  <= 100000)].to_csv())
-  
+
   def check_award_received(self):
     transactions_df = pd.read_csv(self.args.file, sep=';', dtype={"operation_type_c": str, "acquirer_id_s" : str})
     transactions_df["award_received"] = ""
@@ -45,7 +45,7 @@ class Citizen():
     self.db_cursor = self.db_connection.cursor()
     award_q = self.db_cursor.mogrify(
       "SELECT esito_bonifico_s, cashback_n "
-      "FROM bpd_citizen.bpd_award_winner " 
+      "FROM bpd_citizen.bpd_award_winner "
       "WHERE fiscal_code_s = %(fiscal_code)s "
       "AND award_period_id_n = %(award_period)s "
       "AND esito_bonifico_s = 'ORDINE ESEGUITO';",
@@ -67,7 +67,7 @@ class Citizen():
     self.db_cursor = self.db_connection.cursor()
     fiscal_code_q = self.db_cursor.mogrify(
       "SELECT fiscal_code_s "
-      "FROM bpd_payment_instrument.bpd_payment_instrument " 
+      "FROM bpd_payment_instrument.bpd_payment_instrument "
       "WHERE hpan_s = %(hpan_s)s;",
       {
         "hpan_s": transaction.hpan_s,
@@ -82,13 +82,13 @@ class Citizen():
 
 
 
-  
+
   def _read_current_ranking(self, citizen):
     self.db_cursor = self.db_connection.cursor()
 
     ranking_q = self.db_cursor.mogrify(
       "SELECT transaction_n, ranking_n "
-      "FROM bpd_citizen.bpd_citizen_ranking " 
+      "FROM bpd_citizen.bpd_citizen_ranking "
       "WHERE fiscal_code_c = %(fiscal_code)s "
       "AND award_period_id_n = %(award_period)s ;",
       {
@@ -110,7 +110,7 @@ class Citizen():
 
     ranking_q = self.db_cursor.mogrify(
       "SELECT ranking_n "
-      "FROM bpd_citizen.bpd_citizen_ranking " 
+      "FROM bpd_citizen.bpd_citizen_ranking "
       "WHERE transaction_n = %(transaction_n)s + %(new_transactions)s"
       "AND award_period_id_n = %(award_period)s ;",
       {

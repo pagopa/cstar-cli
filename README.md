@@ -58,7 +58,7 @@ cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --
 ### Creating synthetic transactions for the Batch Service.
 
 > See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
- 
+
 #### Unencrypted
 ```bash
 cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT>
@@ -125,7 +125,7 @@ cst sender aggregates --sender <ABI> --action trx_and_aggr --aggr-qty 10
 **For schemas (Bancomat) and technical senders (Satispay, Sumup):**
 
 ```bash
-cst sender aggregates --sender {COBAN, STPAY, EVODE} --action trx_and_aggr --aggr-qty 10 
+cst sender aggregates --sender {COBAN, STPAY, EVODE} --action trx_and_aggr --aggr-qty 10
 ```
 This will also test the translation of technical ABI to acquirer fiscal code.
 

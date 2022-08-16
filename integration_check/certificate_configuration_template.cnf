@@ -18,5 +18,3 @@ emailAddress        = support@COMPANY_NAME.it
 extendedKeyUsage = critical, clientAuth
 basicConstraints = critical, CA:FALSE
 keyUsage         = digitalSignature
-
-
