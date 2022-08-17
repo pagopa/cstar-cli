@@ -88,7 +88,7 @@ Passed with status 201 Created.
 > - make sure to empty the Batch Service's AdE errors folder,
 > - start the Batch Service.
 
-Make sure to run the following command after a successful run of the Batch Service where AfE error files are downloaded.
+Make sure to run the following command after a successful run of the Batch Service where AdE error files are downloaded.
 
 From the project root run the script with the following command:
 ```bash
