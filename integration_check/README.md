@@ -92,7 +92,7 @@ Make sure to run the following command after a successful run of the Batch Servi
 
 From the project root run the script with the following command:
 ```bash
-sh ./integration_check/scripts/005b-ade-ack-remote-check-UAT/script.sh /PATH/TO/EXPECTED_ADE_ACK.csv /PATH/TO/ADE_ACK/DIRECTORY
+sh ./integration_check/scripts/005b-ade-ack-remote-check-UAT/script.sh /PATH/TO/EXPECTED_ADE_ACK.csv /PATH/TO/BATCH_SERVICE/ADE_ACK/DIRECTORY
 ```
 
 The execution will print the result of the check.
