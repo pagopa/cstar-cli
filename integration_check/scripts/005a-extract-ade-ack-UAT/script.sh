@@ -38,11 +38,8 @@ TEMPORARY_DIR="temporary"$NOW
 mkdir -p ./"$TEMPORARY_DIR"
 mkdir -p ./generated/ade-acks
 
-# Take NUM_RANDOM_ACKED_LINES random lines and save them in a file that will be uploaded
-shuf -n "$NUM_RANDOM_ACKED_LINES" "$LOCAL" > "./$TEMPORARY_DIR/extracted_lines.csv"
-
 # Remove zero-width-spacing and CR at the end of the downloaded file
-tr -d '\015' < "./$TEMPORARY_DIR/extracted_lines.csv" | sed 's/\xef\xbb\xbf//g' > "./$TEMPORARY_DIR/extracted_lines_cleaned.csv"
+tr -d '\015' < "$LOCAL" | sed 's/\xef\xbb\xbf//g' > "./$TEMPORARY_DIR/local_cleaned.csv"
 
 # Counters for ade acks errors and success
 i=0
