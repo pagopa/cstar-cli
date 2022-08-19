@@ -27,8 +27,8 @@ URL="https://api.uat.cstar.pagopa.it/rtd/sftp-deposit/"
 # Extract the file name from the path
 FILE_NAME="${LOCAL##*/}"
 
-# Compose the ADE ACK filename
-ADE_ACK_NAME="CSTAR.ADEACK.$(echo "$FILE_NAME" | cut -d'.' -f2 -f4 -f5 -f6 -f7)"
+# Compose the ADE ACK filename (AGGADE.SENDERCODE.DATE.TIME.INCR.CHUNK.gz -> CSTAR.ADEACK.SENDERCODE.DATE.TIME.gz)
+ADE_ACK_NAME="CSTAR.ADEACK.$(echo "$FILE_NAME" | cut -d'.' -f2 -f3 -f4 -f7)"
 
 # Use timestamp to make temporary directory name unique
 NOW=$(date +%s)
@@ -38,38 +38,31 @@ TEMPORARY_DIR="temporary"$NOW
 mkdir -p ./"$TEMPORARY_DIR"
 mkdir -p ./generated/ade-acks
 
-# Take NUM_RANDOM_ACKED_LINES random lines and save them in a file that will be uploaded
-shuf -n "$NUM_RANDOM_ACKED_LINES" "$LOCAL" > "./$TEMPORARY_DIR/extracted_lines.csv"
-
 # Remove zero-width-spacing and CR at the end of the downloaded file
-tr -d '\015' < "./$TEMPORARY_DIR/extracted_lines.csv" | sed 's/\xef\xbb\xbf//g' > "./$TEMPORARY_DIR/extracted_lines_cleaned.csv"
+tr -d '\015' < "$LOCAL" | sed 's/\xef\xbb\xbf//g' > "./$TEMPORARY_DIR/local_cleaned.csv"
 
 # Counters for ade acks errors and success
 i=0
 
 # Generate a fake ADE ACK record for each line
 while read -r p; do
-  if [ $i -eq 0 ]
+  if [ $(( i % 3)) -eq 0 ]
     then
-      echo "$p" | awk -F ";" '{print($1";0;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-  else
-    if [ $i -eq 1 ]
-      then
-        echo "$p" | awk -F ";" '{print($1";1;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-        echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";1;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
-    else
-      if [ $i -eq 2 ]
-        then
-          echo "$p" | awk -F ";" '{print($1";3;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-          echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";3;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
-        else
-          echo "$p" | awk -F ";" '{print($1";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-          echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
-      fi
-    fi
+      echo "$p" | awk -F ";" '{print($1";1;1206")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";1;1206")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
+  fi
+  if [ $(( i % 3)) -eq 1 ]
+    then
+      echo "$p" | awk -F ";" '{print($1";3;1201")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";3;1201")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
+  fi
+  if [ $(( i % 3)) -eq 2 ]
+    then
+      echo "$p" | awk -F ";" '{print($1";4;1302|1304")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";4;1302|1304")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
   fi
   i=$((i+1))
-done < "./$TEMPORARY_DIR/extracted_lines_cleaned.csv"
+done < "./$TEMPORARY_DIR/local_cleaned.csv"
 
 # Check for content of temporary file
 if [ -z "$(cat "./$TEMPORARY_DIR/$ADE_ACK_NAME")" ]

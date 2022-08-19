@@ -23,6 +23,9 @@ URL="https://api.uat.cstar.pagopa.it/rtd/sftp-retrieve/"
 # Extract the file name from the path
 FILE_NAME="${LOCAL##*/}"
 
+# Adapt to AdE naming convention
+FILE_NAME="AGGADE.$(echo "$FILE_NAME" | cut -d'.' -f2 -f4 -f5 -f6)"
+
 # Use timestamp to make temporary directory name unique
 NOW=$(date +%s)
 TEMPORARY_DIR="temporary"$NOW
@@ -38,7 +41,7 @@ wget --verbose \
     --certificate "$CERT" \
     --private-key "$CERT_KEY" \
     --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" \
-    "$URL$FILE_NAME.pgp.0.decrypted.gz"
+    "$URL$FILE_NAME.0.gz"
 
 gunzip ./"$TEMPORARY_DIR"/remote.csv.gz
 cp ./"$TEMPORARY_DIR"/remote.csv ./deposited-remotely/"$FILE_NAME"

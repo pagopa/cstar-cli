@@ -54,8 +54,8 @@ The forth step checks for correct functioning of the batch service.
 
 Once the previous test is passed, pass the path to the file generated with the batch service to the script.
 
-> Note that the backend needs time to process the file.
-> Therefore, the 
+> This step requires a backend processing of the file uploaded in the previous step.
+Please to wait at least 1 hour before running the following script.
 
 From the project root, run the script with the following (properly customized) command:
 ```bash
@@ -70,7 +70,7 @@ This check is divided into two steps:
 ### 5a. Generate and upload example AdE error file
 
 > Given the "PASS" on the previous script, a folder named `deposited-remotely` should be created in the CSTAR CLI root.
-> Inside that you can find the file downloaded from our systems (referred in the following command as `DOWNLOADED_FILE.csv`). 
+> Inside that you can find the file downloaded from our systems (referred in the following command as `DOWNLOADED_FILE.csv`).
 
 From the project root run the script with the following command:
 ```bash
@@ -79,18 +79,20 @@ sh ./integration_check/scripts/005a-extract-ade-ack-UAT/script.sh ./deposited-re
 
 The execution will print the HTTP status code of the upload request and generates a file inside the folder `./generated/ade-acks` (referred as `EXPECTED_ADE_ACK.csv` in the next step).
 
-Passed with status 201 Created
+Passed with status 201 Created.
 
 ### 5b. Equality check between expected and downloaded error files from Agenzia delle Entrate
 
 
-> Please wait at **least 30 minutes** after the run of script **5a**, then start the Batch Service. 
+> Please wait at **least 30 minutes** after the run of script **5a**, then:
+> - make sure to empty the Batch Service's AdE errors folder,
+> - start the Batch Service.
 
-Make sure to run the following command after a successful run of the Batch Service where ADE error files are downloaded.
+Make sure to run the following command after a successful run of the Batch Service where AdE error files are downloaded.
 
 From the project root run the script with the following command:
 ```bash
-sh ./integration_check/scripts/005b-ade-ack-remote-check-UAT/script.sh /PATH/TO/EXPECTED_ADE_ACK.csv /PATH/TO/ADE_ACK/DIRECTORY
+sh ./integration_check/scripts/005b-ade-ack-remote-check-UAT/script.sh /PATH/TO/EXPECTED_ADE_ACK.csv /PATH/TO/BATCH_SERVICE/ADE_ACK/DIRECTORY
 ```
 
 The execution will print the result of the check.

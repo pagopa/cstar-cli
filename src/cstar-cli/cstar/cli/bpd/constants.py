@@ -1,5 +1,5 @@
-WINNING_TRANSACTION_SCHEMA = ['acquirer_c', 'trx_timestamp_t', 'hpan_s', 
-      'operation_type_c', 'circuit_type_c', 'amount_i', 'amount_currency_c', 
+WINNING_TRANSACTION_SCHEMA = ['acquirer_c', 'trx_timestamp_t', 'hpan_s',
+      'operation_type_c', 'circuit_type_c', 'amount_i', 'amount_currency_c',
       'mcc_c', 'mcc_descr_s', 'score_n', 'award_period_id_n', 'insert_date_t',
       'insert_user_s', 'update_date_t','update_user_s', 'enabled_b', 'merchant_id_s',
       'correlation_id_s', 'acquirer_id_s', 'id_trx_issuer_s', 'id_trx_acquirer_s',
