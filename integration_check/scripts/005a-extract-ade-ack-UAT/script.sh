@@ -46,27 +46,23 @@ i=0
 
 # Generate a fake ADE ACK record for each line
 while read -r p; do
-  if [ $i -eq 0 ]
+  if [ $(( i % 3)) -eq 0 ]
     then
-      echo "$p" | awk -F ";" '{print($1";0;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-  else
-    if [ $i -eq 1 ]
-      then
-        echo "$p" | awk -F ";" '{print($1";1;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-        echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";1;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
-    else
-      if [ $i -eq 2 ]
-        then
-          echo "$p" | awk -F ";" '{print($1";3;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-          echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";3;")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
-        else
-          echo "$p" | awk -F ";" '{print($1";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
-          echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";4;1201|1302")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
-      fi
-    fi
+      echo "$p" | awk -F ";" '{print($1";1;1206")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";1;1206")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
+  fi
+  if [ $(( i % 3)) -eq 1 ]
+    then
+      echo "$p" | awk -F ";" '{print($1";3;1201")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";3;1201")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
+  fi
+  if [ $(( i % 3)) -eq 2 ]
+    then
+      echo "$p" | awk -F ";" '{print($1";4;1302|1304")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME"
+      echo "$p" | awk -F ";" '{print($10";"$11";"$12";"$9";4;1302|1304")}' >> "./$TEMPORARY_DIR/$ADE_ACK_NAME.expected"
   fi
   i=$((i+1))
-done < "./$TEMPORARY_DIR/extracted_lines_cleaned.csv"
+done < "./$TEMPORARY_DIR/local_cleaned.csv"
 
 # Check for content of temporary file
 if [ -z "$(cat "./$TEMPORARY_DIR/$ADE_ACK_NAME")" ]
