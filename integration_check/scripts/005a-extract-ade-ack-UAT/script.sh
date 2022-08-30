@@ -19,9 +19,6 @@ CERT_KEY=$3
 # API Key for RTD Products
 API_KEY=$4
 
-# Number of lines extracted at random that will form the fake ADE ACK file.
-NUM_RANDOM_ACKED_LINES=5
-
 URL="https://api.uat.cstar.pagopa.it/rtd/sftp-deposit/"
 
 # Extract the file name from the path
