@@ -19,16 +19,13 @@ CERT_KEY=$3
 # API Key for RTD Products
 API_KEY=$4
 
-# Number of lines extracted at random that will form the fake ADE ACK file.
-NUM_RANDOM_ACKED_LINES=5
-
 URL="https://api.uat.cstar.pagopa.it/rtd/sftp-deposit/"
 
 # Extract the file name from the path
 FILE_NAME="${LOCAL##*/}"
 
-# Compose the ADE ACK filename (AGGADE.SENDERCODE.DATE.TIME.INCR.CHUNK.gz -> CSTAR.ADEACK.SENDERCODE.DATE.TIME.gz)
-ADE_ACK_NAME="CSTAR.ADEACK.$(echo "$FILE_NAME" | cut -d'.' -f2 -f3 -f4 -f7)"
+# Compose the ADE ACK filename (AGGADE.SENDERCODE.DATE.TIME.INCR.CHUNK.csv -> CSTAR.ADEACK.SENDERCODE.DATE.TIME.INCR.CHUNK)
+ADE_ACK_NAME="CSTAR.ADEACK.$(echo "$FILE_NAME" | cut -d'.' -f2-6)"
 
 # Use timestamp to make temporary directory name unique
 NOW=$(date +%s)
