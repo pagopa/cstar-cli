@@ -12,7 +12,7 @@ stateOrProvinceName = Yourcity
 localityName        = Yourcity
 organizationName    = COMPANY_NAME S.p.A.
 commonName          = Certificato client Batch Service - COMPANY_NAME S.p.A.
-emailAddress        = support@COMPANY_NAME.it
+emailAddress        = youremail@COMPANY_NAME.it
 
 [ v3_req ]
 extendedKeyUsage = critical, clientAuth
