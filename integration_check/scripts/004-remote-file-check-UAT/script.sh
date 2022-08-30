@@ -24,7 +24,7 @@ URL="https://api.uat.cstar.pagopa.it/rtd/sftp-retrieve/"
 FILE_NAME="${LOCAL##*/}"
 
 # Adapt to AdE naming convention
-FILE_NAME="AGGADE.$(echo "$FILE_NAME" | cut -d'.' -f2 -f4 -f5 -f6)"
+FILE_NAME="AGGADE.$(echo "$FILE_NAME" | cut -d'.' -f2,4-6)"
 
 # Use timestamp to make temporary directory name unique
 NOW=$(date +%s)
