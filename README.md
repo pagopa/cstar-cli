@@ -142,5 +142,5 @@ cst sender aggregates --action diff --files /path/to/files/produced/by/batch/ser
 ### To check for execution errors on commands you can run the following:
 
 ```bash
-sh ./src/test/run-all.sh
+sh ./test/run-all.sh
 ```
