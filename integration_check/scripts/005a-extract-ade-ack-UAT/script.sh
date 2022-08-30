@@ -24,7 +24,7 @@ URL="https://api.uat.cstar.pagopa.it/rtd/sftp-deposit/"
 # Extract the file name from the path
 FILE_NAME="${LOCAL##*/}"
 
-# Compose the ADE ACK filename (AGGADE.SENDERCODE.DATE.TIME.INCR.CHUNK.gz -> CSTAR.ADEACK.SENDERCODE.DATE.TIME.INCR.CHUNK)
+# Compose the ADE ACK filename (AGGADE.SENDERCODE.DATE.TIME.INCR.CHUNK.csv -> CSTAR.ADEACK.SENDERCODE.DATE.TIME.INCR.CHUNK)
 ADE_ACK_NAME="CSTAR.ADEACK.$(echo "$FILE_NAME" | cut -d'.' -f2-6)"
 
 # Use timestamp to make temporary directory name unique
