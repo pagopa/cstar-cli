@@ -45,9 +45,10 @@ FISCAL_CODE = "RSSMRA80A01H501U"
 VAT = "12345678903"
 
 FISCAL_CODE_TO_FAKE_ABI = {
-    "IE9813461A": "EVODE",
+    "IE9813461A": "SUMUP",
     "LU30726739": "STPAY",
     "04949971008": "BPAY1",
+    "BG175325806": "ICARD"
 }
 
 BANCOMAT_ACQUIRERS_SENDER_ID = [
@@ -111,8 +112,12 @@ class Aggregates:
                 acquirer_id = random.choice(BANCOMAT_ACQUIRERS_SENDER_ID)
             elif self.args.sender == "STPAY":
                 acquirer_id = "LU30726739"
-            elif self.args.sender == "EVODE":
+            elif self.args.sender == "SUMUP":
                 acquirer_id = "IE9813461A"
+            elif self.args.sender == "BPAY1":
+                acquirer_id = "04949971008"
+            elif self.args.sender == "ICARD":
+                acquirer_id = "BG175325806"
             else:
                 acquirer_id = sender_code
 
