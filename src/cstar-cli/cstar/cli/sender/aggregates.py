@@ -120,7 +120,7 @@ class Aggregates:
             elif self.args.sender == "ICARD":
                 acquirer_id = "BG175325806"
             elif self.args.sender == "TPAY1":
-                acquirer_id = "9771701001"
+                acquirer_id = "09771701001"
             else:
                 acquirer_id = sender_code
 
