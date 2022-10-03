@@ -113,7 +113,7 @@ class Transactionfilter:
             synthetic_pos.append([
                 str(1000000 + i),  # terminal_id
                 str(2000000 + i),  # merchant_id,
-                "CF" + str(3000000 + i),  # fiscal_code
+                "CF" + str(300000000 + i)[:9],  # fiscal_code
                 VAT if i % PERSON_NATURAL_LEGAL_RATIO == 0 else "",  # vat
                 "00" if i % POS_PHYSICAL_ECOMMERCE_RATIO == 0 else "01",  # pos_type
             ])
@@ -154,7 +154,7 @@ class Transactionfilter:
 
             par = ""
             if i % PAR_RATIO == 0:
-                par = str(uuid.uuid4())
+                par = str(uuid.uuid4().int)[:29]
 
             transactions.append(
                 [
