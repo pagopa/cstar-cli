@@ -49,7 +49,8 @@ FISCAL_CODE_TO_FAKE_ABI = {
     "LU30726739": "STPAY",
     "04949971008": "BPAY1",
     "BG175325806": "ICARD",
-    "9771701001": "TPAY1"
+    "9771701001": "TPAY1",
+    "97898850157": "AMAZN"
 }
 
 BANCOMAT_ACQUIRERS_SENDER_ID = [
@@ -121,6 +122,8 @@ class Aggregates:
                 acquirer_id = "BG175325806"
             elif self.args.sender == "TPAY1":
                 acquirer_id = "09771701001"
+            elif self.args.sender == "AMAZN":
+                acquirer_id = "97898850157"
             else:
                 acquirer_id = sender_code
 
