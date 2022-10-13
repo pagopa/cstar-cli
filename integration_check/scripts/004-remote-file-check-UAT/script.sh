@@ -41,7 +41,7 @@ wget --verbose \
     --certificate "$CERT" \
     --private-key "$CERT_KEY" \
     --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" \
-    "$URL$FILE_NAME.0.gz"
+    $URL$FILE_NAME"000.gz"
 
 gunzip ./"$TEMPORARY_DIR"/remote.csv.gz
 cp ./"$TEMPORARY_DIR"/remote.csv ./deposited-remotely/"$FILE_NAME.0"
