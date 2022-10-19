@@ -44,7 +44,7 @@ wget --verbose \
     $URL$FILE_NAME"000.gz"
 
 gunzip ./"$TEMPORARY_DIR"/remote.csv.gz
-cp ./"$TEMPORARY_DIR"/remote.csv ./deposited-remotely/"$FILE_NAME.0"
+cp ./"$TEMPORARY_DIR"/remote.csv ./deposited-remotely/$FILE_NAME"000"
 
 # Remove CR at the end of the downloaded file, remove record_id columns and sort it
 tr -d '\015' < ./"$TEMPORARY_DIR"/remote.csv | cut -d";" -f2- | sort > ./"$TEMPORARY_DIR"/remote_no_record_id.csv
