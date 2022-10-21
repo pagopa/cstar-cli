@@ -132,14 +132,14 @@ class Aggregates:
 
             fiscal_code = str(i).zfill(11)
 
-            if i % DIRTY_VAT_RATIO == 2:
+            if i % DIRTY_VAT_RATIO == 0:
                 vat = "###na###"
                 # Grants that at least 2 transactions are aggregated in case of dirty VAT
                 num_trx = num_trx + 1
             else:
                 vat = str(i).zfill(11)
 
-            if i % DIRTY_POS_TYPE_RATIO == 3:
+            if i % DIRTY_POS_TYPE_RATIO == 0:
                 pos_type = "99"
                 # Grants that at least 2 transactions are aggregated in case of dirty pos_type
                 num_trx = num_trx + 1
