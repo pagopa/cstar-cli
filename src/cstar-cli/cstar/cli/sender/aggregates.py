@@ -25,8 +25,6 @@ TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
 
 PAYMENT_REVERSAL_RATIO = 10
-DIRTY_VAT_RATIO = 50
-DIRTY_POS_TYPE_RATIO = 50
 PERSON_NATURAL_LEGAL_RATIO = 3
 PAR_RATIO = 7
 
@@ -132,14 +130,14 @@ class Aggregates:
 
             fiscal_code = str(i).zfill(11)
 
-            if i % DIRTY_VAT_RATIO == 2:
+            if i % self.args.ratio_dirty_vat == 0:
                 vat = "###na###"
                 # Grants that at least 2 transactions are aggregated in case of dirty VAT
                 num_trx = num_trx + 1
             else:
                 vat = str(i).zfill(11)
 
-            if i % DIRTY_POS_TYPE_RATIO == 3:
+            if i % self.args.ratio_dirty_pos_type == 0:
                 pos_type = "99"
                 # Grants that at least 2 transactions are aggregated in case of dirty pos_type
                 num_trx = num_trx + 1
@@ -243,7 +241,7 @@ class Aggregates:
 
                 par = ''
                 if i % PAR_RATIO == 0:
-                    par = str(uuid.uuid4())
+                    par = str(uuid.uuid4().int)[:29]
 
                 transactions.append(
                     [
