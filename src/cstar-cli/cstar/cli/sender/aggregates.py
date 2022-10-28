@@ -125,8 +125,8 @@ class Aggregates:
             else:
                 acquirer_id = sender_code
 
-            merchant_id = abs(hash(sha256(f"merchant{i}".encode()).hexdigest()))
-            terminal_id = abs(hash(sha256(f"terminal{i}".encode()).hexdigest()))
+            merchant_id = sha256(f"merchant{i}".encode()).hexdigest()
+            terminal_id = sha256(f"terminal{i}".encode()).hexdigest()
 
             fiscal_code = str(i).zfill(11)
 

@@ -75,8 +75,8 @@ class Transactionaggregate:
             # Set random amount
             total_amount = random.randint(2000, 500000)
 
-            merchant_id = abs(hash(sha256(f"merchant{i}".encode()).hexdigest()))
-            terminal_id = abs(hash(sha256(f"terminal{i}".encode()).hexdigest()))
+            merchant_id = sha256(f"merchant{i}".encode()).hexdigest()
+            terminal_id = sha256(f"terminal{i}".encode()).hexdigest()
 
             fiscal_code = str(i).zfill(11)
 
