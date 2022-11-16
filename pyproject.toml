@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cstar-cli"
-version = "0.0.7"
+version = "0.0.8"
 description = "Cstar Command Line Interface"
 authors = [
 	"CSTAR Team <cstar@pagopa.it>"
