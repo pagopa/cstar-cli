@@ -105,15 +105,11 @@ class Results:
                 case 2:
                     for bad_field in random.sample(SCARTI, random.randint(1, 14)):
                         lista_errori = lista_errori + random.choice(bad_field) + '|'
-                    print(lista_errori)
                     lista_errori = lista_errori.removesuffix("|")
-                    print(lista_errori)
                 case 4:
                     for bad_field in random.sample(SEGNALAZIONI, random.randint(1, 2)):
                         lista_errori = lista_errori + random.choice(bad_field) + '|'
-                    print(lista_errori)
                     lista_errori = lista_errori.removesuffix("|")
-                    print(lista_errori)
 
             results.append(
                 [
