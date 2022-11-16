@@ -17,6 +17,8 @@ MAX_DAYS_BACK = 3
 TRANSACTION_FILE_EXTENSION = ".csv"
 ENCRYPTED_FILE_EXTENSION = ".pgp"
 OUTPUT_EXPECTED_EXTENSION = ".expected"
+# This string token is not valid for aggregates greater than the Batch Service threshold
+BATCH_SERVICE_FIRST_CHUNK = ".01"
 
 CSTAR_FILE_PREFIX_FILE_NAME = "CSTAR"
 ADE_FILE_PREFIX_FILE_NAME = "ADE"
@@ -182,8 +184,8 @@ class Aggregates:
         aggr_df = pd.DataFrame(aggregates, columns=columns)
 
         aggr_file_path = self.args.out_dir + "/" + ADE_FILE_PREFIX_FILE_NAME + "." + str(
-            sender_code) + "." + "TRNLOG" + "." + now_timestamp + ".001" + TRANSACTION_FILE_EXTENSION \
-                         + OUTPUT_EXPECTED_EXTENSION
+            sender_code) + "." + "TRNLOG" + "." + now_timestamp + ".001" + BATCH_SERVICE_FIRST_CHUNK \
+                         + TRANSACTION_FILE_EXTENSION + OUTPUT_EXPECTED_EXTENSION
 
         os.makedirs(os.path.dirname(aggr_file_path), exist_ok=True)
 
