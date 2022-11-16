@@ -24,7 +24,7 @@ URL="https://api.uat.cstar.pagopa.it/rtd/sftp-retrieve/"
 FILE_NAME="${LOCAL##*/}"
 
 # Adapt to AdE naming convention
-FILE_NAME="AGGADE.$(echo "$FILE_NAME" | cut -d'.' -f2,4-6)"
+FILE_NAME="AGGADE.$(echo "$FILE_NAME" | cut -d'.' -f2,4-7)"
 
 # Use timestamp to make temporary directory name unique
 NOW=$(date +%s)
@@ -41,10 +41,10 @@ wget --verbose \
     --certificate "$CERT" \
     --private-key "$CERT_KEY" \
     --header 'Ocp-Apim-Subscription-Key: '"$API_KEY" \
-    $URL$FILE_NAME".00000.gz"
+    $URL$FILE_NAME"000.gz"
 
 gunzip ./"$TEMPORARY_DIR"/remote.csv.gz
-cp ./"$TEMPORARY_DIR"/remote.csv ./deposited-remotely/$FILE_NAME".00000"
+cp ./"$TEMPORARY_DIR"/remote.csv ./deposited-remotely/$FILE_NAME"000"
 
 # Remove CR at the end of the downloaded file, remove record_id columns and sort it
 tr -d '\015' < ./"$TEMPORARY_DIR"/remote.csv | cut -d";" -f2- | sort > ./"$TEMPORARY_DIR"/remote_no_record_id.csv
