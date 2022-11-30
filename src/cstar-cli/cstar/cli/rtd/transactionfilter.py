@@ -154,7 +154,7 @@ class Transactionfilter:
 
             par = ""
             if i % PAR_RATIO == 0:
-                par = str(uuid.uuid4().int)[:29]
+                par = sha256(f"{pan}".encode()).hexdigest().upper()[:29]
 
             transactions.append(
                 [
