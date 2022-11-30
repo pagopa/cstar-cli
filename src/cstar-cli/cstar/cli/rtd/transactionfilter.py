@@ -184,7 +184,7 @@ class Transactionfilter:
             "sender_code",
             "operation_type",
             "circuit_type",
-            "hpan",
+            "pan",
             "date_time",
             "id_trx_acquirer",
             "id_trx_issuer",
