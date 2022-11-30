@@ -134,9 +134,9 @@ class Transactionfilter:
                 operation_type = "01"
 
             if i % self.args.ratio == 0:
-                pan = sha256(f"{random.choice(synthetic_pans_enrolled)}{self.args.salt}".encode()).hexdigest()
+                pan = random.choice(synthetic_pans_enrolled)
             else:
-                pan = sha256(f"{random.choice(synthetic_pans_not_enrolled)}{self.args.salt}".encode()).hexdigest()
+                pan = random.choice(synthetic_pans_not_enrolled)
 
             id_trx_acquirer = uuid.uuid4().int
             id_trx_issuer = uuid.uuid4().int
