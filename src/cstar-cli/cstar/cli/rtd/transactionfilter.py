@@ -32,7 +32,6 @@ PAYMENT_CIRCUITS = [f"{i:02}" for i in range(11)]
 OFFSETS = [
     ".000Z",
     ".000+01:00",
-    ".000+0200",
     ".500+01:30"
 ]
 
