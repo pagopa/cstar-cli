@@ -61,7 +61,7 @@ cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --
 
 #### Unencrypted
 ```bash
-cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT>
+cst rtd transactionfilter --action synthetic_transactions --sender 12345 --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT>
 ```
 
 #### Encrypted, with specified output directory and public key file.
