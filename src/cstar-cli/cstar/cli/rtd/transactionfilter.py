@@ -32,14 +32,13 @@ PAYMENT_CIRCUITS = [f"{i:02}" for i in range(11)]
 OFFSETS = [
     ".000Z",
     ".000+01:00",
-    ".000+0200",
     ".500+01:30"
 ]
 
 MERCHANT_ID = "400000080205"
 TERMINAL_ID = "80205005"
 BIN = "40236010"
-MCC = "4900"
+MCC = "6010"
 FISCAL_CODE = "RSSMRA80A01H501U"
 VAT = "12345678903"
 
@@ -134,9 +133,9 @@ class Transactionfilter:
                 operation_type = "01"
 
             if i % self.args.ratio == 0:
-                pan = sha256(f"{random.choice(synthetic_pans_enrolled)}{self.args.salt}".encode()).hexdigest()
+                pan = random.choice(synthetic_pans_enrolled)
             else:
-                pan = sha256(f"{random.choice(synthetic_pans_not_enrolled)}{self.args.salt}".encode()).hexdigest()
+                pan = random.choice(synthetic_pans_not_enrolled)
 
             id_trx_acquirer = uuid.uuid4().int
             id_trx_issuer = uuid.uuid4().int
@@ -154,7 +153,7 @@ class Transactionfilter:
 
             par = ""
             if i % PAR_RATIO == 0:
-                par = str(uuid.uuid4().int)[:29]
+                par = sha256(f"{pan}".encode()).hexdigest().upper()[:29]
 
             transactions.append(
                 [
@@ -184,7 +183,7 @@ class Transactionfilter:
             "sender_code",
             "operation_type",
             "circuit_type",
-            "hpan",
+            "pan",
             "date_time",
             "id_trx_acquirer",
             "id_trx_issuer",

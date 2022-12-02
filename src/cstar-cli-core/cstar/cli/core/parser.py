@@ -128,6 +128,7 @@ def parser():
     sender_aggregates_parser.add_argument("--shuffle", action="store_true", help="Flag for shuffling transactions file")
     sender_aggregates_parser.add_argument("--ratio-dirty-vat", type=int, default=51)
     sender_aggregates_parser.add_argument("--ratio-dirty-pos-type", type=int, default=50)
+    sender_aggregates_parser.add_argument("--pans-prefix", type=str, default="pan")
 
     # -DIFF CHECKER
     sender_aggregates_parser.add_argument('-f', '--files', nargs=2, help="Files to compare for equality")

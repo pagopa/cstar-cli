@@ -250,7 +250,7 @@ class Aggregates:
                         sender_code,
                         operation_type,
                         payment_circuit,
-                        f"{'pan' + str(i)}",
+                        f"{self.args.pans_prefix+ str(i)}",
                         date_time,
                         id_trx_acquirer,
                         id_trx_issuer,
