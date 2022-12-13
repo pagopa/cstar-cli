@@ -280,7 +280,7 @@ class Transactionfilter:
                 synthetic_pan = f"{self.args.pans_prefix}{i}_{child}"
                 hpan_c = sha256(f"{self.args.pans_prefix}{i}_{child}{self.args.salt}".encode()).hexdigest()
                 synthetic_pans.append(synthetic_pan)
-                hpans.append(hpan_c
+                hpans.append(hpan_c)
                 db_card_struct["hashPanChildren"].append(hpan_c)
                 temp_hashpanexports.append({"value":hpan_c})
 

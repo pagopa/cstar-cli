@@ -31,6 +31,14 @@ then
   exit 2
 fi
 
+echo "Running synthetic_cards"
+cst rtd transactionfilter --action synthetic_cards --pans-prefix "prefix_" --crd-qty 10 --par RANDOM --max-num-children 5  -o "$TEMPORARY_DIR"/synthetic_cards
+if [ -n "$(find "$TEMPORARY_DIR"/synthetic_cards -empty)" ]
+then
+  echo "FAIL"
+  exit 2
+fi
+
 echo "Running aggregate_transactions"
 cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --reverse-ratio 100 --ratio-dirty-pos-type 30 --ratio-dirty-vat 20 --shuffle -o "$TEMPORARY_DIR"/aggregate_transactions
 if [ -n "$(find "$TEMPORARY_DIR"/aggregate_transactions -empty)" ]
