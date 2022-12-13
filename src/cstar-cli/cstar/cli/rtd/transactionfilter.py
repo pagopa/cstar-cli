@@ -28,6 +28,8 @@ CARDS_FILE_PREFIX = "CARDS_"
 CARDS_FILE_HPANS_NAME = "CARDS_SYNTHETIC_PANS"
 CARDS_FILE_SYNTHETICS_PAN_NAME = "CARDS_HASHPANS"
 CARDS_FILE_HASPANS_PAN_EXTENSION = ".txt"
+ENR_PAY_INS = "enrolled_payment_instrument"
+CARDS_SPRING_CLASS = "it.gov.pagopa.rtd.ms.enrolledpaymentinstrument.infrastructure.persistence.mongo.EnrolledPaymentInstrumentEntity"
 
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
@@ -312,23 +314,24 @@ class Transactionfilter:
             db_card_struct["hashPanExports"] = temp_hashpanexports
             db_card_struct["issuer"] = ""
             db_card_struct["network"] = ""
-            now = datetime.now()
-            unix_now =  time.mktime(now.timetuple())
-            one_week_ago = now - timedelta(days=7)
+
+            today = datetime.today()
+            unix_now =  time.mktime(today.timetuple())
+            one_week_ago = today - timedelta(days=7)
             unix_one_week = time.mktime(one_week_ago.timetuple())
             db_card_struct["insertAt"] ={"$date": unix_one_week}
             if random.randint(0,1) == 1:
                 db_card_struct["updatedAt"] = {"$date":unix_now}
-            db_card_struct["version"] = self.args.version
-            db_card_struct["insertUser"] = "enrolled_payment_instrument"
-            db_card_struct["updateUser"] = "enrolled_payment_instrument"
-            db_card_struct["_class"] = "it.gov.pagopa.rtd.ms.enrolledpaymentinstrument.infrastructure.persistence.mongo.EnrolledPaymentInstrumentEntity"
 
+            db_card_struct["version"] = self.args.version
+            db_card_struct["insertUser"] = ENR_PAY_INS
+            db_card_struct["updateUser"] = ENR_PAY_INS
+            db_card_struct["_class"] = CARDS_SPRING_CLASS
             db_card_struct_list.append(db_card_struct)
             
         json_output = json.dumps(db_card_struct_list,indent=10)
 
-        crd_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX + datetime.today().strftime(
+        crd_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX + today.strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(crd_file_path), exist_ok=True)
@@ -336,14 +339,14 @@ class Transactionfilter:
         with open(crd_file_path,"a") as outfile:
             outfile.write(json_output)
         
-        hashpans_file_path = self.args.out_dir + "/" + CARDS_FILE_HPANS_NAME + datetime.today().strftime(
+        hashpans_file_path = self.args.out_dir + "/" + CARDS_FILE_HPANS_NAME + today.strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
         with open(hashpans_file_path,"a") as output_hashpans_file:
             for hpan in hpans:
                 output_hashpans_file.write(hpan+"\n")
 
-        synthetic_pans_file_path = self.args.out_dir + "/" + CARDS_FILE_SYNTHETICS_PAN_NAME + datetime.today().strftime(
+        synthetic_pans_file_path = self.args.out_dir + "/" + CARDS_FILE_SYNTHETICS_PAN_NAME + today.strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
         with open(synthetic_pans_file_path,"a") as output_pans_file:
