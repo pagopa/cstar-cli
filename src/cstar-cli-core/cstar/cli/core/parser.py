@@ -77,6 +77,15 @@ def parser():
     rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default="./generated")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
 
+    # -CARDS
+    rtd_transaction_filter.add_argument("--crd-qty", type=int)
+    rtd_transaction_filter.add_argument("--max-num-children", type=int)
+    rtd_transaction_filter.add_argument("--num-children", type=int)
+    rtd_transaction_filter.add_argument("--par", type=str, default="RANDOM")
+    rtd_transaction_filter.add_argument("--version", type=int, default=1)
+    rtd_transaction_filter.add_argument("--state", type=str, default="ALL")
+
+
     # TAE
     tae_parser = subsystem_parser.add_parser("tae").add_subparsers(dest="command")
 

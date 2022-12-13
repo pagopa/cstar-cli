@@ -6,8 +6,10 @@ import pandas as pd
 import logging
 import os
 import gnupg
+import json
 from tempfile import TemporaryDirectory
-from datetime import datetime
+from datetime import datetime,timedelta
+from enum import Enum
 
 CSV_SEPARATOR = ";"
 PAN_UNENROLLED_PREFIX = "pan_unknown_"
@@ -20,6 +22,7 @@ ENCRYPTED_FILE_EXTENSION = ".pgp"
 APPLICATION_PREFIX_FILE_NAME = "CSTAR"
 TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
+CARDS_FILE_EXTENSION = ".json"
 
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
@@ -41,6 +44,16 @@ BIN = "40236010"
 MCC = "6010"
 FISCAL_CODE = "RSSMRA80A01H501U"
 VAT = "12345678903"
+
+PAR_YES = "YES"
+PAR_NO = "NO"
+PAR_RANDOM = "RANDOM"
+
+class CardState(Enum):
+    READY = 0
+    NOT_ENROLLED = 1
+    REVOKED = 2
+    ALL = 3
 
 
 class Transactionfilter:
@@ -216,6 +229,110 @@ class Transactionfilter:
             encrypt_file(trx_file_path, self.args.key)
 
         print(f"Done")
+
+
+    
+    def synthetic_cards(self):
+        """Produces a synthetic cards data for enrolled payment instrument microservice
+
+        Parameters:
+          --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
+          --crd-qty: the number of cards to generate in output
+          --max-num-children: the max number of hashpans card children for each card
+          --num-children: the precise number of hashpans card children for each card
+          --par: par flag (YES | NO | RANDOM ->  defult:RANDOM)
+          --state: state of the cards (READY | NOT_ENROLED | REVOKED | ALL -> default:ALL)
+          --salt: the salt to use when performing PAN hashing
+        """
+
+        if not self.args.pans_prefix:
+            raise ValueError("--pans-prefix is mandatory")
+        if not self.args.crd_qty:
+            raise ValueError("--crd-qty is mandatory")
+        if self.args.max_num_children and self.args.num_children:
+            raise ValueError("you can set only one value between --max-num-children and --num-children")
+        if not self.args.salt:
+            raise ValueError("--salt is mandatory")
+
+        synthetic_pans = []
+        hpans = []
+        db_card_struct_list = []
+
+        for i in range(0,self.args.crd_qty):
+            db_card_struct = {}
+            temp_hashpanexports = []
+            card_children = 0
+            
+            synthetic_pan = f"{self.args.pans_prefix}{i}"
+            hpan_f = sha256(f"{self.args.pans_prefix}{i}{self.args.salt}".encode()).hexdigest()
+            db_card_struct["hashPan"]= hpan_f
+            synthetic_pans.append(synthetic_pan)
+            hpans.append(hpan_f)
+            temp_hashpanexports.append({"value":hpan_f})
+
+            db_card_struct["hashPanChildren"] = []
+            if self.args.max_num_children :
+                card_children = random.randint(0,self.args.max_num_children)
+            elif self.args.num_children:
+                card_children = self.args.num_children
+            
+            for child in range(0,card_children):
+                synthetic_pan = f"{self.args.pans_prefix}{i}_{child}"
+                hpan_c = sha256(f"{self.args.pans_prefix}{i}_{child}{self.args.salt}".encode()).hexdigest()
+                synthetic_pans.append(synthetic_pan)
+                hpans.append(hpan_c
+                db_card_struct["hashPanChildren"].append(hpan_c)
+                temp_hashpanexports.append({"value":hpan_c})
+
+            if self.args.par == PAR_YES:
+                db_card_struct["par"] = sha256(f"{synthetic_pan}".encode()).hexdigest().upper()[:29]
+            elif self.args.par == PAR_NO:
+                db_card_struct["par"] = ""
+            elif self.args.par == PAR_RANDOM and random.randint(0,1) == 1:
+                db_card_struct["par"] = sha256(f"{synthetic_pan}".encode()).hexdigest().upper()[:29]
+            
+            db_card_struct["enabledApps"] = []
+            if self.args.state == CardState.READY.name:
+                db_card_struct["state"] = CardState.READY.name
+                db_card_struct["enabledApps"].append("FA")
+            elif self.args.state == CardState.NOT_ENROLLED.name:
+                db_card_struct["state"] = CardState.NOT_ENROLLED.name
+            elif self.args.state == CardState.REVOKED.name:
+                db_card_struct["state"] = CardState.REVOKED.name
+            elif self.args.state == CardState.ALL.name:
+                db_card_struct["state"]=CardState(random.randint(0,2)).name
+                if db_card_struct["state"] == CardState.READY.name:
+                    db_card_struct["enabledApps"].append("FA")
+
+            db_card_struct["hashPanExports"] = temp_hashpanexports
+            db_card_struct["issuer"] = ""
+            db_card_struct["network"] = ""
+            now = datetime.now()
+            unix_now =  time.mktime(now.timetuple())
+            one_week_ago = now - timedelta(days=7)
+            unix_one_week = time.mktime(one_week_ago.timetuple())
+            db_card_struct["insertAt"] ={"$date": unix_one_week}
+            if random.randint(0,1) == 1:
+                db_card_struct["updatedAt"] = {"$date":unix_now}
+            db_card_struct["version"] = self.args.version
+            db_card_struct["insertUser"] = "enrolled_payment_instrument"
+            db_card_struct["updateUser"] = "enrolled_payment_instrument"
+            db_card_struct["_class"] = "it.gov.pagopa.rtd.ms.enrolledpaymentinstrument.infrastructure.persistence.mongo.EnrolledPaymentInstrumentEntity"
+
+            db_card_struct_list.append(db_card_struct)
+            
+        json_output = json.dumps(db_card_struct_list,indent=10)
+
+        crd_file_path = self.args.out_dir + "/" + "CARDS_" + datetime.today().strftime(
+            '%Y%m%d.%H%M%S') + CARDS_FILE_EXTENSION
+
+        os.makedirs(os.path.dirname(crd_file_path), exist_ok=True)
+
+
+        with open(crd_file_path,"a") as outfile:
+            outfile.write(json_output)
+
+        print(f"A JSON file {crd_file_path} was genereted ")
 
 
 def encrypt_file(
