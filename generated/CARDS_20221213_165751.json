@@ -9,10 +9,8 @@
                               "2a309e8ce6bd2ed8b42762d783ed0b737938c862c380a43804b07d3de723c465"
                     ],
                     "par": "041DBC041DDD99AB674D27C20D449",
-                    "enabledApps": [
-                              "FA"
-                    ],
-                    "state": "READY",
+                    "enabledApps": [],
+                    "state": "NOT_ENROLLED",
                     "hashPanExports": [
                               {
                                         "value": "d5b530b5cbfcdd455650a3278484056ef5a15ded2124a9ed2903d20f00ac4d71"
@@ -36,10 +34,7 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
-                    },
-                    "updatedAt": {
-                              "$date": 1670938430.0
+                              "$date": 1670342271.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -56,10 +51,8 @@
                               "2ea2db0fc38f57b853b905157d1af3dbeb1fee314bbeb6b5c4acc2c78da660f7"
                     ],
                     "par": "D5CAD7539A1D985FDA75AA7FEA414",
-                    "enabledApps": [
-                              "FA"
-                    ],
-                    "state": "READY",
+                    "enabledApps": [],
+                    "state": "NOT_ENROLLED",
                     "hashPanExports": [
                               {
                                         "value": "33393949363b23b3111474d24834aa3c2c5ad78a0da7533d36c48301dc962cb8"
@@ -83,10 +76,7 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
-                    },
-                    "updatedAt": {
-                              "$date": 1670938430.0
+                              "$date": 1670342271.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -130,7 +120,7 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
+                              "$date": 1670342271.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -148,7 +138,7 @@
                     ],
                     "par": "27D3598B7C791C587D9331DBD4BD6",
                     "enabledApps": [],
-                    "state": "REVOKED",
+                    "state": "NOT_ENROLLED",
                     "hashPanExports": [
                               {
                                         "value": "e9a045129dfb4715116c378b1c3842803f901a4b52899a29208373a0d965b575"
@@ -172,10 +162,7 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
-                    },
-                    "updatedAt": {
-                              "$date": 1670938430.0
+                              "$date": 1670342271.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -192,8 +179,10 @@
                               "5c0e034f0179b2432d02ce81742788e2eb25460b8a77f1295f29e5303af38667"
                     ],
                     "par": "65058EB58EE892DE9134FC787F085",
-                    "enabledApps": [],
-                    "state": "NOT_ENROLLED",
+                    "enabledApps": [
+                              "FA"
+                    ],
+                    "state": "READY",
                     "hashPanExports": [
                               {
                                         "value": "95a35b5cd9b1841690e0db4811350551698de966de4f568f8e97297ce52e7bd8"
@@ -217,10 +206,10 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
+                              "$date": 1670342271.0
                     },
                     "updatedAt": {
-                              "$date": 1670938430.0
+                              "$date": 1670947071.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -262,10 +251,10 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
+                              "$date": 1670342271.0
                     },
                     "updatedAt": {
-                              "$date": 1670938430.0
+                              "$date": 1670947071.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -307,10 +296,7 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
-                    },
-                    "updatedAt": {
-                              "$date": 1670938430.0
+                              "$date": 1670342271.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -327,8 +313,10 @@
                               "764901fa05a240feea134cb69cc021183fc3b14c912f916049652596fb945ce1"
                     ],
                     "par": "20A6C9A583F9536A5F4FA455CC93A",
-                    "enabledApps": [],
-                    "state": "NOT_ENROLLED",
+                    "enabledApps": [
+                              "FA"
+                    ],
+                    "state": "READY",
                     "hashPanExports": [
                               {
                                         "value": "41c09fe08a4710e60f935f6f3a20d8d7c1d434c961b94ec82960cf5e98a53270"
@@ -352,10 +340,10 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
+                              "$date": 1670342271.0
                     },
                     "updatedAt": {
-                              "$date": 1670938430.0
+                              "$date": 1670947071.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -373,7 +361,7 @@
                     ],
                     "par": "D80BFAE1127335191423791D2E383",
                     "enabledApps": [],
-                    "state": "NOT_ENROLLED",
+                    "state": "REVOKED",
                     "hashPanExports": [
                               {
                                         "value": "51f3e77635196c1c80e2ec59c438ddccbec78893530c151560c3ce599145182b"
@@ -397,7 +385,10 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
+                              "$date": 1670342271.0
+                    },
+                    "updatedAt": {
+                              "$date": 1670947071.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",
@@ -414,10 +405,8 @@
                               "c5177a5379de027d10ae783a5a4273a7c83423988654314de805441006aae77c"
                     ],
                     "par": "E4CE5208CDCA317EEF6D0FC4978F6",
-                    "enabledApps": [
-                              "FA"
-                    ],
-                    "state": "READY",
+                    "enabledApps": [],
+                    "state": "REVOKED",
                     "hashPanExports": [
                               {
                                         "value": "ab6d7006da88330231af10c9a30ceb6135636589b8321a70c0cb0b053b539d33"
@@ -441,10 +430,10 @@
                     "issuer": "",
                     "network": "",
                     "insertAt": {
-                              "$date": 1670333630.0
+                              "$date": 1670342271.0
                     },
                     "updatedAt": {
-                              "$date": 1670938430.0
+                              "$date": 1670947071.0
                     },
                     "version": 1,
                     "insertUser": "enrolled_payment_instrument",

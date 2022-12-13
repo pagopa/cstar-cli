@@ -22,7 +22,12 @@ ENCRYPTED_FILE_EXTENSION = ".pgp"
 APPLICATION_PREFIX_FILE_NAME = "CSTAR"
 TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
+
 CARDS_FILE_EXTENSION = ".json"
+CARDS_FILE_PREFIX = "CARDS_"
+CARDS_FILE_HPANS_NAME = "CARDS_SYNTHETIC_PANS"
+CARDS_FILE_SYNTHETICS_PAN_NAME = "CARDS_HASHPANS"
+CARDS_FILE_HASPANS_PAN_EXTENSION = ".txt"
 
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
@@ -323,16 +328,29 @@ class Transactionfilter:
             
         json_output = json.dumps(db_card_struct_list,indent=10)
 
-        crd_file_path = self.args.out_dir + "/" + "CARDS_" + datetime.today().strftime(
-            '%Y%m%d.%H%M%S') + CARDS_FILE_EXTENSION
+        crd_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX + datetime.today().strftime(
+            '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
 
         os.makedirs(os.path.dirname(crd_file_path), exist_ok=True)
 
-
         with open(crd_file_path,"a") as outfile:
             outfile.write(json_output)
+        
+        hashpans_file_path = self.args.out_dir + "/" + CARDS_FILE_HPANS_NAME + datetime.today().strftime(
+            '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
-        print(f"A JSON file {crd_file_path} was genereted ")
+        with open(hashpans_file_path,"a") as output_hashpans_file:
+            for hpan in hpans:
+                output_hashpans_file.write(hpan+"\n")
+
+        synthetic_pans_file_path = self.args.out_dir + "/" + CARDS_FILE_SYNTHETICS_PAN_NAME + datetime.today().strftime(
+            '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
+
+        with open(synthetic_pans_file_path,"a") as output_pans_file:
+            for pan in synthetic_pans:
+                output_pans_file.write(pan+"\n")
+
+        print(f"JSON file {crd_file_path}, hashpans {hashpans_file_path} and synthetic pans {synthetic_pans_file_path} were genereted ")
 
 
 def encrypt_file(
