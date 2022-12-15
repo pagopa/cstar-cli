@@ -77,16 +77,17 @@ cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_
 ```bash
 cst rtd transactionfilter --action synthetic_cards --pans-prefix "prefix_" --crd-qty 10 --par RANDOM  --max-num-children 5 --state READY 
 ```
---pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
---crd-qty: the number of cards to generate in output
---max-num-children: the max number of hashpans card children for each card
---num-children: the precise number of hashpans card children for each card
---par: par flag (YES | NO | RANDOM ->  defult:RANDOM)
---state: state of the cards (READY | NOT_ENROLED | REVOKED | ALL -> default:ALL)
---salt: the salt to use when performing PAN hashing ( default: SALT876)
+--pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}". </br>
+--crd-qty: the number of cards to generate in output. </br>
+--max-num-children: the max number of hashpans card children for each card. </br>
+--num-children: the precise number of hashpans card children for each card. </br>
+--par: par flag (YES | NO | RANDOM ->  defult:RANDOM). </br>
+--state: state of the cards (READY | REVOKED | ALL -> default:ALL). </br>
+--salt: the salt to use when performing PAN hashing ( default: SALT876). </br>
 
-Just pans-prefix and crd-qty are mandatory.
-If you want hashpan children you need to use ONE parameters between --max-num-children and --num-children. If no one of these two are choosen all the cards records will not have children hashpan
+Just pans-prefix and crd-qty are mandatory. </br>
+If you want hashpan children you need to use ONE parameters between --max-num-children and --num-children. </br>
+If no one of these two are choosen all the cards records will not have children hashpan. </br>
  
 ---
 
