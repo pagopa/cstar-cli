@@ -8,6 +8,7 @@ import os
 import gnupg
 from tempfile import TemporaryDirectory
 from datetime import datetime
+from bloomfilter import BloomFilter
 
 CSV_SEPARATOR = ";"
 PAN_UNENROLLED_PREFIX = "pan_unknown_"
@@ -48,6 +49,52 @@ class Transactionfilter:
 
     def __init__(self, args):
         self.args = args
+
+    def synthetic_bloomfilter(self):
+        """"Produces a synthetic version of the bloom filter file
+        Parameters:
+            --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
+            --haspans-qty: the number of hashpans to generate
+            --salt: the salt to use when performing PAN hashing
+            --err-rate: the error rate in percentage between 0 and 1
+        """
+        if not self.args.pans_prefix:
+            raise ValueError("--pans-prefix is mandatory")
+        if not self.args.hashpans_qty:
+            raise ValueError("--hashpans-qty is mandatory")
+        if not self.args.salt:
+            raise ValueError("--salt is mandatory")
+        #if not self.args.err_rate:
+            # 0,01% as default error rate
+            #self.args.err_rate = 0.0001
+        synthetic_pans = [
+            f"{self.args.pans_prefix}{i}" for i in range(self.args.hashpans_qty)
+        ]
+        hpans = [
+            sha256(f"{pan}{self.args.salt}".encode()).hexdigest()
+            for pan in synthetic_pans
+        ]
+        print("Generating hpans...")
+
+        print("Creating Bloom filter...")
+        # create bloom filter
+        bloom_filter = BloomFilter(self.args.hashpans_qty, 0.0001)
+
+        print("Filling Bloom filter...")
+        # fill bloom filter
+        for hpan in hpans:
+            bloom_filter.put(hpan)
+
+        print("Saving Bloom filter...")
+        # save bloom filter on file
+        dumps = bloom_filter.dumps()
+        output_file_path = self.args.out_dir + "/" + "bloomfilter" + datetime.today().strftime(
+            '%Y%m%d.%H%M%S') + ".bloomfilter"
+        os.makedirs(os.path.dirname(output_file_path), exist_ok=True)
+
+        with open(output_file_path, "wb") as f:
+            f.write(dumps)
+        print("Done")
 
     def synthetic_hashpans(self):
         """Produces a synthetic version of the CSV file obtainable from the RTD /hashed-pans endpoint
