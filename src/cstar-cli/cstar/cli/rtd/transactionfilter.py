@@ -260,12 +260,9 @@ class Transactionfilter:
         synthetic_pans = []
         hpans = []
 
-        enroll_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_ENROLL + datetime.today().strftime(
-            '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
-        os.makedirs(os.path.dirname(enroll_file_path), exist_ok=True)
-        tkm_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_TKM + datetime.today().strftime(
-            '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
-        os.makedirs(os.path.dirname(tkm_file_path), exist_ok=True)
+       
+        output_list_enroll = []
+        output_list_tkm = []
 
         for i in range(0,self.args.crd_qty):
             temp_hashpanexports = []
@@ -321,10 +318,7 @@ class Transactionfilter:
                     "action": "INSERT_UPDATE",
                     "htokens": temp_hashtokens
                 }]
-            
-                tkm_json_output = json.dumps(tkm_var)
-                with open(tkm_file_path,"a") as outfile:
-                    outfile.write(tkm_json_output+"\n")
+                output_list_tkm.append(tkm_var)
 
             if self.args.state == "ALL" and random.random() <= (self.args.revoked_percentage * 0.01) :
                 revoked_tkm_ev = {
@@ -337,13 +331,29 @@ class Transactionfilter:
                         }
                     ]
                 }
-                tkm_json_output = json.dumps(revoked_tkm_ev)
-                with open(tkm_file_path,"a") as outfile:
-                    outfile.write(tkm_json_output+"\n")
+                output_list_tkm.append(tkm_var)
 
-            enroll_json_output = json.dumps(enroll_var)
-            with open(enroll_file_path,"a") as outfile:
+            output_list_enroll.append(enroll_var)
+
+        enroll_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_ENROLL + datetime.today().strftime(
+            '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
+            
+        os.makedirs(os.path.dirname(enroll_file_path), exist_ok=True)
+
+        with open(enroll_file_path,"a") as outfile:
+            for en_card in output_list_enroll:
+                enroll_json_output = json.dumps(en_card)
                 outfile.write(enroll_json_output+"\n")
+
+        tkm_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_TKM + datetime.today().strftime(
+                    '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
+        
+        os.makedirs(os.path.dirname(tkm_file_path), exist_ok=True)
+
+        with open(tkm_file_path,"a") as outfile:
+            for tkm_update in output_list_tkm:
+                tkm_json_output = json.dumps(tkm_update)
+                outfile.write(tkm_json_output+"\n")
        
         hashpans_file_path = self.args.out_dir + "/" + CARDS_FILE_HPANS_NAME + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
