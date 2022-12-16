@@ -245,6 +245,7 @@ class Transactionfilter:
           --par: par flag (YES | NO | RANDOM ->  defult:RANDOM)
           --state: state of the cards (READY | ALL -> default:ALL)
           --salt: the salt to use when performing PAN hashing
+          --revoked-percentage: number between 0 and 100 for the percentage of revoked cards (default=10%)
         """
 
         if not self.args.pans_prefix:
@@ -295,39 +296,40 @@ class Transactionfilter:
             elif self.args.par == PAR_RANDOM and random.randint(0,1) == 1:
                 temp_par = sha256(f"{synthetic_pan}".encode()).hexdigest().upper()[:29]
 
-            if self.args.max_num_children :
+            if self.args.max_num_children:
                 card_children = random.randint(0,self.args.max_num_children)
             elif self.args.num_children:
                 card_children = self.args.num_children
             
-            for child in range(0,card_children):
-                synthetic_pan = f"{self.args.pans_prefix}{i}_{child}"
-                hpan_c = sha256(f"{self.args.pans_prefix}{i}_{child}{self.args.salt}".encode()).hexdigest()
-                synthetic_pans.append(synthetic_pan)
-                hpans.append(hpan_c)
-                temp_htoken = {
-                    "htoken": hpan_c,
-                    "haction": "INSERT_UPDATE"
-                }
-                temp_hashtokens.append(temp_htoken)
+            if len(temp_par)!= 0:
+                for child in range(0,card_children):
+                    synthetic_pan = f"{self.args.pans_prefix}{i}_{child}"
+                    hpan_c = sha256(f"{self.args.pans_prefix}{i}_{child}{self.args.salt}".encode()).hexdigest()
+                    synthetic_pans.append(synthetic_pan)
+                    hpans.append(hpan_c)
+                    temp_htoken = {
+                        "htoken": hpan_c,
+                        "haction": "INSERT_UPDATE"
+                    }
+                    temp_hashtokens.append(temp_htoken)
 
-            tkm_var["timestamp"] = datetime.now().strftime("%Y-%m-%d:%H:%M:%S")
+                tkm_var["timestamp"] =  datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
 
-            tkm_var["cards"] = [{
-                "hpan": hpan_f,
-                "par": temp_par,
-                "action": "INSERT_UPDATE",
-                "htokens": temp_hashtokens
-            }]
+                tkm_var["cards"] = [{
+                    "hpan": hpan_f,
+                    "par": temp_par,
+                    "action": "INSERT_UPDATE",
+                    "htokens": temp_hashtokens
+                }]
             
-            tkm_json_output = json.dumps(tkm_var)
-            with open(tkm_file_path,"a") as outfile:
-                outfile.write(tkm_json_output+"\n")
+                tkm_json_output = json.dumps(tkm_var)
+                with open(tkm_file_path,"a") as outfile:
+                    outfile.write(tkm_json_output+"\n")
 
-            if self.args.state == "ALL" and random.randint(0,1) == 1 :
+            if self.args.state == "ALL" and random.random() <= (self.args.revoked_percentage * 0.01) :
                 revoked_tkm_ev = {
                     "taxCode": "",
-                    "timestamp":  datetime.now().strftime("%Y-%m-%d:%H:%M:%S"),
+                    "timestamp":  datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
                     "cards": [{
                         "hpan": hpan_f,
                         "action": STATE_REVOKED,

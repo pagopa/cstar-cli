@@ -84,6 +84,7 @@ cst rtd transactionfilter --action synthetic_cards --pans-prefix "prefix_" --crd
 --par: par flag (YES | NO | RANDOM ->  defult:RANDOM). </br>
 --state: state of the cards (READY | REVOKED | ALL -> default:ALL). </br>
 --salt: the salt to use when performing PAN hashing ( default: SALT876). </br>
+--revoked-percentage: number between 0 and 100 for the percentage of revoked cards (default=10%)
 
 Just pans-prefix and crd-qty are mandatory. </br>
 If you want hashpan children you need to use ONE parameters between --max-num-children and --num-children. </br>

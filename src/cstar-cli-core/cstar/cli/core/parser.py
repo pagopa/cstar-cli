@@ -84,7 +84,7 @@ def parser():
     rtd_transaction_filter.add_argument("--par", type=str, default="RANDOM")
     rtd_transaction_filter.add_argument("--version", type=int, default=1)
     rtd_transaction_filter.add_argument("--state", type=str, default="ALL")
-
+    rtd_transaction_filter.add_argument("--revoked-percentage", type=int, default=10)
 
     # TAE
     tae_parser = subsystem_parser.add_parser("tae").add_subparsers(dest="command")
