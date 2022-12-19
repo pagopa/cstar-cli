@@ -23,8 +23,8 @@ TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
 
 CARDS_FILE_EXTENSION = ".json"
-CARDS_FILE_PREFIX_ENROLL = "ENROLL_"
-CARDS_FILE_PREFIX_TKM = "TKM_"
+CARDS_FILE_PREFIX_ENROLL = "ENROLL"
+CARDS_FILE_PREFIX_TKM = "TKM"
 CARDS_FILE_HPANS_NAME = "CARDS_SYNTHETIC_PANS"
 CARDS_FILE_SYNTHETICS_PAN_NAME = "CARDS_HASHPANS"
 CARDS_FILE_HASPANS_PAN_EXTENSION = ".txt"
@@ -331,11 +331,11 @@ class Transactionfilter:
                         }
                     ]
                 }
-                output_list_tkm.append(tkm_var)
+                output_list_tkm.append(revoked_tkm_ev)
 
             output_list_enroll.append(enroll_var)
 
-        enroll_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_ENROLL + datetime.today().strftime(
+        enroll_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_ENROLL + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
             
         os.makedirs(os.path.dirname(enroll_file_path), exist_ok=True)
@@ -345,7 +345,7 @@ class Transactionfilter:
                 enroll_json_output = json.dumps(en_card)
                 outfile.write(enroll_json_output+"\n")
 
-        tkm_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_TKM + datetime.today().strftime(
+        tkm_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_TKM + "_" + datetime.today().strftime(
                     '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
         
         os.makedirs(os.path.dirname(tkm_file_path), exist_ok=True)
@@ -355,14 +355,14 @@ class Transactionfilter:
                 tkm_json_output = json.dumps(tkm_update)
                 outfile.write(tkm_json_output+"\n")
        
-        hashpans_file_path = self.args.out_dir + "/" + CARDS_FILE_HPANS_NAME + datetime.today().strftime(
+        hashpans_file_path = self.args.out_dir + "/" + CARDS_FILE_HPANS_NAME + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
         with open(hashpans_file_path,"a") as output_hashpans_file:
             for hpan in hpans:
                 output_hashpans_file.write(hpan+"\n")
 
-        synthetic_pans_file_path = self.args.out_dir + "/" + CARDS_FILE_SYNTHETICS_PAN_NAME + datetime.today().strftime(
+        synthetic_pans_file_path = self.args.out_dir + "/" + CARDS_FILE_SYNTHETICS_PAN_NAME + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
         with open(synthetic_pans_file_path,"a") as output_pans_file:
