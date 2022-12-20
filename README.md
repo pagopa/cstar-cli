@@ -144,3 +144,11 @@ cst sender aggregates --action diff --files /path/to/files/produced/by/batch/ser
 ```bash
 sh ./test/run-all.sh
 ```
+
+## Bloom Filter
+
+### To generate a file containing a bloom filter run the following:
+
+```bash
+cst rtd transactionfilter --action synthetic_bloomfilter --pans-prefix pan --hashpans-qty 1000000 --salt SALT --err-rate 0.01 
+```
