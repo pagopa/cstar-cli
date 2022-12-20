@@ -76,6 +76,7 @@ def parser():
     rtd_transaction_filter.add_argument("--pgp", action="store_true")
     rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default="./generated")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
+    rtd_transaction_filter.add_argument("--err-rate", type=float, default=0.000001)
 
     # TAE
     tae_parser = subsystem_parser.add_parser("tae").add_subparsers(dest="command")

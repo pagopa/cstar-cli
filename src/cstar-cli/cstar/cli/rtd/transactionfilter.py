@@ -64,9 +64,10 @@ class Transactionfilter:
             raise ValueError("--hashpans-qty is mandatory")
         if not self.args.salt:
             raise ValueError("--salt is mandatory")
-        #if not self.args.err_rate:
-            # 0,01% as default error rate
-            #self.args.err_rate = 0.0001
+        if not self.args.err_rate:
+            raise ValueError("--err-rate is mandatory")
+
+        print("Generating hpans...")
         synthetic_pans = [
             f"{self.args.pans_prefix}{i}" for i in range(self.args.hashpans_qty)
         ]
@@ -74,11 +75,10 @@ class Transactionfilter:
             sha256(f"{pan}{self.args.salt}".encode()).hexdigest()
             for pan in synthetic_pans
         ]
-        print("Generating hpans...")
 
         print("Creating Bloom filter...")
         # create bloom filter
-        bloom_filter = BloomFilter(self.args.hashpans_qty, 0.0001)
+        bloom_filter = BloomFilter(self.args.hashpans_qty, self.args.err_rate)
 
         print("Filling Bloom filter...")
         # fill bloom filter
