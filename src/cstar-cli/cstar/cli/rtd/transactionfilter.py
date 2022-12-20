@@ -46,7 +46,7 @@ OFFSETS = [
 MERCHANT_ID = "400000080205"
 TERMINAL_ID = "80205005"
 BIN = "40236010"
-MCC = "6010"
+
 FISCAL_CODE = "RSSMRA80A01H501U"
 VAT = "12345678903"
 
@@ -98,7 +98,9 @@ class Transactionfilter:
           --trx-qty: the number of transactions to generate in output
           --ratio: the ratio between transactions belonging to an enrolled PAN versus unenrolled (expressed as 1/ratio)
           --pos-number: how many different synthetic POS must be created
+          --mcc:  Merchant Category Code (default = 6010)
         """
+
         if not self.args.pans_prefix:
             raise ValueError("--pans-prefix is mandatory")
         if not self.args.pans_qty:
@@ -186,7 +188,7 @@ class Transactionfilter:
                     merchant_id,
                     terminal_id,
                     BIN,
-                    MCC,
+                    self.args.mcc,
                     fiscal_code,
                     vat,
                     pos_type,

@@ -73,6 +73,7 @@ def parser():
     rtd_transaction_filter.add_argument("--trx-qty", type=int)
     rtd_transaction_filter.add_argument("--ratio", type=int)
     rtd_transaction_filter.add_argument("--pos-number", type=int)
+    rtd_transaction_filter.add_argument("--mcc", type=int, default=6010)
     rtd_transaction_filter.add_argument("--pgp", action="store_true")
     rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default="./generated")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
