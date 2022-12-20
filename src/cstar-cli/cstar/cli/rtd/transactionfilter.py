@@ -93,12 +93,13 @@ class Transactionfilter:
         """Produces a synthetic version of the CSV file produced by the senders for RTD
 
         Parameters:
-          --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}"
-          --pans-qty: the number of enrolled PANs to use in generated transactions
+          --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}" ( default = "prefix_" )
+          --pans-qty: the number of enrolled PANs to use in generated transactions ( default = 10 )
           --trx-qty: the number of transactions to generate in output
-          --ratio: the ratio between transactions belonging to an enrolled PAN versus unenrolled (expressed as 1/ratio)
+          --ratio: the ratio between transactions belonging to an enrolled PAN versus unenrolled (expressed as 1/ratio) ( default = 1 )
           --pos-number: how many different synthetic POS must be created
-          --mcc:  Merchant Category Code (default = 6010)
+          --mcc:  Merchant Category Code ( default = 6010 )
+          --input-file: pan or hashpan to use in transaction generation
         """
 
         if not self.args.pans_prefix:
@@ -114,15 +115,23 @@ class Transactionfilter:
         if len(self.args.sender) is not 5:
             raise ValueError("--sender must be of length 5")
 
+        input_file = self.args.input_file
+
         # Set the sender code (common to all transactions)
         sender_code = self.args.sender
 
-        synthetic_pans_enrolled = [
-            f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
-        ]
-        synthetic_pans_not_enrolled = [
-            f"{PAN_UNENROLLED_PREFIX}{i}" for i in range(self.args.pans_qty)
-        ]
+        if input_file == "":
+            synthetic_pans_enrolled = [
+                f"{self.args.pans_prefix}{i}" for i in range(self.args.pans_qty)
+            ]
+            synthetic_pans_not_enrolled = [
+                f"{PAN_UNENROLLED_PREFIX}{i}" for i in range(self.args.pans_qty)
+            ]
+        else:
+            with open(input_file,'r') as input_pans:
+                synthetic_pans_enrolled = input_pans.readlines()
+                synthetic_pans_not_enrolled = []
+            
 
         synthetic_pos = []
         for i in range(self.args.pos_number):
@@ -149,10 +158,13 @@ class Transactionfilter:
             if i % PAYMENT_REVERSAL_RATIO == 0:
                 operation_type = "01"
 
-            if i % self.args.ratio == 0:
-                pan = random.choice(synthetic_pans_enrolled)
+            if input_file == "":
+                if i % self.args.ratio == 0:
+                    pan = random.choice(synthetic_pans_enrolled)
+                else:
+                    pan = random.choice(synthetic_pans_not_enrolled)
             else:
-                pan = random.choice(synthetic_pans_not_enrolled)
+                pan = synthetic_pans_enrolled[i%len(synthetic_pans_enrolled)]
 
             id_trx_acquirer = uuid.uuid4().int
             id_trx_issuer = uuid.uuid4().int
@@ -262,7 +274,6 @@ class Transactionfilter:
         synthetic_pans = []
         hpans = []
 
-       
         output_list_enroll = []
         output_list_tkm = []
 
