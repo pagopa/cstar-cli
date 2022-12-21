@@ -1,6 +1,7 @@
 from hashlib import sha256
 import time
 import random
+import string
 import uuid
 import pandas as pd
 import logging
@@ -28,6 +29,8 @@ CARDS_FILE_PREFIX_TKM = "TKM"
 CARDS_FILE_HPANS_NAME = "CARDS_SYNTHETIC_PANS"
 CARDS_FILE_SYNTHETICS_PAN_NAME = "CARDS_HASHPANS"
 CARDS_FILE_HASPANS_PAN_EXTENSION = ".txt"
+
+CF_BIRTH_MONTH_LETTERS_RANGE = ['A','B','C','D','E','H','L','M','P','R','S','T']
 
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
@@ -129,7 +132,7 @@ class Transactionfilter:
             ]
         else:
             with open(input_file,'r') as input_pans:
-                synthetic_pans_enrolled = input_pans.readlines()
+                synthetic_pans_enrolled = input_pans.read().splitlines()
                 synthetic_pans_not_enrolled = []
             
 
@@ -138,7 +141,7 @@ class Transactionfilter:
             synthetic_pos.append([
                 str(1000000 + i),  # terminal_id
                 str(2000000 + i),  # merchant_id,
-                "CF" + str(300000000 + i)[:9],  # fiscal_code
+                random_fiscal_code_generator(),  # fiscal_code
                 VAT if i % PERSON_NATURAL_LEGAL_RATIO == 0 else "",  # vat
                 "00" if i % POS_PHYSICAL_ECOMMERCE_RATIO == 0 else "01",  # pos_type
             ])
@@ -189,7 +192,7 @@ class Transactionfilter:
                     sender_code,
                     operation_type,
                     payment_circuit,
-                    pan.replace("\n", ""),
+                    pan,
                     date_time,
                     id_trx_acquirer,
                     id_trx_issuer,
@@ -425,3 +428,17 @@ def encrypt_file(
         else:
             logging.info(f"Failed to encrypt")
             raise RuntimeError(status)
+
+def random_fiscal_code_generator():
+    cf_fscode = random.choices(string.ascii_letters,k=6)
+    cf_fscode.append(str(random.randint(0,9)))
+    cf_fscode.append(str(random.randint(0,9)))
+    cf_fscode.append(random.choice(CF_BIRTH_MONTH_LETTERS_RANGE))
+    cf_fscode.append(str(random.randint(10,70)))
+    cf_fscode.append(random.choice(string.ascii_letters))
+    cf_fscode.append(str(random.randint(0,9)))
+    cf_fscode.append(str(random.randint(0,9)))
+    cf_fscode.append(str(random.randint(0,9)))        
+    cf_fscode.append(random.choice(string.ascii_letters))
+    return "".join(cf_fscode).upper()
+
