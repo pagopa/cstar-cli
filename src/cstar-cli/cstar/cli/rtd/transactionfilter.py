@@ -35,7 +35,6 @@ CF_BIRTH_MONTH_LETTERS_RANGE = ['A','B','C','D','E','H','L','M','P','R','S','T']
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
 PERSON_NATURAL_LEGAL_RATIO = 3
-PAR_RATIO = 7
 
 CURRENCY_ISO4217 = "978"
 PAYMENT_CIRCUITS = [f"{i:02}" for i in range(11)]
@@ -103,6 +102,7 @@ class Transactionfilter:
           --pos-number: how many different synthetic POS must be created
           --mcc:  Merchant Category Code ( default = 6010 )
           --input-file: pan or hashpan to use in transaction generation
+          --par-ratio: a ratio to have transaction with par every # transaction ( default = 1 )
         """
 
         if not self.args.pans_prefix:
@@ -184,7 +184,7 @@ class Transactionfilter:
             total_amount = random.randint(100, 100000)
 
             par = ""
-            if i % PAR_RATIO == 0:
+            if i % self.args.par_ratio == 0:
                 par = sha256(f"{pan}".encode()).hexdigest().upper()[:29]
 
             transactions.append(
