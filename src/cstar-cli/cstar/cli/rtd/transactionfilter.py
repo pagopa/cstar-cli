@@ -189,7 +189,7 @@ class Transactionfilter:
                     sender_code,
                     operation_type,
                     payment_circuit,
-                    pan,
+                    pan.replace("\n", ""),
                     date_time,
                     id_trx_acquirer,
                     id_trx_issuer,
