@@ -8,6 +8,7 @@ import logging
 import os
 import gnupg
 import json
+from faker import Faker
 from tempfile import TemporaryDirectory
 from datetime import datetime
 
@@ -119,6 +120,7 @@ class Transactionfilter:
             raise ValueError("--sender must be of length 5")
 
         input_file = self.args.input_file
+        fake = Faker('it_IT')
 
         # Set the sender code (common to all transactions)
         sender_code = self.args.sender
@@ -135,13 +137,12 @@ class Transactionfilter:
                 synthetic_pans_enrolled = input_pans.read().splitlines()
                 synthetic_pans_not_enrolled = []
             
-
         synthetic_pos = []
         for i in range(self.args.pos_number):
             synthetic_pos.append([
                 str(1000000 + i),  # terminal_id
                 str(2000000 + i),  # merchant_id,
-                random_fiscal_code_generator(),  # fiscal_code
+                fake.ssn(),  # fiscal_code
                 VAT if i % PERSON_NATURAL_LEGAL_RATIO == 0 else "",  # vat
                 "00" if i % POS_PHYSICAL_ECOMMERCE_RATIO == 0 else "01",  # pos_type
             ])
@@ -428,17 +429,3 @@ def encrypt_file(
         else:
             logging.info(f"Failed to encrypt")
             raise RuntimeError(status)
-
-def random_fiscal_code_generator():
-    cf_fscode = random.choices(string.ascii_letters,k=6)
-    cf_fscode.append(str(random.randint(0,9)))
-    cf_fscode.append(str(random.randint(0,9)))
-    cf_fscode.append(random.choice(CF_BIRTH_MONTH_LETTERS_RANGE))
-    cf_fscode.append(str(random.randint(10,70)))
-    cf_fscode.append(random.choice(string.ascii_letters))
-    cf_fscode.append(str(random.randint(0,9)))
-    cf_fscode.append(str(random.randint(0,9)))
-    cf_fscode.append(str(random.randint(0,9)))        
-    cf_fscode.append(random.choice(string.ascii_letters))
-    return "".join(cf_fscode).upper()
-
