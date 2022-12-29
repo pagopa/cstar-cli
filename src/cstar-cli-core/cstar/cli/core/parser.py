@@ -76,7 +76,7 @@ def parser():
     rtd_transaction_filter.add_argument("--par-ratio", type=int,default=1)
     rtd_transaction_filter.add_argument("--mcc", type=str, default=6010)
     rtd_transaction_filter.add_argument("--pgp", action="store_true")
-    rtd_transaction_filter.add_argument("--input-file", type=str, default="")
+    rtd_transaction_filter.add_argument("--input-hashpans", type=str, default="")
     rtd_transaction_filter.add_argument("-o", "--out-dir", type=str, default="./generated")
     rtd_transaction_filter.add_argument("--key", type=str, default="./public.key")
 

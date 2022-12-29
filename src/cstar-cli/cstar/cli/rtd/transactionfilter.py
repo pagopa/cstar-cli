@@ -118,7 +118,7 @@ class Transactionfilter:
         if len(self.args.sender) is not 5:
             raise ValueError("--sender must be of length 5")
 
-        input_file = self.args.input_file
+        input_file = self.args.input_hashpans
         fake = Faker('it_IT')
 
         # Set the sender code (common to all transactions)
