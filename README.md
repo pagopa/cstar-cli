@@ -62,13 +62,13 @@ cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --
 
 #### Unencrypted
 ```bash
-cst rtd transactionfilter --action synthetic_transactions --sender 12345 --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT>
+cst rtd transactionfilter --action synthetic_transactions --sender 12345 --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --input-hashpans ~/hashpans_file.txt
 ```
 
 #### Encrypted, with specified output directory and public key file.
 
 ```bash
-cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --out-dir /tmp --pgp --key ~/certificates/public.key
+cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --out-dir /tmp --pgp --key ~/certificates/public.key --input-hashpans ~/hashpans_file.txt
 ```
 
 
@@ -77,6 +77,9 @@ cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_
 ```bash
 cst rtd transactionfilter --action synthetic_cards --pans-prefix "prefix_" --crd-qty 10 --par RANDOM  --max-num-children 5 --state READY 
 ```
+
+Params </br>
+
 --pans-prefix: synthetic PANs will be generated as "{PREFIX}{NUMBER}". </br>
 --crd-qty: the number of cards to generate in output. </br>
 --max-num-children: the max number of hashpans card children for each card. </br>
