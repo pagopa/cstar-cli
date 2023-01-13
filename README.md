@@ -99,10 +99,11 @@ If no one of these two are choosen all the cards records will not have children 
 cst rtd transactionupload --action upload --env dev --api-key "xxx" --key "path/to/private.key" --cert "path/to/certificate.pem"  --file "path/to/CSTAR.*.TRNLOG.*.csv"
 ```
 Params </br>
---env: environment `dev`, `uat`, `prod`
---api-key: APIM subscription key
---key: private key for mauth
---cert: certificate for mauth
+
+--env: environment `dev`, `uat`, `prod` </br>
+--api-key: APIM subscription key </br>
+--key: private key for mauth </br>
+--cert: certificate for mauth </br>
 --file: transaction file in .csv. It will automatically encrypt using pgp
 
 ---
