@@ -89,6 +89,15 @@ def parser():
     rtd_transaction_filter.add_argument("--state", type=str, default="ALL")
     rtd_transaction_filter.add_argument("--revoked-percentage", type=int, default=10)
 
+    # RTD upload
+    rtd_transaction_upload = rtd_parser.add_parser("transactionupload")
+    rtd_transaction_upload.add_argument("--action", required=True)
+    rtd_transaction_upload.add_argument("--env", type=str, default="dev", required=True)
+    rtd_transaction_upload.add_argument("--api-key", type=str, default="", required=True)
+    rtd_transaction_upload.add_argument("--key", type=str, default="", required=True)
+    rtd_transaction_upload.add_argument("--cert", type=str, default="", required=True)
+    rtd_transaction_upload.add_argument("--file", type=str, default="", required=True)
+
     # TAE
     tae_parser = subsystem_parser.add_parser("tae").add_subparsers(dest="command")
 

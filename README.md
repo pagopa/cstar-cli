@@ -93,6 +93,18 @@ Just pans-prefix and crd-qty are mandatory. </br>
 If you want hashpan children you need to use ONE parameters between --max-num-children and --num-children. </br>
 If no one of these two are choosen all the cards records will not have children hashpan. </br>
  
+
+### Upload transaction file
+```bash
+cst rtd transactionupload --action upload --env dev --api-key "xxx" --key "path/to/private.key" --cert "path/to/certificate.pem"  --file "path/to/CSTAR.*.TRNLOG.*.csv"
+```
+Params </br>
+--env: environment `dev`, `uat`, `prod`
+--api-key: APIM subscription key
+--key: private key for mauth
+--cert: certificate for mauth
+--file: transaction file in .csv. It will automatically encrypt using pgp
+
 ---
 
 ## TAE
