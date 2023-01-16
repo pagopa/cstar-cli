@@ -154,4 +154,24 @@ def parser():
     # -DIFF CHECKER
     sender_aggregates_parser.add_argument('-f', '--files', nargs=2, help="Files to compare for equality")
 
+    # IDPay
+    idpay_parser = subsystem_parser.add_parser("idpay").add_subparsers(dest="command")
+
+    # -Dataset
+    idpay_dataset_parser = idpay_parser.add_parser("idpaydataset")
+    idpay_dataset_parser.add_argument("--action", required=True,
+                                          help="Action to perform with the invocation of the command")
+    idpay_dataset_parser.add_argument("--num-fc", type=int, default=10)
+    idpay_dataset_parser.add_argument("--num-cc", type=int, default=10)
+    idpay_dataset_parser.add_argument("--min-cc-per-fc", type=int, default=1)
+    idpay_dataset_parser.add_argument("--max-cc-per-fc", type=int, default=1)
+    idpay_dataset_parser.add_argument("--trx-per-fc", type=int, default=1)
+    idpay_dataset_parser.add_argument("--sender-code", type=str, default='IDPAY')
+    idpay_dataset_parser.add_argument("--acquirer-code", type=str, default='IDPAY')
+    idpay_dataset_parser.add_argument("--day", type=str, default='20230101T00:00:00.000+01:00')
+    idpay_dataset_parser.add_argument("--min-amount", type=int, default=1)
+    idpay_dataset_parser.add_argument("--max-amount", type=int, default=1000)
+    idpay_dataset_parser.add_argument("--mcc", type=str, default='1234')
+
+
     return argparser
