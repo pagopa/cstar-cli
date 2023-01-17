@@ -168,10 +168,14 @@ def parser():
     idpay_dataset_parser.add_argument("--trx-per-fc", type=int, default=1)
     idpay_dataset_parser.add_argument("--sender-code", type=str, default='IDPAY')
     idpay_dataset_parser.add_argument("--acquirer-code", type=str, default='IDPAY')
-    idpay_dataset_parser.add_argument("--day", type=str, default='20230101T00:00:00.000+01:00')
+    idpay_dataset_parser.add_argument("--datetime", type=str, default='2023-01-01T00:00:00.000+01:00')
     idpay_dataset_parser.add_argument("--min-amount", type=int, default=1)
     idpay_dataset_parser.add_argument("--max-amount", type=int, default=1000)
     idpay_dataset_parser.add_argument("--mcc", type=str, default='1234')
-
+    idpay_dataset_parser.add_argument("--out-dir", type=str, default='./generated')
+    idpay_dataset_parser.add_argument("--env", type=str, default="dev", required=True)
+    idpay_dataset_parser.add_argument("--api-key", type=str, default="", required=True)
+    idpay_dataset_parser.add_argument("--key", type=str, default="", required=True)
+    idpay_dataset_parser.add_argument("--cert", type=str, default="", required=True)
 
     return argparser
