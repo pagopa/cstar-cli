@@ -66,6 +66,8 @@ class IDPayDataset:
     def transactions(self):
         fc_cc = fc_cc_couples(self.args.num_fc, self.args.min_cc_per_fc, self.args.max_cc_per_fc)
         transactions = []
+        correlation_ids = set()
+        ids_trx_acq =  set()
 
         if not is_iso8601(self.args.day):
             print("Error: {} is not ISO8601".format(self.args.day))
@@ -73,7 +75,19 @@ class IDPayDataset:
 
         for fc in fc_cc.keys():
             for i in range(self.args.trx_per_fc):
-                curr_pan = random.choice(list(fc_cc[fc]));
+                curr_pan = random.choice(list(fc_cc[fc]))
+
+                # Ensure Correlation ID uniqueness
+                curr_correlation_id = uuid.uuid4().int
+                while curr_correlation_id in correlation_ids:
+                    curr_correlation_id = uuid.uuid4().int
+                correlation_ids.add(curr_correlation_id)
+
+                # Ensure ID trx acquirer uniqueness
+                curr_id_trx_acq = uuid.uuid4().int
+                while curr_id_trx_acq in ids_trx_acq:
+                    curr_id_trx_acq = uuid.uuid4().int
+                ids_trx_acq.add(curr_id_trx_acq)
 
                 transactions.append(
                     [
@@ -90,11 +104,11 @@ class IDPayDataset:
                         self.args.acquirer_code,  # Acquirer id
                         uuid.uuid4().int,  # merchant_id
                         uuid.uuid4().int,  # terminal id
-                        self.args.mcc,
-                        fake.ssn(),
-                        fake.company_vat().replace("IT",""),
-                        "00",
-                        sha256(f"{curr_pan}".encode()).hexdigest().upper()[:29]
+                        self.args.mcc, # MCC
+                        fake.ssn(), # Fiscal Code
+                        fake.company_vat().replace("IT",""), # VAT
+                        "00", # POS type
+                        sha256(f"{curr_pan}".encode()).hexdigest().upper()[:29] #PAR
                     ]
                 )
         print(transactions)
