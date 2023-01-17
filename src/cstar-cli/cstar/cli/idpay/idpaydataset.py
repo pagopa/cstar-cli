@@ -62,6 +62,13 @@ class IDPayDataset:
 
     def __init__(self, args):
         self.args = args
+        self.api = IDPayApi(IDPayApiEnvironment(
+            base_url=IDPayApi.rtd_api_urls[args.env],
+            api_key=self.args.api_key,
+            private_key_path=self.args.key,
+            certificate_path=self.args.cert
+        ))
+        self.api_key = self.args.api_key
 
     def transactions(self):
         fc_cc = fc_cc_couples(self.args.num_fc, self.args.min_cc_per_fc, self.args.max_cc_per_fc)
