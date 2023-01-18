@@ -8,12 +8,12 @@ authors = [
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.9,<4"
 psycopg2-binary = "^2.9.2"
 pandas = "1.5.2"
 python-gnupg = "^0.5.0"
 faker = "^15.3.4"
-httpx = "^0.23.3"
+requests = "^2.28.2"
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
 
