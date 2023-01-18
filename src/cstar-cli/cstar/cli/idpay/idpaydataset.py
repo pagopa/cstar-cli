@@ -1,12 +1,11 @@
 import os
 import random
 import uuid
+
+from .idpay_utilities import serialize, is_iso8601, flatten, flatten_values
 from .idpay_api import IDPayApiEnvironment, IDPayApi
 from hashlib import sha256
-
-import pandas as pd
 from dateutil import parser
-
 from faker import Faker
 
 circuits = ['visa', 'mastercard', 'maestro', 'amex']
@@ -52,7 +51,6 @@ pans_columns = [
 hpans_columns = [
     "hpan"
 ]
-CSV_SEPARATOR = ";"
 TRANSACTION_FILE_EXTENSION = "csv"
 ENCRYPTED_FILE_EXTENSION = "pgp"
 APPLICATION_PREFIX_FILE_NAME = "CSTAR"
@@ -105,43 +103,9 @@ def fc_hpans_couples(fc_cc, salt):
     return fc_hpans
 
 
-def is_iso8601(date_to_check):
-    try:
-        parser.parse(date_to_check)
-        return True
-    except ValueError:
-        return False
-
-
 def input_trx_name_formatter(sender_code, trx_datetime):
     return "{}.{}.{}.{}.001.{}".format(APPLICATION_PREFIX_FILE_NAME, sender_code, TRANSACTION_LOG_FIXED_SEGMENT,
                                        parser.parse(trx_datetime).strftime('%Y%m%d.%H%M%S'), TRANSACTION_FILE_EXTENSION)
-
-
-def serialize(dataset, columns, destination_path):
-    dataset_dataframe = pd.DataFrame(dataset, columns=columns)
-    trx_file_path = os.path.join(destination_path, )
-
-    os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
-
-    with open(trx_file_path, "a") as f:
-        f.write(dataset_dataframe.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
-
-
-def flatten(dataset):
-    res = []
-    for i in dataset:
-        for j in dataset[i]:
-            res.append([i, j])
-    return res
-
-
-def flatten_values(dataset):
-    res = []
-    for i in dataset:
-        for j in dataset[i]:
-            res.append(j)
-    return res
 
 
 class IDPayDataset:
