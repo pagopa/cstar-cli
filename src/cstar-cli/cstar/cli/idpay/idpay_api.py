@@ -1,5 +1,6 @@
 import dataclasses
-import httpx
+import requests
+
 
 @dataclasses.dataclass
 class IDPayApiEnvironment:
@@ -22,7 +23,7 @@ class IDPayApi:
         self.cert = (config.certificate_path, config.private_key_path)
 
     def get_salt(self):
-        response = httpx.get(
+        response = requests.get(
             f"{self.config.base_url}rtd/payment-instrument-manager/salt",
             cert=self.cert,
             headers={
