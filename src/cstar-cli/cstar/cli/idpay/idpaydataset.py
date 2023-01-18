@@ -21,6 +21,10 @@ fc_cc_columns = [
     "FC",
     "CC"
 ]
+fc_hpan_columns = [
+    "FC",
+    "HPAN"
+]
 transaction_columns = [
     "sender_code",
     "operation_type",
@@ -90,6 +94,17 @@ def fc_cc_couples(num_fc, min_cc_per_fc, max_cc_per_fc):
     return fc_cc
 
 
+def fc_hpans_couples(fc_cc, salt):
+    fc_hpans = {}
+
+    for fc in fc_cc.keys():
+        fc_hpans[fc] = set()
+        for pan in fc_cc[fc]:
+            fc_hpans[fc].add(sha256(f"{pan}{salt}".encode()).hexdigest())
+
+    return fc_hpans
+
+
 def is_iso8601(date_to_check):
     try:
         parser.parse(date_to_check)
@@ -112,23 +127,24 @@ def serialize(dataset, columns, destination_path):
     with open(trx_file_path, "a") as f:
         f.write(dataset_dataframe.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
+
 def flatten(dataset):
-    res=[]
+    res = []
     for i in dataset:
         for j in dataset[i]:
-            res.append([i,j])
+            res.append([i, j])
     return res
 
+
 def flatten_values(dataset):
-    res=[]
+    res = []
     for i in dataset:
         for j in dataset[i]:
             res.append(j)
     return res
 
-class IDPayDataset:
-    """Utilities related to the rtd-ms-transaction-filter service, a.k.a. Batch Service"""
 
+class IDPayDataset:
     def __init__(self, args):
         self.args = args
         self.api = IDPayApi(IDPayApiEnvironment(
@@ -141,6 +157,8 @@ class IDPayDataset:
 
     def transactions(self):
         fc_cc = fc_cc_couples(self.args.num_fc, self.args.min_cc_per_fc, self.args.max_cc_per_fc)
+        fc_hpans = fc_hpans_couples(fc_cc, self.api.get_salt())
+
         transactions = []
         correlation_ids = set()
         ids_trx_acq = set()
@@ -190,7 +208,13 @@ class IDPayDataset:
                 )
 
         # Serialization
-        serialize(transactions, transaction_columns, os.path.join(self.args.out_dir, self.args.datetime, input_trx_name_formatter(self.args.sender_code, self.args.datetime)))
-        serialize(fc_cc.keys(), fc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc'))
-        serialize(flatten(fc_cc), fc_cc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc_pan'))
-        serialize(flatten_values(fc_cc), pans_columns, os.path.join(self.args.out_dir, self.args.datetime, 'pan'))
+        serialize(transactions, transaction_columns, os.path.join(self.args.out_dir, self.args.datetime,
+                                                                  input_trx_name_formatter(self.args.sender_code,
+                                                                                           self.args.datetime)))
+        serialize(fc_cc.keys(), fc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc.csv'))
+        serialize(flatten(fc_cc), fc_cc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc_pan.csv'))
+        serialize(flatten(fc_hpans), fc_hpan_columns,
+                  os.path.join(self.args.out_dir, self.args.datetime, 'fc_hpan.csv'))
+        serialize(flatten_values(fc_hpans), pans_columns,
+                  os.path.join(self.args.out_dir, self.args.datetime, 'hpans.csv'))
+        serialize(flatten_values(fc_cc), pans_columns, os.path.join(self.args.out_dir, self.args.datetime, 'pans.csv'))
