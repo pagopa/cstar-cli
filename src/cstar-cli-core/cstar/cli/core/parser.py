@@ -205,4 +205,6 @@ def parser():
                                      help='Percentage of successful rewards')
     idpay_reward_parser.add_argument("--perc-dupl", type=float, default=0.1,
                                      help='Percentage of duplicates records')
+    idpay_reward_parser.add_argument("--out-dir", type=str, default='./generated',
+                                      help='Output destination of files generated')
     return argparser

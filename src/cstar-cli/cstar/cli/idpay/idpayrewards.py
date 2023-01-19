@@ -1,3 +1,4 @@
+import os.path
 import random
 from datetime import datetime
 from hashlib import sha256
@@ -30,7 +31,6 @@ class IDPayRewards:
             input_file.seek(0)
             payments = pd.read_csv(input_file, quotechar='"', usecols=['uniqueID'], sep=';')
 
-
             curr_execution_date = self.args.exec_date
             if self.args.exec_date is None:
                 curr_execution_date = datetime.now().strftime('%Y-%m-%d')
@@ -56,8 +56,10 @@ class IDPayRewards:
                 ])
 
             # Insert desired duplicates
-            duplicates = random.sample(rewards, round(self.args.perc_dupl*len(rewards)))
+            duplicates = random.sample(rewards, round(self.args.perc_dupl * len(rewards)))
             for d in duplicates:
                 rewards.append(d)
 
-            serialize(rewards, reward_columnds, './rewards-dispositive-'+datetime.now().isoformat()+'.csv')
+            serialize(rewards, reward_columnds, os.path.join('.', self.args.out_dir,
+                                                             'rewards-dispositive-' + datetime.now().strftime(
+                                                                 '%Y%m%dT%H%M%S') + '.csv'))
