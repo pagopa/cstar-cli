@@ -9,12 +9,15 @@ from dateutil import parser
 
 CSV_SEPARATOR = ";"
 
+
 def is_iso8601(date_to_check):
     try:
         parser.parse(date_to_check)
         return True
     except ValueError:
         return False
+
+
 def serialize(dataset, columns, destination_path):
     dataset_dataframe = pd.DataFrame(dataset, columns=columns)
     trx_file_path = os.path.join(destination_path, )
@@ -40,6 +43,7 @@ def flatten_values(dataset):
             res.append(j)
     return res
 
+
 def pgp_string(payload: str, pgp_key_data: str):
     with tempfile.TemporaryDirectory() as temp_gpg_home:
         gpg = gnupg.GPG(gnupghome=temp_gpg_home)
@@ -59,6 +63,7 @@ def pgp_string(payload: str, pgp_key_data: str):
                 else:
                     logging.error("Failed to pgp")
     return None
+
 
 def pgp_file(file_path: str, pgp_key_data: str):
     with tempfile.TemporaryDirectory() as temp_gpg_home:
