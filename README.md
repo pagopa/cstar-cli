@@ -4,9 +4,11 @@ Command Line Interface to manage cstar platform and its verticals
 
 ## Prerequisites
 
-The project is managed with [Poetry](https://python-poetry.org/): installation instructions for all platforms are available [here](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions).
+The project is managed with [Poetry](https://python-poetry.org/): installation instructions for all platforms are
+available [here](https://python-poetry.org/docs/#osx--linux--bashonwindows-install-instructions).
 
 ## Virtualenv initialization
+
 > Make sure to be in the root of this project.
 
 Open a shell and type the following:
@@ -46,7 +48,9 @@ cst <VERTICAL> <DOMAIN> --action <ACTION> [COMMAND PARAMETERS ...]
 ```bash
 cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <INPUT_FILE>
 ```
+
 ---
+
 ## RTD
 
 ### Creating synthetic hashpans for the Batch Service
@@ -55,12 +59,13 @@ cst bpd paymentinstrument --action enroll --connection-string <CONNSTR> --file <
 cst rtd transactionfilter --action synthetic_hashpans --pans-prefix "prefix_" --hashpans-qty 20000 --salt <SALT>
 ```
 
-
 ### Creating synthetic transactions for the Batch Service.
 
-> See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
+>
+See: https://app.gitbook.com/o/KXYtsf32WSKm6ga638R3/s/A5nRaBVrAjc1Sj7y0pYS/acquirer-integration-with-pagopa-centrostella/integration/standard-pagopa-file-transactions
 
 #### Unencrypted
+
 ```bash
 cst rtd transactionfilter --action synthetic_transactions --sender 12345 --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --input-hashpans ~/hashpans_file.txt
 ```
@@ -70,7 +75,6 @@ cst rtd transactionfilter --action synthetic_transactions --sender 12345 --pans-
 ```bash
 cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_" --pans-qty 20000 --trx-qty 100 --ratio 5 --pos-number 10000 --salt <SALT> --out-dir /tmp --pgp --key ~/certificates/public.key --input-hashpans ~/hashpans_file.txt
 ```
-
 
 ### Creating synthetic cards for the Enrolled Payment Instrument microservice
 
@@ -93,11 +97,12 @@ Just pans-prefix and crd-qty are mandatory. </br>
 If you want hashpan children you need to use ONE parameters between --max-num-children and --num-children. </br>
 If no one of these two are choosen all the cards records will not have children hashpan. </br>
 
-
 ### Upload transaction file
+
 ```bash
 cst rtd transactionupload --action upload --env dev --api-key "xxx" --key "path/to/private.key" --cert "path/to/certificate.pem"  --file "path/to/CSTAR.*.TRNLOG.*.csv"
 ```
+
 Params </br>
 
 --env: environment `dev`, `uat`, `prod` </br>
@@ -109,6 +114,7 @@ Params </br>
 ---
 
 ## TAE
+
 #### Creating synthetic aggregations like the ones produced by the Batch Acquirer for AdE.
 
 > To generate 1MB of aggregates it takes about 9K aggregations.
@@ -116,6 +122,7 @@ Params </br>
 > With the shuffling flag it takes more time to generate the file.
 
 #### Unencrypted
+
 ```bash
 cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --reverse-ratio 100 --ratio-dirty-pos-type 30 --ratio-dirty-vat 20 --shuffle
 ```
@@ -129,9 +136,11 @@ cst tae transactionaggregate --action aggregate_transactions --aggr-qty 9000 --r
 ### Creating synthetic acks like the ones sent by AdE to CSTAR, according to the interface agreement.
 
 #### Unzipped
+
 ```bash
 cst tae results --action synthetic_results --res-qty 100
 ```
+
 #### Zipped
 
 ```bash
@@ -150,7 +159,6 @@ cst tae registryreports --action synthetic_reports --rep-qty 100
 
 ### Create input transactions and corresponding aggregates' output files (like the one produced by a run of batch service).
 
-
 **For acquirers:**
 
 ```bash
@@ -163,6 +171,7 @@ cst sender aggregates --sender <ABI> --action trx_and_aggr --aggr-qty 10
 ```bash
 cst sender aggregates --sender {COBAN, STPAY, SUMUP, BPAY1, ICARD} --action trx_and_aggr --aggr-qty 10
 ```
+
 This will also test the translation of technical ABI to acquirer fiscal code.
 
 ---
@@ -191,24 +200,23 @@ cst idpay idpaydataset --action transactions --env dev --api-key aaa000aaa --key
 
 Parameters: </br>
 
-- `--action ACTION: Action to perform with the invocation of the command`
-- `--num-fc NUM_FC: Number of fiscal codes generated`
-- `--min-cc-per-fc MIN_CC_PER_FC Minimum number of payment instruments per fiscal code.`
-- `--max-cc-per-fc MAX_CC_PER_FC Maximum number of payment instruments per fiscal code.`
-- `--trx-per-fc TRX_PER_FC: Number of transactions per fiscal code.`
-- `--sender-code SENDER_CODE: Sender code that will appear in transactions' file.`
-- `--acquirer-code ACQUIRER_CODE: Acquirer code that will appear in transactions' file.`
-- `--datetime DATETIME: Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions.`
-- `--min-amount MIN_AMOUNT: Minimum amount of euro cents of a single transaction.`
-- `--max-amount MAX_AMOUNT: Maximum amount of euro cents of a single transaction.`
-- `--mcc MCC: Merchant category code used in every transaction.`
-- `--out-dir OUT_DIR: Output destination of files generated.`
-- `--env {dev,uat,prod}: Environment.`
-- `--api-key API_KEY: API key cpable to using RTD_API_Product.`
-- `--key KEY: Private key of the muthual authentication certificate.`
-- `--cert CERT: Public key of the muthual authentication certificate.`
-- `--PM-pubk PM_PUBK: Path to the public key of the Payment Manager.`
-
+- `--action ACTION`: Action to perform with the invocation of the command`
+- `--num-fc NUM_FC`: Number of fiscal codes generated`
+- `--min-cc-per-fc MIN_CC_PER_FC`: Minimum number of payment instruments per fiscal code.`
+- `--max-cc-per-fc MAX_CC_PER_FC`: Maximum number of payment instruments per fiscal code.`
+- `--trx-per-fc TRX_PER_FC`: Number of transactions per fiscal code.`
+- `--sender-code SENDER_CODE`: Sender code that will appear in transactions' file.`
+- `--acquirer-code ACQUIRER_CODE`: Acquirer code that will appear in transactions' file.`
+- `--datetime DATETIME`: Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions.`
+- `--min-amount MIN_AMOUNT`: Minimum amount of euro cents of a single transaction.`
+- `--max-amount MAX_AMOUNT`: Maximum amount of euro cents of a single transaction.`
+- `--mcc MCC`: Merchant category code used in every transaction.`
+- `--out-dir OUT_DIR`: Output destination of files generated.`
+- `--env {dev,uat,prod}`: Environment.`
+- `--api-key API_KEY`: API key cpable to using RTD_API_Product.`
+- `--key KEY`: Private key of the muthual authentication certificate.`
+- `--cert CERT`: Public key of the muthual authentication certificate.`
+- `--PM-pubk PM_PUBK`: Path to the public key of the Payment Manager.`
 
 ### The ouptut produced is:
 
@@ -217,4 +225,23 @@ Parameters: </br>
 - `fc_pan.csv`: Contains (Fiscal Code, PAN) association.
 - `fc_pgpans.csv`: Contains (Fiscal Code, PGPAN) association.
 - `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv`: Transactions file associated to the dataset generated.
-- `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv.pgp`: Transactions file associated to the dataset generated encrypted with RTD public key.
+- `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv.pgp`: Transactions file associated to the dataset generated
+  encrypted with RTD public key.
+
+### Creates a synthetic reward file based on payment provision.
+
+```bash
+cst idpay idpayrewards --action rewards --payment-provisions-export ./payment-provisions.csv --perc-succ 0.4 --perc-dupl 0.1
+```
+
+Parameters: </br>
+
+- `--payment-provisions-export PAYMENT_PROVISIONS_EXPORT`: Path to input payment provisions exported by IDPay.
+- `--exec-date EXEC_DATE`: Date in format yyyy-MM-dd of reward process.
+- `--perc-succ PERC_SUCC`: Percentage of successful rewards.
+- `--perc-dupl PERC_DUPL`: Percentage of duplicates records.
+- `--out-dir OUT_DIR`: Output destination of files generated.
+
+### The ouptut produced is:
+
+- `reward-dispositive-<DATE>T<TIME>.csv`: Contains rewards based on uniqueID of payment provision provided.
