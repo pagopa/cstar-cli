@@ -208,3 +208,13 @@ Parameters: </br>
 - `--key KEY: Private key of the muthual authentication certificate.`
 - `--cert CERT: Public key of the muthual authentication certificate.`
 - `--PM-pubk PM_PUBK: Path to the public key of the Payment Manager.`
+
+
+### The ouptut produced is:
+
+- `fc.csv`: Contains testing Fiscal Codes generated.
+- `pans.csv`: Contains testing payment instruments.
+- `fc_pan.csv`: Contains (Fiscal Code, PAN) association.
+- `fc_pgpans.csv`: Contains (Fiscal Code, PGPAN) association.
+- `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv`: Transactions file associated to the dataset generated.
+- `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv.pgp`: Transactions file associated to the dataset generated encrypted with RTD public key.
