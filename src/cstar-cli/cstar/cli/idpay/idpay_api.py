@@ -31,3 +31,13 @@ class IDPayApi:
             }
         )
         return response.text if 200 <= response.status_code < 300 else None
+
+    def get_pgp_public_key(self):
+        response = requests.get(
+            f"{self.config.base_url}rtd/csv-transaction/publickey",
+            cert=self.cert,
+            headers={
+                "Ocp-Apim-Subscription-Key": self.config.api_key
+            }
+        )
+        return response.text if 200 <= response.status_code < 300 else None
