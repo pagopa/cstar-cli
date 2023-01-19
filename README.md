@@ -75,7 +75,7 @@ cst rtd transactionfilter --action synthetic_transactions --pans-prefix "prefix_
 ### Creating synthetic cards for the Enrolled Payment Instrument microservice
 
 ```bash
-cst rtd transactionfilter --action synthetic_cards --pans-prefix "prefix_" --crd-qty 10 --par RANDOM  --max-num-children 5 --state READY 
+cst rtd transactionfilter --action synthetic_cards --pans-prefix "prefix_" --crd-qty 10 --par RANDOM  --max-num-children 5 --state READY
 ```
 
 Params </br>
@@ -92,7 +92,7 @@ Params </br>
 Just pans-prefix and crd-qty are mandatory. </br>
 If you want hashpan children you need to use ONE parameters between --max-num-children and --num-children. </br>
 If no one of these two are choosen all the cards records will not have children hashpan. </br>
- 
+
 
 ### Upload transaction file
 ```bash
@@ -180,3 +180,31 @@ cst sender aggregates --action diff --files /path/to/files/produced/by/batch/ser
 ```bash
 sh ./test/run-all.sh
 ```
+
+## IDPAY
+
+### Creates synthetic fiscal codes, their synthetic payment instruments (encrypted with Payment Manager public key) and a transaction file associated with them.
+
+```bash
+cst idpay idpaydataset --action transactions --env dev --api-key aaa000aaa --key ~/certificates/private.key --cert ~/certificates/public.key --PM-pubk ./PM-public.asc
+```
+
+Parameters: </br>
+
+- `--action ACTION: Action to perform with the invocation of the command`
+- `--num-fc NUM_FC: Number of fiscal codes generated`
+- `--min-cc-per-fc MIN_CC_PER_FC Minimum number of payment instruments per fiscal code.`
+- `--max-cc-per-fc MAX_CC_PER_FC Maximum number of payment instruments per fiscal code.`
+- `--trx-per-fc TRX_PER_FC: Number of transactions per fiscal code.`
+- `--sender-code SENDER_CODE: Sender code that will appear in transactions' file.`
+- `--acquirer-code ACQUIRER_CODE: Acquirer code that will appear in transactions' file.`
+- `--datetime DATETIME: Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions.`
+- `--min-amount MIN_AMOUNT: Minimum amount of euro cents of a single transaction.`
+- `--max-amount MAX_AMOUNT: Maximum amount of euro cents of a single transaction.`
+- `--mcc MCC: Merchant category code used in every transaction.`
+- `--out-dir OUT_DIR: Output destination of files generated.`
+- `--env {dev,uat,prod}: Environment.`
+- `--api-key API_KEY: API key cpable to using RTD_API_Product.`
+- `--key KEY: Private key of the muthual authentication certificate.`
+- `--cert CERT: Public key of the muthual authentication certificate.`
+- `--PM-pubk PM_PUBK: Path to the public key of the Payment Manager.`
