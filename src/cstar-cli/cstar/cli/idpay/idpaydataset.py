@@ -59,6 +59,7 @@ TRANSACTION_FILE_EXTENSION = "csv"
 ENCRYPTED_FILE_EXTENSION = "pgp"
 APPLICATION_PREFIX_FILE_NAME = "CSTAR"
 TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
+CHECKSUM_PREFIX = "#sha256sum:"
 
 
 def fake_cc(num_cc):
@@ -121,8 +122,9 @@ def fc_pgpans_couples(fc_cc, key):
 
 
 def input_trx_name_formatter(sender_code, trx_datetime):
-    return "{}.{}.{}.{}.001.{}".format(APPLICATION_PREFIX_FILE_NAME, sender_code, TRANSACTION_LOG_FIXED_SEGMENT,
-                                       parser.parse(trx_datetime).strftime('%Y%m%d.%H%M%S'), TRANSACTION_FILE_EXTENSION)
+    return "{}.{}.{}.{}.001.01.{}".format(APPLICATION_PREFIX_FILE_NAME, sender_code, TRANSACTION_LOG_FIXED_SEGMENT,
+                                          parser.parse(trx_datetime).strftime('%Y%m%d.%H%M%S'),
+                                          TRANSACTION_FILE_EXTENSION)
 
 
 class IDPayDataset:
@@ -141,7 +143,9 @@ class IDPayDataset:
         with open(self.args.PM_pubk) as public_key:
             fc_pgpans = fc_pgpans_couples(fc_cc, public_key.read())
 
-
+        rtd_salt = self.api.get_salt()
+        if rtd_salt is None:
+            exit(1)
 
         transactions = []
         correlation_ids = set()
@@ -172,7 +176,7 @@ class IDPayDataset:
                         self.args.sender_code,  # sender code
                         "00",  # operation type
                         "00",  # circuit
-                        curr_pan,  # hpan
+                        sha256(f"{curr_pan}{rtd_salt}".encode()).hexdigest(), # HPAN
                         parser.parse(self.args.datetime).strftime('%Y-%m-%dT%H:%M:%S.000Z'),  # datetime
                         curr_id_trx_acq,  # id_trx_acquirer
                         uuid.uuid4().int,  # id_trx_issuer
@@ -187,14 +191,25 @@ class IDPayDataset:
                         fake.ssn(),  # Fiscal Code
                         fake.company_vat().replace("IT", ""),  # VAT
                         "00",  # POS type
-                        sha256(f"{curr_pan}".encode()).hexdigest().upper()[:29]  # PAR
+                        sha256(f"{curr_pan}".encode()).hexdigest().upper()[:29] # PAR (this is not the way a PAR is calculated)
                     ]
                 )
 
         # Serialization
-        serialize(transactions, transaction_columns, os.path.join(self.args.out_dir, self.args.datetime,
-                                                                  input_trx_name_formatter(self.args.sender_code,
-                                                                                           self.args.datetime)))
+
+        transactions_path = os.path.join(self.args.out_dir, self.args.datetime,
+                                         input_trx_name_formatter(self.args.sender_code,
+                                                                  self.args.datetime))
+        serialize(transactions, transaction_columns, transactions_path)
+        # Add checksum header to simulate Batch Service
+        with open(transactions_path, 'r+') as f:
+            content = f.read()
+            f.seek(0, 0)
+            f.write(CHECKSUM_PREFIX + sha256(str(transactions).encode()).hexdigest() + '\n' + content)
+        # Encryption of transaction file
+        pgp_key = self.api.get_pgp_public_key()
+        pgp_file(transactions_path, pgp_key)
+
         serialize(fc_cc.keys(), fc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc.csv'))
         serialize(flatten(fc_cc), fc_cc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc_pan.csv'))
         serialize(flatten(fc_pgpans), fc_pgppan_columns,
