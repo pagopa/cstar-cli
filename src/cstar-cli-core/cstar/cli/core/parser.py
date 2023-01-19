@@ -184,13 +184,25 @@ def parser():
                                       help='Output destination of files generated')
     idpay_dataset_parser.add_argument("--env", type=str, choices=['dev', 'uat', 'prod'], default="dev", required=True,
                                       help='Environment')
-    idpay_dataset_parser.add_argument("--api-key", type=str, default="", required=True,
+    idpay_dataset_parser.add_argument("--api-key", type=str, default="aaa", required=True,
                                       help='API key capable of using RTD_API_Product')
-    idpay_dataset_parser.add_argument("--key", type=str, default="", required=True,
+    idpay_dataset_parser.add_argument("--key", type=str, default="~/certificates/private.key", required=True,
                                       help='Private key of the mutual authentication certificate')
-    idpay_dataset_parser.add_argument("--cert", type=str, default="", required=True,
+    idpay_dataset_parser.add_argument("--cert", type=str, default="~/certificates/public.key", required=True,
                                       help='Public key of the mutual authentication certificate')
-    idpay_dataset_parser.add_argument("--PM-pubk", type=str, default="", required=True,
+    idpay_dataset_parser.add_argument("--PM-pubk", type=str, default="./PM-public.asc", required=True,
                                       help='Path to the public key of the Payment Manager')
 
+    # -Rewards
+    idpay_reward_parser = idpay_parser.add_parser("idpayrewards")
+    idpay_reward_parser.add_argument("--action", required=True,
+                                     help="Action to perform with the invocation of the command")
+    idpay_reward_parser.add_argument("--payment-provisions-export", type=str, default="./payment-provisions.csv",
+                                     help='Path to input payment provisions exported by IDPay')
+    idpay_reward_parser.add_argument("--exec-date", type=str, default='2023-01-01',
+                                     help='Date in format yyyy-MM-dd of reward process')
+    idpay_reward_parser.add_argument("--perc-succ", type=float, default=0.1,
+                                     help='Percentage of successful rewards')
+    idpay_reward_parser.add_argument("--perc-dupl", type=float, default=0.1,
+                                     help='Percentage of duplicates records')
     return argparser
