@@ -211,7 +211,7 @@ class IDPayDataset:
         pgp_file(transactions_path, pgp_key)
 
         serialize(fc_cc.keys(), fc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc.csv'))
-        serialize(flatten(fc_cc), fc_cc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc_pan.csv'))
+        serialize(flatten(fc_cc), fc_cc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc_pans.csv'))
         serialize(flatten(fc_pgpans), fc_pgppan_columns,
                   os.path.join(self.args.out_dir, self.args.datetime, 'fc_pgpans.csv'))
         serialize(flatten_values(fc_cc), pans_columns, os.path.join(self.args.out_dir, self.args.datetime, 'pans.csv'))
