@@ -66,4 +66,4 @@ class IDPayRewards:
 
             serialize(rewards, reward_columnds, os.path.join('.', self.args.out_dir,
                                                              'rewards-dispositive-' + datetime.now().strftime(
-                                                                 '%Y%m%dT%H%M%S') + '.csv'))
+                                                                 '%Y%m%dT%H%M%S') + '.csv'), True)
