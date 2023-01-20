@@ -31,14 +31,16 @@ class IDPayRewards:
             input_file.seek(0)
             payments = pd.read_csv(input_file, quotechar='"', usecols=['uniqueID'], sep=';')
 
-            curr_execution_date = self.args.exec_date
+            execution_date = self.args.exec_date
             if self.args.exec_date is None:
-                curr_execution_date = datetime.now().strftime('%Y-%m-%d')
+                execution_date = datetime.now().strftime('%Y-%m-%d')
 
             rewards = []
             i = 0
             for payment in payments.values:
-
+                curr_cro = sha256(f"{i}".encode()).hexdigest()
+                i = i + 1
+                curr_execution_date = execution_date
                 # Decide whether the reward is OK or KO based on desired probability
                 if random.random() < self.args.perc_succ:
                     curr_result = possible_results[0]
@@ -46,12 +48,14 @@ class IDPayRewards:
                 else:
                     curr_result = possible_results[1]
                     curr_reject_reason = possible_rejectReasons[0]
+                    curr_cro = ''
+                    curr_execution_date = ''
 
                 rewards.append([
                     payment[0],
                     curr_result,
                     curr_reject_reason,
-                    sha256(f"{i}".encode()).hexdigest(),
+                    curr_cro,
                     curr_execution_date
                 ])
 
