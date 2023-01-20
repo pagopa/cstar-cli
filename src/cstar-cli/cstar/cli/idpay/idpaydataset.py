@@ -116,7 +116,7 @@ def fc_pgpans_couples(fc_cc, key):
         fc_pgppans[fc] = set()
         for pan in fc_cc[fc]:
             fc_pgppans[fc].add(
-                (pgp_string(pan, key).decode('utf-8').replace("\'", "").replace("\n", "\\n")))
+                (pgp_string(pan, key).replace("\'", "").replace("\n", "\\n")))
 
     return fc_pgppans
 
