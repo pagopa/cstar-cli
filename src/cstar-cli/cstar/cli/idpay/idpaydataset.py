@@ -1,7 +1,6 @@
 import os
 import random
 import uuid
-from datetime import datetime
 
 from .idpay_utilities import serialize, is_iso8601, flatten, flatten_values, pgp_file, pgp_string
 from .idpay_api import IDPayApiEnvironment, IDPayApi
@@ -112,16 +111,12 @@ def fc_hpans_couples(fc_cc, salt):
 
 def fc_pgpans_couples(fc_cc, key):
     fc_pgppans = {}
-    start = datetime.now()
-    i = 0
+
     for fc in fc_cc.keys():
         fc_pgppans[fc] = set()
         for pan in fc_cc[fc]:
-            print(f"{i} pgpizzo {pan}")
-            i = i + 1
             fc_pgppans[fc].add(
                 (pgp_string(pan, key).decode('utf-8').replace("\'", "").replace("\n", "\\n")))
-    print(datetime.now() - start)
 
     return fc_pgppans
 
@@ -181,7 +176,7 @@ class IDPayDataset:
                         self.args.sender_code,  # sender code
                         "00",  # operation type
                         "00",  # circuit
-                        sha256(f"{curr_pan}{rtd_salt}".encode()).hexdigest(),  # HPAN
+                        sha256(f"{curr_pan}{rtd_salt}".encode()).hexdigest(), # HPAN
                         parser.parse(self.args.datetime).strftime('%Y-%m-%dT%H:%M:%S.000Z'),  # datetime
                         curr_id_trx_acq,  # id_trx_acquirer
                         uuid.uuid4().int,  # id_trx_issuer
@@ -196,8 +191,7 @@ class IDPayDataset:
                         fake.ssn(),  # Fiscal Code
                         fake.company_vat().replace("IT", ""),  # VAT
                         "00",  # POS type
-                        sha256(f"{curr_pan}".encode()).hexdigest().upper()[:29]
-                        # PAR (this is not the way a PAR is calculated)
+                        sha256(f"{curr_pan}".encode()).hexdigest().upper()[:29] # PAR (this is not the way a PAR is calculated)
                     ]
                 )
 
@@ -215,6 +209,9 @@ class IDPayDataset:
         # Encryption of transaction file
         pgp_key = self.api.get_pgp_public_key()
         pgp_file(transactions_path, pgp_key)
+
+        serialize(fc_cc.keys(), fc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc.csv'))
+        serialize(flatten(fc_cc), fc_cc_columns, os.path.join(self.args.out_dir, self.args.datetime, 'fc_pans.csv'))
         serialize(flatten(fc_pgpans), fc_pgppan_columns,
                   os.path.join(self.args.out_dir, self.args.datetime, 'fc_pgpans.csv'))
         serialize(flatten_values(fc_cc), pans_columns, os.path.join(self.args.out_dir, self.args.datetime, 'pans.csv'))
