@@ -76,7 +76,7 @@ def fake_fc(num_fc):
 
     while len(fake_fiscal_codes) < num_fc:
         tmp_fc = fake.ssn()
-        fake_fiscal_codes.add(f'{tmp_fc[:11]}XOO{tmp_fc[15:]}')
+        fake_fiscal_codes.add(f'{tmp_fc[:11]}X000{tmp_fc[15:]}')
 
     return fake_fiscal_codes
 
