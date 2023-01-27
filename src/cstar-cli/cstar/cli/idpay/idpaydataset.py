@@ -203,7 +203,7 @@ class IDPayDataset:
                                                                   self.args.datetime))
         serialize(transactions, transaction_columns, transactions_path)
         # Add checksum header to simulate Batch Service
-        with open(transactions_path, 'r+') as f:
+        with open(transactions_path, 'r+', newline='') as f:
             content = f.read()
             f.seek(0, 0)
             f.write(CHECKSUM_PREFIX + sha256(str(transactions).encode()).hexdigest() + '\n' + content)
