@@ -5,6 +5,7 @@ import uuid
 from .idpay_utilities import serialize, is_iso8601, flatten, flatten_values, pgp_file, pgp_string
 from .idpay_api import IDPayApiEnvironment, IDPayApi
 from hashlib import sha256
+from datetime import datetime
 from dateutil import parser
 from faker import Faker
 
@@ -197,6 +198,7 @@ class IDPayDataset:
                 )
 
         # Serialization
+        random.shuffle(transactions)
 
         curr_output_path = os.path.join(self.args.out_dir, str(datetime.now().strftime('%Y%m%d-%H%M%S')))
 
