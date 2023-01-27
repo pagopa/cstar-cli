@@ -198,19 +198,22 @@ class IDPayDataset:
 
         # Serialization
 
-        transactions_path = os.path.join(self.args.out_dir, self.args.datetime,
-                                         input_trx_name_formatter(self.args.sender_code,
-                                                                  self.args.datetime))
+        curr_output_path = os.path.join(self.args.out_dir, str(datetime.now().strftime('%Y%m%d-%H%M%S')))
+
+        transactions_path = os.path.join(curr_output_path,
+                                         input_trx_name_formatter(self.args.sender_code, self.args.datetime))
+
         serialize(transactions, transaction_columns, transactions_path)
         # Add checksum header to simulate Batch Service
         with open(transactions_path, 'r+', newline='') as f:
             content = f.read()
             f.seek(0, 0)
             f.write(CHECKSUM_PREFIX + sha256(str(transactions).encode()).hexdigest() + '\n' + content)
+
         # Encryption of transaction file
         pgp_key = self.api.get_pgp_public_key()
         pgp_file(transactions_path, pgp_key)
 
         serialize(flatten(fc_pgpans), fc_pgppan_columns,
-                  os.path.join(self.args.out_dir, self.args.datetime, 'fc_pgpans.csv'))
-        serialize(flatten_values(fc_cc), pans_columns, os.path.join(self.args.out_dir, self.args.datetime, 'pans.csv'))
+                  os.path.join(curr_output_path, 'fc_pgpans.csv'))
+        serialize(flatten_values(fc_cc), pans_columns, os.path.join(curr_output_path, 'pans.csv'))
