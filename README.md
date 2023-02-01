@@ -200,24 +200,24 @@ cst idpay idpaydataset --action transactions --env dev --api-key aaa000aaa --key
 
 Parameters: </br>
 
-- `--action ACTION`: Action to perform with the invocation of the command`
-- `--num-fc NUM_FC`: Number of fiscal codes generated`
-- `--min-cc-per-fc MIN_CC_PER_FC`: Minimum number of payment instruments per fiscal code.`
-- `--max-cc-per-fc MAX_CC_PER_FC`: Maximum number of payment instruments per fiscal code.`
-- `--trx-per-fc TRX_PER_FC`: Number of transactions per fiscal code.`
-- `--sender-code SENDER_CODE`: Sender code that will appear in transactions' file.`
-- `--acquirer-code ACQUIRER_CODE`: Acquirer code that will appear in transactions' file.`
-- `--datetime DATETIME`: Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions.`
-- `--min-amount MIN_AMOUNT`: Minimum amount of euro cents of a single transaction.`
-- `--max-amount MAX_AMOUNT`: Maximum amount of euro cents of a single transaction.`
-- `--mcc MCC`: Merchant category code used in every transaction.`
-- `--out-dir OUT_DIR`: Output destination of files generated.`
-- `--env {dev,uat,prod}`: Environment.`
-- `--api-key API_KEY`: API key cpable to using RTD_API_Product.`
-- `--key KEY`: Private key of the muthual authentication certificate.`
-- `--cert CERT`: Public key of the muthual authentication certificate.`
-- `--PM-pubk PM_PUBK`: Path to the public key of the Payment Manager.`
-
+- `--action ACTION`: Action to perform with the invocation of the command.
+- `--num-fc NUM_FC`: Number of fiscal codes generated.
+- `--min-cc-per-fc MIN_CC_PER_FC`: Minimum number of payment instruments per fiscal code.
+- `--max-cc-per-fc MAX_CC_PER_FC`: Maximum number of payment instruments per fiscal code.
+- `--trx-per-fc TRX_PER_FC`: Number of transactions per fiscal code.
+- `--sender-code SENDER_CODE`: Sender code that will appear in transactions' file.
+- `--acquirer-code ACQUIRER_CODE`: Acquirer code that will appear in transactions' file.
+- `--datetime DATETIME`: Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transaction.
+- `--min-amount MIN_AMOUNT`: Minimum amount of euro cents of a single transaction.
+- `--max-amount MAX_AMOUNT`: Maximum amount of euro cents of a single transaction.
+- `--mcc MCC`: Merchant category code used in every transaction.
+- `--out-dir OUT_DIR`: Output destination of files generated.
+- `--env {dev,uat,prod}`: Environment.
+- `--api-key API_KEY`: API key cpable to using RTD_API_Product.
+- `--key KEY`: Private key of the muthual authentication certificate.
+- `--cert CERT`: Public key of the muthual authentication certificate.
+- `--PM-pubk PM_PUBK`: Path to the public key of the Payment Manager.
+- `--PM-salt PM_SALT`: Current salt of the Payment Manager. If not specified the API is called.
 ### The ouptut produced is:
 
 - `fc.csv`: Contains testing Fiscal Codes generated.

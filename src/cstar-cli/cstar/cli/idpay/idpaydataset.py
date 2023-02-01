@@ -144,8 +144,12 @@ class IDPayDataset:
         with open(self.args.PM_pubk) as public_key:
             fc_pgpans = fc_pgpans_couples(fc_cc, public_key.read())
 
-        rtd_salt = self.api.get_salt()
-        if rtd_salt is None:
+        if self.args.PM_salt is None:
+            pm_salt = self.api.get_salt()
+        else:
+            pm_salt = self.args.PM_salt
+
+        if pm_salt is None:
             exit(1)
 
         transactions = []
@@ -177,7 +181,7 @@ class IDPayDataset:
                         self.args.sender_code,  # sender code
                         "00",  # operation type
                         "00",  # circuit
-                        sha256(f"{curr_pan}{rtd_salt}".encode()).hexdigest(),  # HPAN
+                        sha256(f"{curr_pan}{pm_salt}".encode()).hexdigest(),  # HPAN
                         parser.parse(self.args.datetime).strftime('%Y-%m-%dT%H:%M:%S.000Z'),  # datetime
                         curr_id_trx_acq,  # id_trx_acquirer
                         uuid.uuid4().int,  # id_trx_issuer

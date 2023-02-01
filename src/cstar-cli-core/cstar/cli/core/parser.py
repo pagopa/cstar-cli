@@ -192,6 +192,8 @@ def parser():
                                       help='Public key of the mutual authentication certificate')
     idpay_dataset_parser.add_argument("--PM-pubk", type=str, default="./PM-public.asc", required=True,
                                       help='Path to the public key of the Payment Manager')
+    idpay_dataset_parser.add_argument("--PM-salt", type=str, required=False,
+                                      help='Current salt of the Payment Manager, if not specified the API is called')
 
     # -Rewards
     idpay_reward_parser = idpay_parser.add_parser("idpayrewards")
