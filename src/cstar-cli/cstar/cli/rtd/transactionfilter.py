@@ -133,6 +133,9 @@ class Transactionfilter:
         else:
             with open(input_file, 'r') as input_pans:
                 synthetic_pans_enrolled = input_pans.read().splitlines()
+                if len(synthetic_pans_enrolled) == 0:
+                    print("The hashpan file must not be empty")
+                    exit(1)
                 synthetic_pans_not_enrolled = []
 
         synthetic_pos = []
@@ -166,7 +169,7 @@ class Transactionfilter:
                 else:
                     pan = random.choice(synthetic_pans_not_enrolled)
             else:
-                pan = synthetic_pans_enrolled[i%len(synthetic_pans_enrolled)]
+                pan = random.choice(synthetic_pans_enrolled)
 
             id_trx_acquirer = uuid.uuid4().int
             id_trx_issuer = uuid.uuid4().int
