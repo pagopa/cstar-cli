@@ -1,3 +1,4 @@
+import csv
 import os
 
 import pgpy
@@ -22,6 +23,18 @@ def serialize(dataset, columns, destination_path, have_header=False):
 
     with open(trx_file_path, "a", newline='') as f:
         f.write(dataset_dataframe.to_csv(index=False, header=have_header, sep=CSV_SEPARATOR))
+
+
+def deserialize(source_file):
+    with open(source_file, 'r') as file:
+        reader = csv.reader(file, delimiter=';')
+        data = []
+        for row in reader:
+            data.append({row[0]: row[1]})
+
+    result = {k: v for d in data for k, v in d.items()}
+
+    return result
 
 
 def flatten(dataset):
