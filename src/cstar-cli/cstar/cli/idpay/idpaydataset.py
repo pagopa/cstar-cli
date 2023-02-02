@@ -150,6 +150,7 @@ class IDPayDataset:
             pm_salt = self.args.PM_salt
 
         if pm_salt is None:
+            print("Salt is None")
             exit(1)
 
         transactions = []
@@ -218,6 +219,10 @@ class IDPayDataset:
 
         # Encryption of transaction file
         pgp_key = self.api.get_pgp_public_key()
+        if pgp_key is None:
+            print("PGP public key is None")
+            exit(1)
+
         pgp_file(transactions_path, pgp_key)
 
         serialize(flatten(fc_pgpans), fc_pgppan_columns,
