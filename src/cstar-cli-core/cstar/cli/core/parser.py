@@ -208,5 +208,37 @@ def parser():
     idpay_reward_parser.add_argument("--perc-dupl", type=float, default=0.1,
                                      help='Percentage of duplicates records')
     idpay_reward_parser.add_argument("--out-dir", type=str, default='./generated',
-                                      help='Output destination of files generated')
+                                     help='Output destination of files generated')
+
+    # -Transactions
+    idpay_transactions_parser = idpay_parser.add_parser("idpaytransactions")
+    idpay_transactions_parser.add_argument("--action", required=True,
+                                           help="Action to perform with the invocation of the command")
+    idpay_transactions_parser.add_argument("--trx-qty", type=int, default=1, help="Number of transactions desired")
+    idpay_transactions_parser.add_argument("--sender-code", type=str, default='IDPAY',
+                                           help='Sender code that will appear in transactions file')
+    idpay_transactions_parser.add_argument("--acquirer-code", type=str, default='IDPAY',
+                                           help='Acquirer code that will appear in transactions file')
+    idpay_transactions_parser.add_argument("--datetime", type=str, default='2023-01-01T00:00:00.000+01:00',
+                                           help='Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+    idpay_transactions_parser.add_argument("--min-amount", type=int, default=1,
+                                           help='Minimum amount of euro cents of a single transaction')
+    idpay_transactions_parser.add_argument("--max-amount", type=int, default=1000,
+                                           help='Maximum amount of euro cents of a single transaction')
+    idpay_transactions_parser.add_argument("--mcc", type=str, default='1234',
+                                           help='Merchant category code used in every transaction')
+    idpay_transactions_parser.add_argument("--out-dir", type=str, default='./generated',
+                                           help='Output destination of files generated')
+    idpay_transactions_parser.add_argument("--env", type=str, choices=['dev', 'uat', 'prod'], default="dev",
+                                           required=True,
+                                           help='Environment')
+    idpay_transactions_parser.add_argument("--api-key", type=str, default="aaa", required=True,
+                                           help='API key capable of using RTD_API_Product')
+    idpay_transactions_parser.add_argument("--key", type=str, default="~/certificates/private.key", required=True,
+                                           help='Private key of the mutual authentication certificate')
+    idpay_transactions_parser.add_argument("--cert", type=str, default="~/certificates/public.key", required=True,
+                                           help='Public key of the mutual authentication certificate')
+    idpay_transactions_parser.add_argument("--input-pans-hashpans", type=str, required=True,
+                                           help="Path of pans-hashpans couples file used as payment methods in transactions' file")
+    idpay_transactions_parser.add_argument("--hpans-head", type=int, help="Takes the first N HPANs from HPANs file")
     return argparser

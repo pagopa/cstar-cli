@@ -195,7 +195,7 @@ sh ./test/run-all.sh
 ### Creates synthetic fiscal codes, their synthetic payment instruments (encrypted with Payment Manager public key) and a transaction file associated with them.
 
 ```bash
-cst idpay idpaydataset --action transactions --env dev --api-key aaa000aaa --key ~/certificates/private.key --cert ~/certificates/public.key --PM-pubk ./PM-public.asc
+cst idpay idpaydataset --action dataset_and_transactions --env dev --api-key aaa000aaa --key ~/certificates/private.key --cert ~/certificates/public.key --PM-pubk ./PM-public.asc
 ```
 
 Parameters: </br>

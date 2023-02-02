@@ -159,7 +159,7 @@ class IDPayDataset:
         ))
         self.api_key = self.args.api_key
 
-    def all(self):
+    def dataset_and_transactions(self):
         fc_pan = fc_pan_couples(self.args.num_fc, self.args.min_pan_per_fc, self.args.max_pan_per_fc)
         with open(self.args.PM_pubk) as public_key:
             fc_pgpans = fc_pgpans_couples(fc_pan, public_key.read())
