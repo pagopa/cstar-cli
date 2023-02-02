@@ -110,7 +110,17 @@ def fc_hpans_couples(fc_cc, salt):
     return fc_hpans
 
 
-def fc_pgpans_couples(fc_cc, key):
+def pan_hpans_couples(pan, salt):
+    pan_hpans = {}
+
+    for pan in pan:
+        pan_hpans[pan] = set()
+        pan_hpans[pan].add(sha256(f"{pan}{salt}".encode()).hexdigest())
+
+    return pan_hpans
+
+
+def fc_pgpans_couples(fc_pan, key):
     fc_pgppans = {}
 
     for fc in fc_cc.keys():
@@ -227,6 +237,12 @@ class IDPayDataset:
 
         serialize(flatten(fc_pgpans), fc_pgppan_columns,
                   os.path.join(curr_output_path, 'fc_pgpans.csv'))
-        serialize(flatten_values(fc_cc), pans_columns, os.path.join(curr_output_path, 'pans.csv'))
+        serialize(flatten_values(fc_pan), pans_columns, os.path.join(curr_output_path, 'pans.csv'))
 
-        serialize(flatten_values(fc_hpans_couples(fc_cc, pm_salt)), hpans_columns, os.path.join(curr_output_path, 'hpans.csv'))
+        serialize(flatten_values(fc_hpans_couples(fc_pan, pm_salt)), hpans_columns,
+                  os.path.join(curr_output_path, 'hpans.csv'))
+
+        pan_hpans = pan_hpans_couples(flatten_values(fc_pan), pm_salt)
+
+        serialize(flatten(pan_hpans), pan_hpan_columns,
+                  os.path.join(curr_output_path, 'pan_hpans.csv'))
