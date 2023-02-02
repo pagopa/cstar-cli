@@ -173,13 +173,18 @@ class IDPayDataset:
             print("Salt is None")
             exit(1)
 
+        if not is_iso8601(self.args.datetime):
+            print(f'Error: {self.args.datetime} is not ISO8601')
+            exit(1)
+
+        if self.args.mcc in mcc_blacklist:
+            print(f'Error: {self.args.mcc} is in blacklist {mcc_blacklist}')
+            exit(1)
+
         transactions = []
         correlation_ids = set()
         ids_trx_acq = set()
 
-        if not is_iso8601(self.args.datetime):
-            print(f'Error: {self.args.datetime} is not ISO8601')
-            exit(1)
 
         for fc in fc_pan.keys():
             for i in range(self.args.trx_per_fc):
