@@ -1,6 +1,12 @@
 import os
 import random
 import uuid
+import warnings
+
+from cryptography import CryptographyDeprecationWarning
+
+warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
 
 from .idpay_utilities import serialize, is_iso8601, flatten, flatten_values, pgp_file, pgp_string
 from .idpay_api import IDPayApiEnvironment, IDPayApi
