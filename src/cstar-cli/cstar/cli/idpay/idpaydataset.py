@@ -67,7 +67,6 @@ hpans_columns = [
     "hpan"
 ]
 TRANSACTION_FILE_EXTENSION = "csv"
-ENCRYPTED_FILE_EXTENSION = "pgp"
 APPLICATION_PREFIX_FILE_NAME = "CSTAR"
 TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
@@ -184,7 +183,6 @@ class IDPayDataset:
         transactions = []
         correlation_ids = set()
         ids_trx_acq = set()
-
 
         for fc in fc_pan.keys():
             for i in range(self.args.trx_per_fc):

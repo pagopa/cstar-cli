@@ -6,7 +6,7 @@ import pandas as pd
 from dateutil import parser
 
 CSV_SEPARATOR = ";"
-
+ENCRYPTED_FILE_EXTENSION = "pgp"
 
 def is_iso8601(date_to_check):
     try:
@@ -65,7 +65,7 @@ def pgp_file(file_path: str, pgp_key_data: str):
     with open(file_path, "rb") as f:
         message = pgpy.PGPMessage.new(f.read(), file=True)
     encrypted = key[0].encrypt(message, openpgp=True)
-    output_path = f"{file_path}.pgp"
+    output_path = f"{file_path}.{ENCRYPTED_FILE_EXTENSION}"
     with open(output_path, "wb") as f:
         f.write(bytes(encrypted))
 
