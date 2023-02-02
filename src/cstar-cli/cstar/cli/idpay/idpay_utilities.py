@@ -18,7 +18,6 @@ def is_iso8601(date_to_check):
 def serialize(dataset, columns, destination_path, have_header=False):
     dataset_dataframe = pd.DataFrame(dataset, columns=columns)
     trx_file_path = os.path.join(destination_path, )
-
     os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
 
     with open(trx_file_path, "a", newline='') as f:

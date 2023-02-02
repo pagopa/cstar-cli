@@ -202,8 +202,8 @@ Parameters: </br>
 
 - `--action ACTION`: Action to perform with the invocation of the command.
 - `--num-fc NUM_FC`: Number of fiscal codes generated.
-- `--min-cc-per-fc MIN_CC_PER_FC`: Minimum number of payment instruments per fiscal code.
-- `--max-cc-per-fc MAX_CC_PER_FC`: Maximum number of payment instruments per fiscal code.
+- `--min-pan-per-fc MIN_PAN_PER_FC`: Minimum number of payment instruments per fiscal code.
+- `--max-pan-per-fc MAX_PAN_PER_FC`: Maximum number of payment instruments per fiscal code.
 - `--trx-per-fc TRX_PER_FC`: Number of transactions per fiscal code.
 - `--sender-code SENDER_CODE`: Sender code that will appear in transactions' file.
 - `--acquirer-code ACQUIRER_CODE`: Acquirer code that will appear in transactions' file.

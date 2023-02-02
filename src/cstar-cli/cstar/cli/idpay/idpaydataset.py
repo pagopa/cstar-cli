@@ -17,12 +17,16 @@ fake = Faker('it_IT')
 fc_columns = [
     "FC"
 ]
-fc_cc_columns = [
+fc_pan_columns = [
     "FC",
-    "CC"
+    "PAN"
 ]
 fc_hpan_columns = [
     "FC",
+    "HPAN"
+]
+pan_hpan_columns = [
+    "PAN",
     "HPAN"
 ]
 fc_pgppan_columns = [
@@ -63,10 +67,10 @@ TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
 
 
-def fake_cc(num_cc):
+def fake_pan(num_pan):
     fake_credit_cards = set()
 
-    while len(fake_credit_cards) < num_cc:
+    while len(fake_credit_cards) < num_pan:
         fake_credit_cards.add(fake.credit_card_number(random.choice(circuits)))
 
     return fake_credit_cards
@@ -82,29 +86,29 @@ def fake_fc(num_fc):
     return fake_fiscal_codes
 
 
-def fc_cc_couples(num_fc, min_cc_per_fc, max_cc_per_fc):
-    if min_cc_per_fc > max_cc_per_fc:
+def fc_pan_couples(num_fc, min_pan_per_fc, max_pan_per_fc):
+    if min_pan_per_fc > max_pan_per_fc:
         print("Error: minimum credit cards per fiscal code greater than maximum credit cards per fiscal code")
         exit(1)
 
-    fc_cc = {}
+    fc_pan = {}
 
     fiscal_codes = fake_fc(num_fc)
 
     for fc in fiscal_codes:
-        fc_cc[fc] = set()
-        tmp_num_cc_per_fc = random.randint(min_cc_per_fc, max_cc_per_fc)
-        fc_cc[fc] = fake_cc(tmp_num_cc_per_fc)
+        fc_pan[fc] = set()
+        tmp_num_pan_per_fc = random.randint(min_pan_per_fc, max_pan_per_fc)
+        fc_pan[fc] = fake_pan(tmp_num_pan_per_fc)
 
-    return fc_cc
+    return fc_pan
 
 
-def fc_hpans_couples(fc_cc, salt):
+def fc_hpans_couples(fc_pan, salt):
     fc_hpans = {}
 
-    for fc in fc_cc.keys():
+    for fc in fc_pan.keys():
         fc_hpans[fc] = set()
-        for pan in fc_cc[fc]:
+        for pan in fc_pan[fc]:
             fc_hpans[fc].add(sha256(f"{pan}{salt}".encode()).hexdigest())
 
     return fc_hpans
@@ -123,9 +127,9 @@ def pan_hpans_couples(pan, salt):
 def fc_pgpans_couples(fc_pan, key):
     fc_pgppans = {}
 
-    for fc in fc_cc.keys():
+    for fc in fc_pan.keys():
         fc_pgppans[fc] = set()
-        for pan in fc_cc[fc]:
+        for pan in fc_pan[fc]:
             fc_pgppans[fc].add(
                 (pgp_string(pan, key).replace("\'", "").replace("\n", "\\n")))
 
@@ -149,10 +153,10 @@ class IDPayDataset:
         ))
         self.api_key = self.args.api_key
 
-    def transactions(self):
-        fc_cc = fc_cc_couples(self.args.num_fc, self.args.min_cc_per_fc, self.args.max_cc_per_fc)
+    def all(self):
+        fc_pan = fc_pan_couples(self.args.num_fc, self.args.min_pan_per_fc, self.args.max_pan_per_fc)
         with open(self.args.PM_pubk) as public_key:
-            fc_pgpans = fc_pgpans_couples(fc_cc, public_key.read())
+            fc_pgpans = fc_pgpans_couples(fc_pan, public_key.read())
 
         if self.args.PM_salt is None:
             pm_salt = self.api.get_salt()
@@ -171,9 +175,9 @@ class IDPayDataset:
             print(f'Error: {self.args.datetime} is not ISO8601')
             exit(1)
 
-        for fc in fc_cc.keys():
+        for fc in fc_pan.keys():
             for i in range(self.args.trx_per_fc):
-                curr_pan = random.choice(list(fc_cc[fc]))
+                curr_pan = random.choice(list(fc_pan[fc]))
 
                 # Ensure Correlation ID uniqueness
                 curr_correlation_id = uuid.uuid4().int

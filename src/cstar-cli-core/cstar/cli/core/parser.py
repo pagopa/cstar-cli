@@ -162,9 +162,9 @@ def parser():
     idpay_dataset_parser.add_argument("--action", required=True,
                                       help="Action to perform with the invocation of the command")
     idpay_dataset_parser.add_argument("--num-fc", type=int, default=10, help='Number of fiscal codes to be generated')
-    idpay_dataset_parser.add_argument("--min-cc-per-fc", type=int, default=1,
+    idpay_dataset_parser.add_argument("--min-pan-per-fc", type=int, default=1,
                                       help='Minimum number of payment instruments per fiscal code')
-    idpay_dataset_parser.add_argument("--max-cc-per-fc", type=int, default=1,
+    idpay_dataset_parser.add_argument("--max-pan-per-fc", type=int, default=1,
                                       help='Maximum number of payment instruments per fiscal code')
     idpay_dataset_parser.add_argument("--trx-per-fc", type=int, default=1,
                                       help='Number of transactions per fiscal code')
