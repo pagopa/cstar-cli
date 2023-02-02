@@ -31,7 +31,6 @@ CARDS_FILE_HPANS_NAME = "CARDS_SYNTHETIC_PANS"
 CARDS_FILE_SYNTHETICS_PAN_NAME = "CARDS_HASHPANS"
 CARDS_FILE_HASPANS_PAN_EXTENSION = ".txt"
 
-
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
 PERSON_NATURAL_LEGAL_RATIO = 3
@@ -132,10 +131,10 @@ class Transactionfilter:
                 f"{PAN_UNENROLLED_PREFIX}{i}" for i in range(self.args.pans_qty)
             ]
         else:
-            with open(input_file,'r') as input_pans:
+            with open(input_file, 'r') as input_pans:
                 synthetic_pans_enrolled = input_pans.read().splitlines()
                 synthetic_pans_not_enrolled = []
-            
+
         synthetic_pos = []
         for i in range(self.args.pos_number):
             synthetic_pos.append([
@@ -249,8 +248,6 @@ class Transactionfilter:
 
         print(f"Done")
 
-
-    
     def synthetic_cards(self):
         """Produces a synthetic cards data for enrolled payment instrument microservice
 
@@ -280,7 +277,7 @@ class Transactionfilter:
         output_list_enroll = []
         output_list_tkm = []
 
-        for i in range(0,self.args.crd_qty):
+        for i in range(0, self.args.crd_qty):
             temp_hashpanexports = []
             temp_hashtokens = []
             card_children = 0
@@ -290,11 +287,11 @@ class Transactionfilter:
             hpan_f = sha256(f"{self.args.pans_prefix}{i}{self.args.salt}".encode()).hexdigest()
             synthetic_pans.append(synthetic_pan)
             hpans.append(hpan_f)
-            temp_hashpanexports.append({"value":hpan_f})
+            temp_hashpanexports.append({"value": hpan_f})
 
             enroll_var = {
                 "hpanList": [
-                    { "hpan": hpan_f, "consent": True }
+                    {"hpan": hpan_f, "consent": True}
                 ],
                 "operationType": "ADD_INSTRUMENT",
                 "application": "ID_PAY"
@@ -306,16 +303,16 @@ class Transactionfilter:
 
             if self.args.par == PAR_YES:
                 temp_par = sha256(f"{synthetic_pan}".encode()).hexdigest().upper()[:29]
-            elif self.args.par == PAR_RANDOM and random.randint(0,1) == 1:
+            elif self.args.par == PAR_RANDOM and random.randint(0, 1) == 1:
                 temp_par = sha256(f"{synthetic_pan}".encode()).hexdigest().upper()[:29]
 
             if self.args.max_num_children:
-                card_children = random.randint(0,self.args.max_num_children)
+                card_children = random.randint(0, self.args.max_num_children)
             elif self.args.num_children:
                 card_children = self.args.num_children
-            
-            if len(temp_par)!= 0:
-                for child in range(0,card_children):
+
+            if len(temp_par) != 0:
+                for child in range(0, card_children):
                     synthetic_pan = f"{self.args.pans_prefix}{i}_{child}"
                     hpan_c = sha256(f"{self.args.pans_prefix}{i}_{child}{self.args.salt}".encode()).hexdigest()
                     synthetic_pans.append(synthetic_pan)
@@ -326,7 +323,7 @@ class Transactionfilter:
                     }
                     temp_hashtokens.append(temp_htoken)
 
-                tkm_var["timestamp"] =  datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+                tkm_var["timestamp"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
 
                 tkm_var["cards"] = [{
                     "hpan": hpan_f,
@@ -336,15 +333,15 @@ class Transactionfilter:
                 }]
                 output_list_tkm.append(tkm_var)
 
-            if self.args.state == "ALL" and random.random() <= (self.args.revoked_percentage * 0.01) :
+            if self.args.state == "ALL" and random.random() <= (self.args.revoked_percentage * 0.01):
                 revoked_tkm_ev = {
                     "taxCode": "",
-                    "timestamp":  datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    "timestamp": datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
                     "cards": [{
                         "hpan": hpan_f,
                         "action": STATE_REVOKED,
-                        "htokens":[]
-                        }
+                        "htokens": []
+                    }
                     ]
                 }
                 output_list_tkm.append(revoked_tkm_ev)
@@ -353,39 +350,40 @@ class Transactionfilter:
 
         enroll_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_ENROLL + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
-            
+
         os.makedirs(os.path.dirname(enroll_file_path), exist_ok=True)
 
-        with open(enroll_file_path,"a") as outfile:
+        with open(enroll_file_path, "a") as outfile:
             for en_card in output_list_enroll:
                 enroll_json_output = json.dumps(en_card)
-                outfile.write(enroll_json_output+"\n")
+                outfile.write(enroll_json_output + "\n")
 
         tkm_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_TKM + "_" + datetime.today().strftime(
-                    '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
-        
+            '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
+
         os.makedirs(os.path.dirname(tkm_file_path), exist_ok=True)
 
-        with open(tkm_file_path,"a") as outfile:
+        with open(tkm_file_path, "a") as outfile:
             for tkm_update in output_list_tkm:
                 tkm_json_output = json.dumps(tkm_update)
-                outfile.write(tkm_json_output+"\n")
-       
+                outfile.write(tkm_json_output + "\n")
+
         hashpans_file_path = self.args.out_dir + "/" + CARDS_FILE_HPANS_NAME + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
-        with open(hashpans_file_path,"a") as output_hashpans_file:
+        with open(hashpans_file_path, "a") as output_hashpans_file:
             for hpan in hpans:
-                output_hashpans_file.write(hpan+"\n")
+                output_hashpans_file.write(hpan + "\n")
 
         synthetic_pans_file_path = self.args.out_dir + "/" + CARDS_FILE_SYNTHETICS_PAN_NAME + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
-        with open(synthetic_pans_file_path,"a") as output_pans_file:
+        with open(synthetic_pans_file_path, "a") as output_pans_file:
             for pan in synthetic_pans:
-                output_pans_file.write(pan+"\n")
+                output_pans_file.write(pan + "\n")
 
-        print(f"Enroll file {enroll_file_path}, tkm file {tkm_file_path}, hashpans {hashpans_file_path} and synthetic pans {synthetic_pans_file_path} were genereted")
+        print(
+            f"Enroll file {enroll_file_path}, tkm file {tkm_file_path}, hashpans {hashpans_file_path} and synthetic pans {synthetic_pans_file_path} were genereted")
 
 
 def encrypt_file(
