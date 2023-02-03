@@ -247,7 +247,8 @@ cst idpay idpaydataset --action transactions --env dev --trx-qty 10 --api-key aa
 - `--key KEY`: Private key of the muthual authentication certificate.
 - `--cert CERT`: Public key of the muthual authentication certificate.
 - `--input-pans-hashpans INPUT_PANS_HASHPANS`: Path of pans-hashpans couples file used as payment methods in transactions' file.
-- `--hpans-head HPANS_HEADT`: Takes the first N HPANs from HPANs file. If not specified all the HPANs are taken.
+- `--hpans-head HPANS_HEAD`: Takes the first N HPANs from HPANs file. If not specified all the HPANs are taken.
+- `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD, if not specified the API is called.
 
 ### The ouptut produced is:
 

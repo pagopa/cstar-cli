@@ -241,4 +241,6 @@ def parser():
     idpay_transactions_parser.add_argument("--input-pans-hashpans", type=str, required=True,
                                            help="Path of pans-hashpans couples file used as payment methods in transactions' file")
     idpay_transactions_parser.add_argument("--hpans-head", type=int, help="Takes the first N HPANs from HPANs file")
+    idpay_transactions_parser.add_argument("--RTD-pubk", type=str,
+                                           help='Path to the public key of the RTD, if not specified the API is called')
     return argparser
