@@ -241,10 +241,11 @@ class IDPayDataset:
             f.write(CHECKSUM_PREFIX + sha256(str(transactions).encode()).hexdigest() + '\n' + content)
 
         # Encryption of transaction file
-        pgp_key = self.api.get_pgp_public_key()
-        if pgp_key is None:
-            print("PGP public key is None")
-            exit(1)
+        if self.args.RTD_pubk is None:
+            pgp_key = self.api.get_pgp_public_key()
+        else:
+            with open(self.args.RTD_pubk) as public_key:
+                pgp_key = public_key.read()
 
         pgp_file(transactions_path, pgp_key)
 

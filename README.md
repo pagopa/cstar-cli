@@ -218,6 +218,8 @@ Parameters: </br>
 - `--cert CERT`: Public key of the muthual authentication certificate.
 - `--PM-pubk PM_PUBK`: Path to the public key of the Payment Manager.
 - `--PM-salt PM_SALT`: Current salt of the Payment Manager. If not specified the API is called.
+- `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD, if not specified the API is called.
+
 ### The ouptut produced is:
 
 - `fc.csv`: Contains testing Fiscal Codes generated.

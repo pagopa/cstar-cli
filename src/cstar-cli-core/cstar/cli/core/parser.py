@@ -194,6 +194,8 @@ def parser():
                                       help='Path to the public key of the Payment Manager')
     idpay_dataset_parser.add_argument("--PM-salt", type=str, required=False,
                                       help='Current salt of the Payment Manager, if not specified the API is called')
+    idpay_dataset_parser.add_argument("--RTD-pubk", type=str,
+                                           help='Path to the public key of the RTD, if not specified the API is called')
 
     # -Rewards
     idpay_reward_parser = idpay_parser.add_parser("idpayrewards")
