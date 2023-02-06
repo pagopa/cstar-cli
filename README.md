@@ -218,7 +218,7 @@ Parameters: </br>
 - `--cert CERT`: Public key of the muthual authentication certificate.
 - `--PM-pubk PM_PUBK`: Path to the public key of the Payment Manager.
 - `--PM-salt PM_SALT`: Current salt of the Payment Manager. If not specified the API is called.
-- `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD, if not specified the API is called.
+- `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD. If not specified the API is called.
 
 ### The ouptut produced is:
 
@@ -226,6 +226,7 @@ Parameters: </br>
 - `pans.csv`: Contains testing payment instruments.
 - `fc_pan.csv`: Contains (Fiscal Code, PAN) association.
 - `fc_pgpans.csv`: Contains (Fiscal Code, PGPAN) association.
+- `pan_hpans`: Contains (PAN, HPAN) association.
 - `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv`: Transactions file associated to the dataset generated.
 - `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv.pgp`: Transactions file associated to the dataset generated
   encrypted with RTD public key.
@@ -233,7 +234,7 @@ Parameters: </br>
 ### Creates synthetic transactions given a file of PAN-HPAN couples.
 
 ```bash
-cst idpay idpaydataset --action transactions --env dev --trx-qty 10 --api-key aaa000aaa --key ~/certificates/private.key --cert ~/certificates/public.key --datetime 2023-01-01T00:00:00.000+00:00 --input-pans-hashpans ./pans_hpans.csv
+cst idpay idpaytransactions --action transactions --env dev --trx-qty 10 --api-key aaa000aaa --key ~/certificates/private.key --cert ~/certificates/public.key --datetime 2023-01-01T00:00:00.000+00:00 --input-pans-hashpans ./pans_hpans.csv
 ```
 - `--action ACTION`: Action to perform with the invocation of the command.
 - `--trx-qty TRX_QTY`: Number of transactions desired.
