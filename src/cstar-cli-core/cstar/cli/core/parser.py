@@ -67,13 +67,13 @@ def parser():
     rtd_transaction_filter.add_argument("--action")
     rtd_transaction_filter.add_argument("--salt", default="SALT876")
     rtd_transaction_filter.add_argument("--sender", default="99999")
-    rtd_transaction_filter.add_argument("--pans-prefix", type=str,default="prefix_")
+    rtd_transaction_filter.add_argument("--pans-prefix", type=str, default="prefix_")
     rtd_transaction_filter.add_argument("--pans-qty", type=int, default=10)
     rtd_transaction_filter.add_argument("--hashpans-qty", type=int)
     rtd_transaction_filter.add_argument("--trx-qty", type=int, default=1)
     rtd_transaction_filter.add_argument("--ratio", type=int, default=1)
     rtd_transaction_filter.add_argument("--pos-number", type=int)
-    rtd_transaction_filter.add_argument("--par-ratio", type=int,default=1)
+    rtd_transaction_filter.add_argument("--par-ratio", type=int, default=1)
     rtd_transaction_filter.add_argument("--mcc", type=str, default=6010)
     rtd_transaction_filter.add_argument("--pgp", action="store_true")
     rtd_transaction_filter.add_argument("--input-hashpans", type=str, default="")
@@ -154,4 +154,95 @@ def parser():
     # -DIFF CHECKER
     sender_aggregates_parser.add_argument('-f', '--files', nargs=2, help="Files to compare for equality")
 
+    # IDPay
+    idpay_parser = subsystem_parser.add_parser("idpay").add_subparsers(dest="command")
+
+    # -Dataset
+    idpay_dataset_parser = idpay_parser.add_parser("idpaydataset")
+    idpay_dataset_parser.add_argument("--action", required=True,
+                                      help="Action to perform with the invocation of the command")
+    idpay_dataset_parser.add_argument("--num-fc", type=int, default=10, help='Number of fiscal codes to be generated')
+    idpay_dataset_parser.add_argument("--min-pan-per-fc", type=int, default=1,
+                                      help='Minimum number of payment instruments per fiscal code')
+    idpay_dataset_parser.add_argument("--max-pan-per-fc", type=int, default=1,
+                                      help='Maximum number of payment instruments per fiscal code')
+    idpay_dataset_parser.add_argument("--trx-per-fc", type=int, default=1,
+                                      help='Number of transactions per fiscal code')
+    idpay_dataset_parser.add_argument("--sender-code", type=str, default='IDPAY',
+                                      help='Sender code that will appear in transactions file')
+    idpay_dataset_parser.add_argument("--acquirer-code", type=str, default='IDPAY',
+                                      help='Acquirer code that will appear in transactions file')
+    idpay_dataset_parser.add_argument("--datetime", type=str, default='2023-01-01T00:00:00.000+01:00',
+                                      help='Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+    idpay_dataset_parser.add_argument("--min-amount", type=int, default=1,
+                                      help='Minimum amount of euro cents of a single transaction')
+    idpay_dataset_parser.add_argument("--max-amount", type=int, default=1000,
+                                      help='Maximum amount of euro cents of a single transaction')
+    idpay_dataset_parser.add_argument("--mcc", type=str, default='1234',
+                                      help='Merchant category code used in every transaction')
+    idpay_dataset_parser.add_argument("--out-dir", type=str, default='./generated',
+                                      help='Output destination of files generated')
+    idpay_dataset_parser.add_argument("--env", type=str, choices=['dev', 'uat', 'prod'], default="dev", required=True,
+                                      help='Environment')
+    idpay_dataset_parser.add_argument("--api-key", type=str, default="aaa", required=True,
+                                      help='API key capable of using RTD_API_Product')
+    idpay_dataset_parser.add_argument("--key", type=str, default="~/certificates/private.key", required=True,
+                                      help='Private key of the mutual authentication certificate')
+    idpay_dataset_parser.add_argument("--cert", type=str, default="~/certificates/public.key", required=True,
+                                      help='Public key of the mutual authentication certificate')
+    idpay_dataset_parser.add_argument("--PM-pubk", type=str, default="./PM-public.asc", required=True,
+                                      help='Path to the public key of the Payment Manager')
+    idpay_dataset_parser.add_argument("--PM-salt", type=str, required=False,
+                                      help='Current salt of the Payment Manager, if not specified the API is called')
+    idpay_dataset_parser.add_argument("--RTD-pubk", type=str,
+                                           help='Path to the public key of the RTD, if not specified the API is called')
+
+    # -Rewards
+    idpay_reward_parser = idpay_parser.add_parser("idpayrewards")
+    idpay_reward_parser.add_argument("--action", required=True,
+                                     help="Action to perform with the invocation of the command")
+    idpay_reward_parser.add_argument("--payment-provisions-export", type=str, default="./payment-provisions.csv",
+                                     help='Path to input payment provisions exported by IDPay')
+    idpay_reward_parser.add_argument("--exec-date", type=str, default='2023-01-01',
+                                     help='Date in format yyyy-MM-dd of reward process')
+    idpay_reward_parser.add_argument("--perc-succ", type=float, default=0.1,
+                                     help='Percentage of successful rewards')
+    idpay_reward_parser.add_argument("--perc-dupl", type=float, default=0.1,
+                                     help='Percentage of duplicates records')
+    idpay_reward_parser.add_argument("--out-dir", type=str, default='./generated',
+                                     help='Output destination of files generated')
+
+    # -Transactions
+    idpay_transactions_parser = idpay_parser.add_parser("idpaytransactions")
+    idpay_transactions_parser.add_argument("--action", required=True,
+                                           help="Action to perform with the invocation of the command")
+    idpay_transactions_parser.add_argument("--trx-qty", type=int, default=1, help="Number of transactions desired")
+    idpay_transactions_parser.add_argument("--sender-code", type=str, default='IDPAY',
+                                           help='Sender code that will appear in transactions file')
+    idpay_transactions_parser.add_argument("--acquirer-code", type=str, default='IDPAY',
+                                           help='Acquirer code that will appear in transactions file')
+    idpay_transactions_parser.add_argument("--datetime", type=str, default='2023-01-01T00:00:00.000+01:00',
+                                           help='Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+    idpay_transactions_parser.add_argument("--min-amount", type=int, default=1,
+                                           help='Minimum amount of euro cents of a single transaction')
+    idpay_transactions_parser.add_argument("--max-amount", type=int, default=1000,
+                                           help='Maximum amount of euro cents of a single transaction')
+    idpay_transactions_parser.add_argument("--mcc", type=str, default='1234',
+                                           help='Merchant category code used in every transaction')
+    idpay_transactions_parser.add_argument("--out-dir", type=str, default='./generated',
+                                           help='Output destination of files generated')
+    idpay_transactions_parser.add_argument("--env", type=str, choices=['dev', 'uat', 'prod'], default="dev",
+                                           required=True,
+                                           help='Environment')
+    idpay_transactions_parser.add_argument("--api-key", type=str, default="aaa", required=True,
+                                           help='API key capable of using RTD_API_Product')
+    idpay_transactions_parser.add_argument("--key", type=str, default="~/certificates/private.key", required=True,
+                                           help='Private key of the mutual authentication certificate')
+    idpay_transactions_parser.add_argument("--cert", type=str, default="~/certificates/public.key", required=True,
+                                           help='Public key of the mutual authentication certificate')
+    idpay_transactions_parser.add_argument("--input-pans-hashpans", type=str, required=True,
+                                           help="Path of pans-hashpans couples file used as payment methods in transactions' file")
+    idpay_transactions_parser.add_argument("--hpans-head", type=int, help="Takes the first N HPANs from HPANs file")
+    idpay_transactions_parser.add_argument("--RTD-pubk", type=str,
+                                           help='Path to the public key of the RTD, if not specified the API is called')
     return argparser

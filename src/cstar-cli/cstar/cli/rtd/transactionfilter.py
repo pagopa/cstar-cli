@@ -1,16 +1,18 @@
 from hashlib import sha256
 import time
 import random
-import string
 import uuid
 import pandas as pd
-import logging
 import os
-import gnupg
 import json
+import pgpy
+import warnings
+
+from cryptography import CryptographyDeprecationWarning
 from faker import Faker
-from tempfile import TemporaryDirectory
 from datetime import datetime
+
+warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
 
 CSV_SEPARATOR = ";"
 PAN_UNENROLLED_PREFIX = "pan_unknown_"
@@ -19,7 +21,7 @@ SECONDS_IN_DAY = 86400
 MAX_DAYS_BACK = 3
 
 TRANSACTION_FILE_EXTENSION = ".csv"
-ENCRYPTED_FILE_EXTENSION = ".pgp"
+ENCRYPTED_FILE_EXTENSION = "pgp"
 APPLICATION_PREFIX_FILE_NAME = "CSTAR"
 TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 CHECKSUM_PREFIX = "#sha256sum:"
@@ -30,7 +32,6 @@ CARDS_FILE_PREFIX_TKM = "TKM"
 CARDS_FILE_HPANS_NAME = "CARDS_SYNTHETIC_PANS"
 CARDS_FILE_SYNTHETICS_PAN_NAME = "CARDS_HASHPANS"
 CARDS_FILE_HASPANS_PAN_EXTENSION = ".txt"
-
 
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
@@ -132,10 +133,13 @@ class Transactionfilter:
                 f"{PAN_UNENROLLED_PREFIX}{i}" for i in range(self.args.pans_qty)
             ]
         else:
-            with open(input_file,'r') as input_pans:
+            with open(input_file, 'r') as input_pans:
                 synthetic_pans_enrolled = input_pans.read().splitlines()
+                if len(synthetic_pans_enrolled) == 0:
+                    print("The hashpan file must not be empty")
+                    exit(1)
                 synthetic_pans_not_enrolled = []
-            
+
         synthetic_pos = []
         for i in range(self.args.pos_number):
             synthetic_pos.append([
@@ -167,7 +171,7 @@ class Transactionfilter:
                 else:
                     pan = random.choice(synthetic_pans_not_enrolled)
             else:
-                pan = synthetic_pans_enrolled[i%len(synthetic_pans_enrolled)]
+                pan = random.choice(synthetic_pans_enrolled)
 
             id_trx_acquirer = uuid.uuid4().int
             id_trx_issuer = uuid.uuid4().int
@@ -245,12 +249,17 @@ class Transactionfilter:
             f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
         if self.args.pgp:
-            encrypt_file(trx_file_path, self.args.key)
+            # Encryption of transaction file
+            with open(self.args.key) as public_key:
+                pgp_key = public_key.read()
+            if pgp_key is None:
+                print("PGP public key is None")
+                exit(1)
+
+            pgp_file(trx_file_path, pgp_key)
 
         print(f"Done")
 
-
-    
     def synthetic_cards(self):
         """Produces a synthetic cards data for enrolled payment instrument microservice
 
@@ -280,7 +289,7 @@ class Transactionfilter:
         output_list_enroll = []
         output_list_tkm = []
 
-        for i in range(0,self.args.crd_qty):
+        for i in range(0, self.args.crd_qty):
             temp_hashpanexports = []
             temp_hashtokens = []
             card_children = 0
@@ -290,11 +299,11 @@ class Transactionfilter:
             hpan_f = sha256(f"{self.args.pans_prefix}{i}{self.args.salt}".encode()).hexdigest()
             synthetic_pans.append(synthetic_pan)
             hpans.append(hpan_f)
-            temp_hashpanexports.append({"value":hpan_f})
+            temp_hashpanexports.append({"value": hpan_f})
 
             enroll_var = {
                 "hpanList": [
-                    { "hpan": hpan_f, "consent": True }
+                    {"hpan": hpan_f, "consent": True}
                 ],
                 "operationType": "ADD_INSTRUMENT",
                 "application": "ID_PAY"
@@ -306,16 +315,16 @@ class Transactionfilter:
 
             if self.args.par == PAR_YES:
                 temp_par = sha256(f"{synthetic_pan}".encode()).hexdigest().upper()[:29]
-            elif self.args.par == PAR_RANDOM and random.randint(0,1) == 1:
+            elif self.args.par == PAR_RANDOM and random.randint(0, 1) == 1:
                 temp_par = sha256(f"{synthetic_pan}".encode()).hexdigest().upper()[:29]
 
             if self.args.max_num_children:
-                card_children = random.randint(0,self.args.max_num_children)
+                card_children = random.randint(0, self.args.max_num_children)
             elif self.args.num_children:
                 card_children = self.args.num_children
-            
-            if len(temp_par)!= 0:
-                for child in range(0,card_children):
+
+            if len(temp_par) != 0:
+                for child in range(0, card_children):
                     synthetic_pan = f"{self.args.pans_prefix}{i}_{child}"
                     hpan_c = sha256(f"{self.args.pans_prefix}{i}_{child}{self.args.salt}".encode()).hexdigest()
                     synthetic_pans.append(synthetic_pan)
@@ -326,7 +335,7 @@ class Transactionfilter:
                     }
                     temp_hashtokens.append(temp_htoken)
 
-                tkm_var["timestamp"] =  datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
+                tkm_var["timestamp"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')
 
                 tkm_var["cards"] = [{
                     "hpan": hpan_f,
@@ -336,15 +345,15 @@ class Transactionfilter:
                 }]
                 output_list_tkm.append(tkm_var)
 
-            if self.args.state == "ALL" and random.random() <= (self.args.revoked_percentage * 0.01) :
+            if self.args.state == "ALL" and random.random() <= (self.args.revoked_percentage * 0.01):
                 revoked_tkm_ev = {
                     "taxCode": "",
-                    "timestamp":  datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
+                    "timestamp": datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ'),
                     "cards": [{
                         "hpan": hpan_f,
                         "action": STATE_REVOKED,
-                        "htokens":[]
-                        }
+                        "htokens": []
+                    }
                     ]
                 }
                 output_list_tkm.append(revoked_tkm_ev)
@@ -353,78 +362,49 @@ class Transactionfilter:
 
         enroll_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_ENROLL + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
-            
+
         os.makedirs(os.path.dirname(enroll_file_path), exist_ok=True)
 
-        with open(enroll_file_path,"a") as outfile:
+        with open(enroll_file_path, "a") as outfile:
             for en_card in output_list_enroll:
                 enroll_json_output = json.dumps(en_card)
-                outfile.write(enroll_json_output+"\n")
+                outfile.write(enroll_json_output + "\n")
 
         tkm_file_path = self.args.out_dir + "/" + CARDS_FILE_PREFIX_TKM + "_" + datetime.today().strftime(
-                    '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
-        
+            '%Y%m%d_%H%M%S') + CARDS_FILE_EXTENSION
+
         os.makedirs(os.path.dirname(tkm_file_path), exist_ok=True)
 
-        with open(tkm_file_path,"a") as outfile:
+        with open(tkm_file_path, "a") as outfile:
             for tkm_update in output_list_tkm:
                 tkm_json_output = json.dumps(tkm_update)
-                outfile.write(tkm_json_output+"\n")
-       
+                outfile.write(tkm_json_output + "\n")
+
         hashpans_file_path = self.args.out_dir + "/" + CARDS_FILE_HPANS_NAME + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
-        with open(hashpans_file_path,"a") as output_hashpans_file:
+        with open(hashpans_file_path, "a") as output_hashpans_file:
             for hpan in hpans:
-                output_hashpans_file.write(hpan+"\n")
+                output_hashpans_file.write(hpan + "\n")
 
         synthetic_pans_file_path = self.args.out_dir + "/" + CARDS_FILE_SYNTHETICS_PAN_NAME + "_" + datetime.today().strftime(
             '%Y%m%d_%H%M%S') + CARDS_FILE_HASPANS_PAN_EXTENSION
 
-        with open(synthetic_pans_file_path,"a") as output_pans_file:
+        with open(synthetic_pans_file_path, "a") as output_pans_file:
             for pan in synthetic_pans:
-                output_pans_file.write(pan+"\n")
+                output_pans_file.write(pan + "\n")
 
-        print(f"Enroll file {enroll_file_path}, tkm file {tkm_file_path}, hashpans {hashpans_file_path} and synthetic pans {synthetic_pans_file_path} were genereted")
+        print(
+            f"Enroll file {enroll_file_path}, tkm file {tkm_file_path}, hashpans {hashpans_file_path} and synthetic pans {synthetic_pans_file_path} were genereted")
 
 
-def encrypt_file(
-        file_path: str,
-        encryption_key: str,
-        *,
-        remove_plaintext: bool = False,
-        file_extension: str = ENCRYPTED_FILE_EXTENSION,
-) -> None:
-    """Encrypt a file using provided encryption key.
+def pgp_file(file_path: str, pgp_key_data: str):
+    key = pgpy.PGPKey.from_blob(pgp_key_data)
+    with open(file_path, "rb") as f:
+        message = pgpy.PGPMessage.new(f.read(), file=True)
+    encrypted = key[0].encrypt(message, openpgp=True)
+    output_path = f"{file_path}.{ENCRYPTED_FILE_EXTENSION}"
+    with open(output_path, "wb") as f:
+        f.write(bytes(encrypted))
 
-    :param file_path: path of file to be encrypted
-    :type file_path: str
-    :param encryption_key: path of the key file to use
-    :type encryption_key: str
-    :param remove_plaintext: remove plaintext file after encryption? Defaults to False
-    :type remove_plaintext: bool
-    :param file_extension: extension to add to encrypted files. Defaults to '.pgp'
-    :type file_extension: str
-    :raises RuntimeError:
-    """
-    with TemporaryDirectory() as temp_gpg_home:
-        logging.debug(f"Setting temporary GPG home to {temp_gpg_home}")
-        gpg = gnupg.GPG(gnupghome=temp_gpg_home)
-        key_data = open(encryption_key).read()
-        import_result = gpg.import_keys(key_data)
-        logging.info(f"GPG import keys: {import_result.results}")
-        with open(file_path, "rb") as f:
-            status = gpg.encrypt_file(
-                file=f,
-                recipients=import_result.results[0]["fingerprint"],
-                output=f"{file_path}{ENCRYPTED_FILE_EXTENSION}",
-                extra_args=["--openpgp", "--trust-model", "always"],
-                armor=False,
-            )
-        if status.ok:
-            if remove_plaintext:
-                os.remove(file_path)
-            logging.info(f"Encrypted file as {file_path}{ENCRYPTED_FILE_EXTENSION}")
-        else:
-            logging.info(f"Failed to encrypt")
-            raise RuntimeError(status)
+    return output_path

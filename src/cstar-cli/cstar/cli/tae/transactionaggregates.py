@@ -1,20 +1,22 @@
 import time
-from hashlib import sha256
 import random
-
 import pandas as pd
-import logging
+import pgpy
 import os
-import gnupg
-from tempfile import TemporaryDirectory
+import warnings
+
+from hashlib import sha256
+from cryptography import CryptographyDeprecationWarning
 from datetime import datetime
+
+warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
 
 CSV_SEPARATOR = ";"
 SECONDS_IN_DAY = 86400
 MAX_DAYS_BACK = 3
 
 TRANSACTION_FILE_EXTENSION = ".csv"
-ENCRYPTED_FILE_EXTENSION = ".pgp"
+ENCRYPTED_FILE_EXTENSION = "pgp"
 APPLICATION_PREFIX_FILE_NAME = "ADE"
 TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
 
@@ -183,45 +185,25 @@ class Transactionaggregate:
             f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
         if self.args.pgp:
-            encrypt_file(trx_file_path, self.args.key)
+            # Encryption of transaction file
+            with open(self.args.key) as public_key:
+                pgp_key = public_key.read()
+            if pgp_key is None:
+                print("PGP public key is None")
+                exit(1)
+
+            pgp_file(trx_file_path, pgp_key)
 
         print(f"Done")
 
 
-def encrypt_file(
-        file_path: str,
-        encryption_key: str,
-        *,
-        remove_plaintext: bool = False,
-) -> None:
-    """Encrypt a file using provided encryption key.
+def pgp_file(file_path: str, pgp_key_data: str):
+    key = pgpy.PGPKey.from_blob(pgp_key_data)
+    with open(file_path, "rb") as f:
+        message = pgpy.PGPMessage.new(f.read(), file=True)
+    encrypted = key[0].encrypt(message, openpgp=True)
+    output_path = f"{file_path}.{ENCRYPTED_FILE_EXTENSION}"
+    with open(output_path, "wb") as f:
+        f.write(bytes(encrypted))
 
-    :param file_path: path of file to be encrypted
-    :type file_path: str
-    :param encryption_key: path of the key file to use
-    :type encryption_key: str
-    :param remove_plaintext: remove plaintext file after encryption? Defaults to False
-    :type remove_plaintext: bool
-    :raises RuntimeError:
-    """
-    with TemporaryDirectory() as temp_gpg_home:
-        logging.debug(f"Setting temporary GPG home to {temp_gpg_home}")
-        gpg = gnupg.GPG(gnupghome=temp_gpg_home)
-        key_data = open(encryption_key).read()
-        import_result = gpg.import_keys(key_data)
-        logging.info(f"GPG import keys: {import_result.results}")
-        with open(file_path, "rb") as f:
-            status = gpg.encrypt_file(
-                file=f,
-                recipients=import_result.results[0]["fingerprint"],
-                output=f"{file_path}{ENCRYPTED_FILE_EXTENSION}",
-                extra_args=["--openpgp", "--trust-model", "always"],
-                armor=False,
-            )
-        if status.ok:
-            if remove_plaintext:
-                os.remove(file_path)
-            logging.info(f"Encrypted file as {file_path}{ENCRYPTED_FILE_EXTENSION}")
-        else:
-            logging.info(f"Failed to encrypt")
-            raise RuntimeError(status)
+    return output_path

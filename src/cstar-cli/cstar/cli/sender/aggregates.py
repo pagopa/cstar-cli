@@ -15,7 +15,6 @@ SECONDS_IN_DAY = 86400
 MAX_DAYS_BACK = 3
 
 TRANSACTION_FILE_EXTENSION = ".csv"
-ENCRYPTED_FILE_EXTENSION = ".pgp"
 OUTPUT_EXPECTED_EXTENSION = ".expected"
 # This string token is not valid for aggregates greater than the Batch Service threshold
 BATCH_SERVICE_FIRST_CHUNK = ".01"
@@ -250,7 +249,7 @@ class Aggregates:
                         sender_code,
                         operation_type,
                         payment_circuit,
-                        f"{self.args.pans_prefix+ str(i)}",
+                        f"{self.args.pans_prefix + str(i)}",
                         date_time,
                         id_trx_acquirer,
                         id_trx_issuer,
