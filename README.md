@@ -219,12 +219,14 @@ Parameters: </br>
 - `--PM-pubk PM_PUBK`: Path to the public key of the Payment Manager.
 - `--PM-salt PM_SALT`: Current salt of the Payment Manager. If not specified the API is called.
 - `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD. If not specified the API is called.
+- `--IBAN-ABI ABI`: ABI code used to generate test IBANs.
 
 ### The ouptut produced is:
 
-- `fc.csv`: Contains testing Fiscal Codes generated.
-- `pans.csv`: Contains testing payment instruments.
+- `fc.csv`: Contains test Fiscal Codes generated.
+- `pans.csv`: Contains test payment instruments.
 - `fc_pan.csv`: Contains (Fiscal Code, PAN) association.
+- `fc_iban.csv`: Contains (Fiscal Code, IBAN) association.
 - `fc_pgpans.csv`: Contains (Fiscal Code, PGPAN) association.
 - `pan_hpans`: Contains (PAN, HPAN) association.
 - `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv`: Transactions file associated to the dataset generated.
