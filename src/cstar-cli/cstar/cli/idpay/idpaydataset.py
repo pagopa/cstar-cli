@@ -1,3 +1,4 @@
+import math
 import os
 import random
 import uuid
@@ -10,6 +11,7 @@ from hashlib import sha256
 from datetime import datetime
 from dateutil import parser
 from faker import Faker
+from schwifty import IBAN
 
 warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -21,6 +23,10 @@ mcc_blacklist = ['4784', '6010', '6011', '7995', '9222', '9311']
 fake = Faker('it_IT')
 fc_columns = [
     "FC"
+]
+fc_iban_columns = [
+    "FC",
+    "IBAN"
 ]
 fc_pan_columns = [
     "FC",
@@ -88,6 +94,17 @@ def fake_fc(num_fc):
         fake_fiscal_codes.add(f'{tmp_fc[:11]}X000{tmp_fc[15:]}')
 
     return fake_fiscal_codes
+
+
+def fc_iban_couples(fc, abi):
+    fc_iban = {}
+
+    for i in fc:
+        fc_iban[i] = set()
+        fc_iban[i].add(IBAN.generate('IT', bank_code=abi,
+                                     account_code=str(round(random.random() * math.pow(10, 12)))).compact)
+
+    return fc_iban
 
 
 def fc_pan_couples(num_fc, min_pan_per_fc, max_pan_per_fc):
@@ -179,6 +196,12 @@ class IDPayDataset:
             print(f'Error: {self.args.mcc} is in blacklist {mcc_blacklist}')
             exit(1)
 
+        if len(self.args.IBAN_ABI) is not 5:
+            print('ABI must be exactly 5 char')
+            exit(1)
+
+        fc_iban = fc_iban_couples(fc_pan.keys(), self.args.IBAN_ABI)
+
         transactions = []
         correlation_ids = set()
         ids_trx_acq = set()
@@ -259,3 +282,5 @@ class IDPayDataset:
 
         serialize(flatten(pan_hpans), pan_hpan_columns,
                   os.path.join(curr_output_path, 'pan_hpans.csv'))
+
+        serialize(flatten(fc_iban), fc_iban_columns, os.path.join(curr_output_path, 'fc_iban.csv'))
