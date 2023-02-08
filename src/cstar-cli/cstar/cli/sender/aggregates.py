@@ -50,7 +50,8 @@ FISCAL_CODE_TO_FAKE_ABI = {
     "BG175325806": "ICARD",
     "09771701001": "TPAY1",
     "97898850157": "AMAZN",
-    "DE182769455": "EURON"
+    "DE182769455": "EURON",
+    "NL858620285B01": "UBER1"
 }
 
 BANCOMAT_ACQUIRERS_SENDER_ID = [
@@ -126,6 +127,8 @@ class Aggregates:
                 acquirer_id = "97898850157"
             elif self.args.sender == "EURON":
                 acquirer_id = "DE182769455"
+            elif self.args.sender == "UBER1":
+                acquirer_id = "NL858620285B01"
             else:
                 acquirer_id = sender_code
 
