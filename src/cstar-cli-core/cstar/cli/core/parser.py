@@ -172,8 +172,10 @@ def parser():
                                       help='Sender code that will appear in transactions file')
     idpay_dataset_parser.add_argument("--acquirer-code", type=str, default='IDPAY',
                                       help='Acquirer code that will appear in transactions file')
-    idpay_dataset_parser.add_argument("--datetime", type=str, default='2023-01-01T00:00:00.000+01:00',
-                                      help='Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+    idpay_dataset_parser.add_argument("--start-datetime", type=str, default='2023-01-01T00:00:00.000+01:00',
+                                      help='Lower bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+    idpay_dataset_parser.add_argument("--end-datetime", type=str,
+                                      help='Upper bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
     idpay_dataset_parser.add_argument("--min-amount", type=int, default=1,
                                       help='Minimum amount of euro cents of a single transaction')
     idpay_dataset_parser.add_argument("--max-amount", type=int, default=1000,
@@ -223,8 +225,10 @@ def parser():
                                            help='Sender code that will appear in transactions file')
     idpay_transactions_parser.add_argument("--acquirer-code", type=str, default='IDPAY',
                                            help='Acquirer code that will appear in transactions file')
-    idpay_transactions_parser.add_argument("--datetime", type=str, default='2023-01-01T00:00:00.000+01:00',
-                                           help='Date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+    idpay_transactions_parser.add_argument("--start-datetime", type=str, default='2023-01-01T00:00:00.000+01:00',
+                                      help='Lower bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+    idpay_transactions_parser.add_argument("--end-datetime", type=str,
+                                      help='Upper bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
     idpay_transactions_parser.add_argument("--min-amount", type=int, default=1,
                                            help='Minimum amount of euro cents of a single transaction')
     idpay_transactions_parser.add_argument("--max-amount", type=int, default=1000,

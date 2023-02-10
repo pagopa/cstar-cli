@@ -1,5 +1,7 @@
 import csv
 import os
+import random
+from datetime import timedelta
 
 import pgpy
 import pandas as pd
@@ -70,3 +72,12 @@ def pgp_file(file_path: str, pgp_key_data: str):
         f.write(bytes(encrypted))
 
     return output_path
+
+def random_date(start, end):
+    delta_seconds = int((end - start).total_seconds())
+    if delta_seconds < 0:
+        print(f'Error: end date prior to start date')
+        exit(1)
+    return start + timedelta(
+        seconds=random.randint(0, delta_seconds)
+    )
