@@ -7,7 +7,7 @@ from cryptography import CryptographyDeprecationWarning
 
 warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
 
-from .idpay_utilities import serialize, is_iso8601, flatten, flatten_values, pgp_file, pgp_string, deserialize
+from .idpay_utilities import serialize, is_iso8601, pgp_file, deserialize, random_date
 from .idpay_api import IDPayApiEnvironment, IDPayApi
 from hashlib import sha256
 from datetime import datetime
@@ -69,8 +69,15 @@ class IDPayTransactions:
         correlation_ids = set()
         ids_trx_acq = set()
 
-        if not is_iso8601(self.args.datetime):
-            print(f'Error: {self.args.datetime} is not ISO8601')
+        if not is_iso8601(self.args.start_datetime):
+            print(f'Error: {self.args.start_datetime} is not ISO8601')
+            exit(1)
+
+        if self.args.end_datetime is None:
+            self.args.end_datetime = self.args.start_datetime
+
+        if not is_iso8601(self.args.end_datetime):
+            print(f'Error: {self.args.end_datetime} is not ISO8601')
             exit(1)
 
         if self.args.mcc in mcc_blacklist:
@@ -104,13 +111,16 @@ class IDPayTransactions:
                 curr_id_trx_acq = uuid.uuid4().int
             ids_trx_acq.add(curr_id_trx_acq)
 
+            curr_datetime = random_date(parser.parse(self.args.start_datetime),
+                                        parser.parse(self.args.end_datetime))
+
             transactions.append(
                 [
                     self.args.sender_code,  # sender code
                     "00",  # operation type
                     "00",  # circuit
                     curr_pan[1],  # HPAN
-                    parser.parse(self.args.datetime).strftime('%Y-%m-%dT%H:%M:%S.000Z'),  # datetime
+                    curr_datetime.strftime('%Y-%m-%dT%H:%M:%S.000Z'),  # datetime
                     curr_id_trx_acq,  # id_trx_acquirer
                     uuid.uuid4().int,  # id_trx_issuer
                     curr_correlation_id,  # correlation_id
@@ -135,7 +145,7 @@ class IDPayTransactions:
         curr_output_path = os.path.join(self.args.out_dir, str(datetime.now().strftime('%Y%m%d-%H%M%S')))
 
         transactions_path = os.path.join(curr_output_path,
-                                         input_trx_name_formatter(self.args.sender_code, self.args.datetime))
+                                         input_trx_name_formatter(self.args.sender_code, self.args.start_datetime))
 
         serialize(transactions, transaction_columns, transactions_path)
 
