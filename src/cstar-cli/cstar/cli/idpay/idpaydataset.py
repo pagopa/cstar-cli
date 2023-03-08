@@ -281,7 +281,7 @@ class IDPayDataset:
         pgp_file(transactions_path, pgp_key)
 
         serialize(flatten(fc_pgpans), fc_pgppan_columns,
-                  os.path.join(curr_output_path, 'fc_pgpans.csv'))
+                  os.path.join(curr_output_path, 'fc_pgpans.csv'), have_header=True)
         serialize(flatten_values(fc_pan), pans_columns, os.path.join(curr_output_path, 'pans.csv'))
 
         serialize(flatten_values(fc_hpans_couples(fc_pan, pm_salt)), hpans_columns,
@@ -292,4 +292,4 @@ class IDPayDataset:
         serialize(flatten(pan_hpans), pan_hpan_columns,
                   os.path.join(curr_output_path, 'pan_hpans.csv'))
 
-        serialize(flatten(fc_iban), fc_iban_columns, os.path.join(curr_output_path, 'fc_iban.csv'))
+        serialize(flatten(fc_iban), fc_iban_columns, os.path.join(curr_output_path, 'fc_iban.csv'), have_header=True)
