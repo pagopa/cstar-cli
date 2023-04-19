@@ -38,6 +38,17 @@ def deserialize(source_file):
 
     return result
 
+def deserialize_trx(source_file):
+    with open(source_file, 'r') as file:
+        reader = csv.reader(file, delimiter=';')
+        data = {}
+        for row in reader:
+            data[row[0]] = []
+            for el in row[1:]:
+                data[row[0]].append(el)
+
+    return data
+
 
 def flatten(dataset):
     res = []
