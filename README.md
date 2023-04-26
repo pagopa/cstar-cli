@@ -247,7 +247,8 @@ cst idpay idpaytransactions --action transactions --env dev --trx-qty 10 --api-k
 - `--acquirer-code ACQUIRER_CODE`: Acquirer code that will appear in transactions' file.
 - `--start-datetime DATETIME`: Lower bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transaction.
 - `--end-datetime DATETIME`: Upper bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transaction. If
-  not specified it is set equal to start datetime.- `--min-amount MIN_AMOUNT`: Minimum amount of euro cents of a single transaction.
+  not specified it is set equal to start datetime.- `--min-amount MIN_AMOUNT`: Minimum amount of euro cents of a single
+  transaction.
 - `--max-amount MAX_AMOUNT`: Maximum amount of euro cents of a single transaction.
 - `--mcc MCC`: Merchant category code used in every transaction.
 - `--out-dir OUT_DIR`: Output destination of files generated.
@@ -258,6 +259,36 @@ cst idpay idpaytransactions --action transactions --env dev --trx-qty 10 --api-k
 - `--input-pans-hashpans INPUT_PANS_HASHPANS`: Path of pans-hashpans couples file used as payment methods in
   transactions' file.
 - `--hpans-head HPANS_HEAD`: Takes the first N HPANs from HPANs file. If not specified all the HPANs are taken.
+- `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD, if not specified the API is called.
+
+### The ouptut produced is:
+
+- `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv`: Transactions file associated to the dataset given as input.
+- `CSTAR.<SENDER_CODE>.TRNLOG.<DATE>.<TIME>.001.01.csv.pgp`: Transactions file associated to the dataset given as input
+  encrypted with RTD public key.
+
+### Creates synthetic transactions given a file of HPAN-amount couples.
+
+```bash
+cst idpay idpaytransactions --action defined_transactions --env dev --api-key aaa000aaa --key ~/certificates/private.key --cert ~/certificates/public.key --start-datetime 2023-01-01T00:00:00.000+00:00 --end-datetime 2023-02-01T00:00:00.000+00:00 --input-hashpans-amounts ./hpans_amounts.csv
+```
+
+- `--action ACTION`: Action to perform with the invocation of the command.
+- `--trx-qty TRX_QTY`: Number of transactions desired.
+- `--sender-code SENDER_CODE`: Sender code that will appear in transactions' file.
+- `--acquirer-code ACQUIRER_CODE`: Acquirer code that will appear in transactions' file.
+- `--start-datetime DATETIME`: Lower bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transaction.
+- `--end-datetime DATETIME`: Upper bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transaction. If
+  not specified it is set equal to start datetime.- `--min-amount MIN_AMOUNT`: Minimum amount of euro cents of a single
+  transaction.
+- `--mcc MCC`: Merchant category code used in every transaction.
+- `--out-dir OUT_DIR`: Output destination of files generated.
+- `--env {dev,uat,prod}`: Environment.
+- `--api-key API_KEY`: API key cpable to using RTD_API_Product.
+- `--key KEY`: Private key of the muthual authentication certificate.
+- `--cert CERT`: Public key of the muthual authentication certificate.
+- `--input-pans-hashpans INPUT_PANS_HASHPANS`: Path of pans-hashpans couples file used as payment methods in
+  transactions' file.
 - `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD, if not specified the API is called.
 
 ### The ouptut produced is:

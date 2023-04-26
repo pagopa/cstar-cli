@@ -246,8 +246,10 @@ def parser():
                                            help='Private key of the mutual authentication certificate')
     idpay_transactions_parser.add_argument("--cert", type=str, default="~/certificates/public.key", required=True,
                                            help='Public key of the mutual authentication certificate')
-    idpay_transactions_parser.add_argument("--input-pans-hashpans", type=str, required=True,
+    idpay_transactions_parser.add_argument("--input-pans-hashpans", type=str,
                                            help="Path of pans-hashpans couples file used as payment methods in transactions' file")
+    idpay_transactions_parser.add_argument("--input-hashpans-amounts", type=str,
+                                           help="Path of hashpans-amounts couples file used as payment methods in transactions' file")
     idpay_transactions_parser.add_argument("--hpans-head", type=int, help="Takes the first N HPANs from HPANs file")
     idpay_transactions_parser.add_argument("--RTD-pubk", type=str,
                                            help='Path to the public key of the RTD, if not specified the API is called')

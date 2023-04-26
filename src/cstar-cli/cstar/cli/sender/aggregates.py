@@ -50,6 +50,7 @@ FISCAL_CODE_TO_FAKE_ABI = {
     "BG175325806": "ICARD",
     "09771701001": "TPAY1",
     "97898850157": "AMAZN",
+    "97898850157": "AMAZON",
     "DE182769455": "EURON",
     "NL858620285B01": "UBER1"
 }
@@ -124,6 +125,8 @@ class Aggregates:
             elif self.args.sender == "TPAY1":
                 acquirer_id = "09771701001"
             elif self.args.sender == "AMAZN":
+                acquirer_id = "97898850157"
+            elif self.args.sender == "AMAZON":
                 acquirer_id = "97898850157"
             elif self.args.sender == "EURON":
                 acquirer_id = "DE182769455"
