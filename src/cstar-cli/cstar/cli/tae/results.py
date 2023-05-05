@@ -130,10 +130,10 @@ class Results:
         os.makedirs(os.path.dirname(results_df_path), exist_ok=True)
 
         with open(results_df_path, "a") as f:
-            f.write(results_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
+            f.write(results_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR, lineterminator='\n'))
 
         if self.args.gzip:
             with gzip.open(results_df_path + ZIPPED_FILE_EXTENSION, "wb") as f:
-                f.write(bytes(results_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR), encoding='utf-8'))
+                f.write(bytes(results_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR, lineterminator='\n'), encoding='utf-8'))
 
         print("Done")

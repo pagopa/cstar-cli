@@ -24,7 +24,7 @@ def serialize(dataset, columns, destination_path, have_header=False):
     os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
 
     with open(trx_file_path, "a", newline='') as f:
-        f.write(dataset_dataframe.to_csv(index=False, header=have_header, sep=CSV_SEPARATOR))
+        f.write(dataset_dataframe.to_csv(index=False, header=have_header, sep=CSV_SEPARATOR, lineterminator='\n'))
 
 
 def deserialize(source_file):

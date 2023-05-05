@@ -180,8 +180,9 @@ class Transactionaggregate:
         with open(trx_file_path, "a") as f:
             # If the file is for AdE, there is no need to insert the hash at the beginning of it
             if not self.args.to_ade:
+                csv_content = trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR, lineterminator="\n")
                 f.write(CHECKSUM_PREFIX + sha256(
-                    f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest() + "\n")
+                    f"{csv_content}".encode()).hexdigest() + "\n")
             f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
 
         if self.args.pgp:

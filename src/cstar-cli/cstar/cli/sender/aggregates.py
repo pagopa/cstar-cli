@@ -198,7 +198,7 @@ class Aggregates:
         os.makedirs(os.path.dirname(aggr_file_path), exist_ok=True)
 
         with open(aggr_file_path, "a") as f:
-            f.write(aggr_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
+            f.write(aggr_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR, lineterminator='\n'))
 
         # GENERATE INPUT FILE
 
@@ -310,14 +310,10 @@ class Aggregates:
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
 
         with open(trx_file_path, "a") as f:
-            f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
-
-        with open(aggr_file_path, 'r+') as f:
-            content = f.read()
-            f.seek(0, 0)
+            csv_content = trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR, lineterminator="\n")
             f.write(CHECKSUM_PREFIX + sha256(
-                f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest().rstrip(
-                '\r\n') + '\n' + content)
+                f"{csv_content}".encode()).hexdigest() + "\n")
+            f.write(csv_content)
 
         print(f"Done")
 
