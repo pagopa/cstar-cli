@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
    name='cstar-cli',
-   version='0.0.11',
+   version='0.0.12',
    description='Cstar Command Line Interface',
    author='CSTAR Team',
    author_email='cstar@pagopa.it',

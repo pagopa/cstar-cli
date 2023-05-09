@@ -244,9 +244,10 @@ class Transactionfilter:
         os.makedirs(os.path.dirname(trx_file_path), exist_ok=True)
 
         with open(trx_file_path, "a") as f:
+            csv_content = trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR, lineterminator="\n")
             f.write(CHECKSUM_PREFIX + sha256(
-                f"{trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR)}".encode()).hexdigest() + "\n")
-            f.write(trx_df.to_csv(index=False, header=False, sep=CSV_SEPARATOR))
+                f"{csv_content}".encode()).hexdigest() + "\n")
+            f.write(csv_content)
 
         if self.args.pgp:
             # Encryption of transaction file
