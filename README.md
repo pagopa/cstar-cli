@@ -215,9 +215,9 @@ Parameters: </br>
 - `--mcc MCC`: Merchant category code used in every transaction.
 - `--out-dir OUT_DIR`: Output destination of files generated.
 - `--env {dev,uat,prod}`: Environment.
-- `--api-key API_KEY`: API key cpable to using RTD_API_Product.
-- `--key KEY`: Private key of the muthual authentication certificate.
-- `--cert CERT`: Public key of the muthual authentication certificate.
+- `--api-key API_KEY`: API key capable to using RTD_API_Product.
+- `--key KEY`: Private key of the mutual authentication certificate.
+- `--cert CERT`: Public key of the mutual authentication certificate.
 - `--PM-pubk PM_PUBK`: Path to the public key of the Payment Manager.
 - `--PM-salt PM_SALT`: Current salt of the Payment Manager. If not specified the API is called.
 - `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD. If not specified the API is called.
@@ -253,9 +253,9 @@ cst idpay idpaytransactions --action transactions --env dev --trx-qty 10 --api-k
 - `--mcc MCC`: Merchant category code used in every transaction.
 - `--out-dir OUT_DIR`: Output destination of files generated.
 - `--env {dev,uat,prod}`: Environment.
-- `--api-key API_KEY`: API key cpable to using RTD_API_Product.
-- `--key KEY`: Private key of the muthual authentication certificate.
-- `--cert CERT`: Public key of the muthual authentication certificate.
+- `--api-key API_KEY`: API key capable to using RTD_API_Product.
+- `--key KEY`: Private key of the mutual authentication certificate.
+- `--cert CERT`: Public key of the mutual authentication certificate.
 - `--input-pans-hashpans INPUT_PANS_HASHPANS`: Path of pans-hashpans couples file used as payment methods in
   transactions' file.
 - `--hpans-head HPANS_HEAD`: Takes the first N HPANs from HPANs file. If not specified all the HPANs are taken.
@@ -284,9 +284,9 @@ cst idpay idpaytransactions --action defined_transactions --env dev --api-key aa
 - `--mcc MCC`: Merchant category code used in every transaction.
 - `--out-dir OUT_DIR`: Output destination of files generated.
 - `--env {dev,uat,prod}`: Environment.
-- `--api-key API_KEY`: API key cpable to using RTD_API_Product.
-- `--key KEY`: Private key of the muthual authentication certificate.
-- `--cert CERT`: Public key of the muthual authentication certificate.
+- `--api-key API_KEY`: API key capable to using RTD_API_Product.
+- `--key KEY`: Private key of the mutual authentication certificate.
+- `--cert CERT`: Public key of the mutual authentication certificate.
 - `--input-pans-hashpans INPUT_PANS_HASHPANS`: Path of pans-hashpans couples file used as payment methods in
   transactions' file.
 - `--RTD-pubk RTD_PUBK`: Path to the public key of the RTD, if not specified the API is called.
