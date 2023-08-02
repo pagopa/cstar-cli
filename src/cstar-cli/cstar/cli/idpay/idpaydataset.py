@@ -4,7 +4,6 @@ import random
 import uuid
 import warnings
 
-from cryptography import CryptographyDeprecationWarning
 from .idpay_utilities import serialize, is_iso8601, flatten, flatten_values, pgp_file, pgp_string, random_date
 from .idpay_api import IDPayApiEnvironment, IDPayApi
 from hashlib import sha256
@@ -13,7 +12,7 @@ from dateutil import parser
 from faker import Faker
 from schwifty import IBAN
 
-warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
+warnings.filterwarnings("ignore")
 warnings.filterwarnings("ignore", category=UserWarning)
 
 circuits = ['visa', 'mastercard', 'maestro', 'amex']

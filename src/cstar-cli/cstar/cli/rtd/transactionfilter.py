@@ -8,11 +8,10 @@ import json
 import pgpy
 import warnings
 
-from cryptography import CryptographyDeprecationWarning
 from faker import Faker
 from datetime import datetime
 
-warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
+warnings.filterwarnings("ignore")
 
 CSV_SEPARATOR = ";"
 PAN_UNENROLLED_PREFIX = "pan_unknown_"

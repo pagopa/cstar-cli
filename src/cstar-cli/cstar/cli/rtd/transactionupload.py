@@ -4,9 +4,7 @@ import warnings
 
 from .rtd_api import RtdApiEnvironment, RtdApi
 
-from cryptography import CryptographyDeprecationWarning
-
-warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
+warnings.filterwarnings("ignore")
 
 ENCRYPTED_FILE_EXTENSION = "pgp"
 
