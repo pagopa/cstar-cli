@@ -3,9 +3,7 @@ import random
 import uuid
 import warnings
 
-from cryptography import CryptographyDeprecationWarning
-
-warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
+warnings.filterwarnings("ignore")
 
 from .idpay_utilities import serialize, is_iso8601, pgp_file, deserialize, random_date, deserialize_trx
 from .idpay_api import IDPayApiEnvironment, IDPayApi
