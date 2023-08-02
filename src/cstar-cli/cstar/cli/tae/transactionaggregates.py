@@ -6,10 +6,9 @@ import os
 import warnings
 
 from hashlib import sha256
-from cryptography import CryptographyDeprecationWarning
 from datetime import datetime
 
-warnings.filterwarnings("ignore", category=CryptographyDeprecationWarning)
+warnings.filterwarnings("ignore")
 
 CSV_SEPARATOR = ";"
 SECONDS_IN_DAY = 86400
