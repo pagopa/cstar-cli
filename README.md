@@ -314,3 +314,18 @@ Parameters: </br>
 ### The ouptut produced is:
 
 - `reward-dispositive-<DATE>T<TIME>.csv`: Contains rewards based on uniqueID of payment provision provided.
+
+### Creates merchants data for testing.
+
+```bash
+cst idpay idpaydataset --action merchants_data --num-fc 10 --acquirer-id PAGOPA
+```
+
+Parameters: </br>
+
+- `--num-fc NUM_FC`: Number of merchants generated.
+- `--acquirer-id ACQUIRER_ID`: Acquirer ID through which the merchants will be uploaded.
+
+### The ouptut produced is:
+
+- `merchants.csv`: A file, with header, containing complete merchants data.

@@ -184,7 +184,7 @@ def parser():
                                       help='Merchant category code used in every transaction')
     idpay_dataset_parser.add_argument("--out-dir", type=str, default='./generated',
                                       help='Output destination of files generated')
-    idpay_dataset_parser.add_argument("--env", type=str, choices=['dev', 'uat', 'prod'], default="dev", required=True,
+    idpay_dataset_parser.add_argument("--env", type=str, choices=['dev', 'uat', 'prod'], default="dev",
                                       help='Environment')
     idpay_dataset_parser.add_argument("--api-key", type=str, default="aaa", required=True,
                                       help='API key capable of using RTD_API_Product')
@@ -197,9 +197,11 @@ def parser():
     idpay_dataset_parser.add_argument("--PM-salt", type=str, required=False,
                                       help='Current salt of the Payment Manager, if not specified the API is called')
     idpay_dataset_parser.add_argument("--RTD-pubk", type=str,
-                                           help='Path to the public key of the RTD, if not specified the API is called')
+                                      help='Path to the public key of the RTD, if not specified the API is called')
     idpay_dataset_parser.add_argument("--IBAN-ABI", type=str, default='00001',
                                       help='ABI code used to generate test IBANs')
+    idpay_dataset_parser.add_argument("--acquirer-id", type=str, default='PAGOPA',
+                                      help='Acquirer ID through which the merchants will be uploaded')
 
     # -Rewards
     idpay_reward_parser = idpay_parser.add_parser("idpayrewards")
@@ -226,9 +228,9 @@ def parser():
     idpay_transactions_parser.add_argument("--acquirer-code", type=str, default='IDPAY',
                                            help='Acquirer code that will appear in transactions file')
     idpay_transactions_parser.add_argument("--start-datetime", type=str, default='2023-01-01T00:00:00.000+01:00',
-                                      help='Lower bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+                                           help='Lower bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
     idpay_transactions_parser.add_argument("--end-datetime", type=str,
-                                      help='Upper bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
+                                           help='Upper bound of date and time in format yyyy-MM-ddTHH:mm:ss.SSSz of every transactions')
     idpay_transactions_parser.add_argument("--min-amount", type=int, default=1,
                                            help='Minimum amount of euro cents of a single transaction')
     idpay_transactions_parser.add_argument("--max-amount", type=int, default=1000,

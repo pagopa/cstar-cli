@@ -70,6 +70,26 @@ pans_columns = [
 hpans_columns = [
     "hpan"
 ]
+merchant_columns = [
+    'Acquirer ID',
+    'Ragione Sociale',
+    'Indirizzo sede legale',
+    'Comune sede legale',
+    'Provincia sede legale',
+    'CAP sede Legale',
+    'PEC',
+    'CF',
+    'PIVA',
+    'Nome Legale Rappresentante',
+    'Cognome Legale Rappresentante',
+    'CF Legale Rappresentante',
+    'Email Aziendale Legale rappresentante',
+    'Nome Amministratore',
+    'Cognome Amministratore',
+    'CF Amministratore',
+    'Email Aziendale Amministratore',
+    'IBAN'
+]
 TRANSACTION_FILE_EXTENSION = "csv"
 APPLICATION_PREFIX_FILE_NAME = "CSTAR"
 TRANSACTION_LOG_FIXED_SEGMENT = "TRNLOG"
@@ -292,3 +312,46 @@ class IDPayDataset:
                   os.path.join(curr_output_path, 'pan_hpans.csv'))
 
         serialize(flatten(fc_iban), fc_iban_columns, os.path.join(curr_output_path, 'fc_iban.csv'), have_header=True)
+
+    def merchants_data(self):
+        merchants_data = []
+
+        for i in range(self.args.num_fc):
+            curr_iban = IBAN.generate('IT', bank_code='00000',
+                                      account_code=str(round(random.random() * math.pow(10, 10))) + '99').compact
+            curr_iban = curr_iban[:len(curr_iban) - 2] + '99'
+
+            fake_cf_lr = fake.ssn()
+            fake_cf_lr = f'{fake_cf_lr[:11]}X000{fake_cf_lr[15:]}'
+
+            fake_cf_adm = fake.ssn()
+            fake_cf_adm = f'{fake_cf_adm[:11]}X000{fake_cf_adm[15:]}'
+
+            fake_vat = fake.company_vat()[2:]
+
+            merchants_data.append(
+                [
+                    self.args.acquirer_id,  # 'Acquirer ID',
+                    f'Esercente di test {str(uuid.uuid4())[:8]}',  # 'Ragione Sociale',
+                    fake.street_address(),  # 'Indirizzo sede legale',
+                    fake.city(),  # 'Comune sede legale',
+                    fake.country_code(),  # 'Provincia sede legale',
+                    fake.postcode(),  # 'CAP sede Legale',
+                    f'{uuid.uuid4()}@test.pec',  # PEC
+                    fake_vat,  # 'CF',
+                    fake_vat,  # 'PIVA',
+                    fake.first_name(),  # 'Nome Legale Rappresentante',
+                    fake.last_name(),  # 'Cognome Legale Rappresentante',
+                    fake_cf_lr,  # 'CF Legale Rappresentante',
+                    f'{uuid.uuid4()}@test.com',  # 'Email Aziendale Legale rappresentante',
+                    fake.first_name(),  # 'Nome Amministratore',
+                    fake.last_name(),  # 'Cognome Amministratore',
+                    fake_cf_adm,  # 'CF Amministratore',
+                    f'{uuid.uuid4()}@test.com',  # 'Email Aziendale Amministratore',
+                    curr_iban  # 'IBAN'
+                ]
+            )
+
+        curr_output_path = os.path.join(self.args.out_dir, str(datetime.now().strftime('%Y%m%d-%H%M%S')))
+
+        serialize(merchants_data, merchant_columns, os.path.join(curr_output_path, 'merchants.csv'), True)
