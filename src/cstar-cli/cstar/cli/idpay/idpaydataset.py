@@ -4,6 +4,8 @@ import random
 import uuid
 import warnings
 
+import requests
+
 from .idpay_utilities import serialize, is_iso8601, flatten, flatten_values, pgp_file, pgp_string, random_date
 from .idpay_api import IDPayApiEnvironment, IDPayApi
 from hashlib import sha256
@@ -22,6 +24,9 @@ mcc_blacklist = ['4784', '6010', '6011', '7995', '9222', '9311']
 fake = Faker('it_IT')
 fc_columns = [
     "FC"
+]
+pdv_columns = [
+    "token"
 ]
 fc_iban_columns = [
     "FC",
@@ -172,6 +177,41 @@ class IDPayDataset:
             certificate_path=self.args.cert
         ))
         self.api_key = self.args.api_key
+
+    def fc_and_pdv_tokens(self):
+
+        fake_fiscal_codes = set()
+        pdv_tokens = []
+
+        while len(fake_fiscal_codes) < self.args.num_fc:
+            tmp_fc = fake.ssn()
+            fake_fiscal_codes.add(f'{tmp_fc[:11]}X000{tmp_fc[15:]}')
+
+        fake_fiscal_codes = list(fake_fiscal_codes)
+
+        for fc in fake_fiscal_codes:
+            tokenization_response = requests.put(
+                url=f'https://api.{self.args.env}.tokenizer.pdv.pagopa.it/tokenizer/v1/tokens',
+                headers={
+                    'Content-Type': 'application/json',
+                    'x-api-key': self.args.api_key,
+                },
+                json={
+                    'pii': fc
+                },
+                timeout=5000
+            )
+            assert tokenization_response.status_code == 200
+            token = tokenization_response.json().get('token')
+            pdv_tokens.append(token)
+
+        random.shuffle(fake_fiscal_codes)
+        random.shuffle(pdv_tokens)
+
+        curr_output_path = os.path.join(self.args.out_dir, str(datetime.now().strftime('%Y%m%d-%H%M%S')))
+
+        serialize(fake_fiscal_codes, fc_columns, os.path.join(curr_output_path, 'fake_fc.csv'))
+        serialize(pdv_tokens, pdv_columns, os.path.join(curr_output_path, 'pdv_tokens.csv'))
 
     def dataset_and_transactions(self):
         fc_pan = fc_pan_couples(self.args.num_fc, self.args.min_pan_per_fc, self.args.max_pan_per_fc)
