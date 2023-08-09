@@ -3,10 +3,14 @@ import sys
 from cstar.cli.core.parser import parser
 import importlib
 
-async def main (args) :
-  module = importlib.import_module( ".%s" % args.subsystem.lower(), "cstar.cli")
-  command_manager = module.__getattribute__(args.command.lower().capitalize())(args)
-  command_manager.__getattribute__(args.action.lower())()
+
+async def main(args):
+    module = importlib.import_module(".%s" % args.subsystem.lower(), "cstar.cli")
+    command_manager = module.__getattribute__(args.command.lower().capitalize())(args)
+    action = command_manager.__getattribute__(args.action.lower())()
+    if asyncio.iscoroutine(action):
+        await action
+
 
 if __name__ == '__main__':
     try:
