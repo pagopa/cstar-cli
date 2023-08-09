@@ -1,7 +1,8 @@
 import asyncio
-import sys
-from cstar.cli.core.parser import parser
 import importlib
+import sys
+
+from cstar.cli.core.parser import parser
 
 
 async def main(args):

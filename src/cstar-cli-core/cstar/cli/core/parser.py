@@ -200,6 +200,7 @@ def parser():
                                            help='Path to the public key of the RTD, if not specified the API is called')
     idpay_dataset_parser.add_argument("--IBAN-ABI", type=str, default='00001',
                                       help='ABI code used to generate test IBANs')
+    idpay_dataset_parser.add_argument("--pdv-rate-limit", type=int, default=250, help="Request per second for PDV calls")
 
     # -Rewards
     idpay_reward_parser = idpay_parser.add_parser("idpayrewards")

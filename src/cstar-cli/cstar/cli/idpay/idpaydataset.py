@@ -2,6 +2,7 @@ import asyncio
 import math
 import os
 import random
+import time
 import uuid
 import warnings
 from datetime import datetime
@@ -28,7 +29,7 @@ fc_columns = [
     "FC"
 ]
 pdv_columns = [
-    "ID"
+    "PDV_ID"
 ]
 fc_iban_columns = [
     "FC",
@@ -182,7 +183,6 @@ class IDPayDataset:
 
     async def fc_and_pdv_tokens(self):
         fake_fiscal_codes = set()
-        pdv_tokens = []
 
         while len(fake_fiscal_codes) < self.args.num_fc:
             tmp_fc = fake.ssn()
@@ -191,19 +191,17 @@ class IDPayDataset:
         fake_fiscal_codes = list(fake_fiscal_codes)
 
         session = aiohttp.ClientSession()
-        pdv_api = PdvApi(self.args.env, self.args.api_key, session)
+        pdv_api = PdvApi(self.args.env, self.args.api_key, session, self.args.pdv_rate_limit)
 
+        start = time.perf_counter()
         tasks = [
             pdv_api.tokenize(fc)
             for fc in fake_fiscal_codes
         ]
         results = await asyncio.gather(*tasks)
+        print(f"PDV Timing {time.perf_counter() - start}")
 
-        for tokenization_response in results:
-            assert tokenization_response.status == 200
-            token = (await tokenization_response.json())['token']
-            pdv_tokens.append(token)
-
+        pdv_tokens = [token for token in results]
         await session.close()
         random.shuffle(fake_fiscal_codes)
         random.shuffle(pdv_tokens)
