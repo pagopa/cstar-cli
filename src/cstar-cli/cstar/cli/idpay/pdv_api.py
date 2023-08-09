@@ -19,6 +19,5 @@ class PdvApi:
             json={
                 'pii': fc
             },
-            timeout=5000,
-            ssl=False
+            timeout=5000
         )

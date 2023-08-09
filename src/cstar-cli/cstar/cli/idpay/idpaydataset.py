@@ -180,42 +180,38 @@ class IDPayDataset:
         ))
         self.api_key = self.args.api_key
 
-    def fc_and_pdv_tokens(self):
-        async def _fc_and_pdv_tokens():
-            fake_fiscal_codes = set()
-            pdv_tokens = []
+    async def fc_and_pdv_tokens(self):
+        fake_fiscal_codes = set()
+        pdv_tokens = []
 
-            while len(fake_fiscal_codes) < self.args.num_fc:
-                tmp_fc = fake.ssn()
-                fake_fiscal_codes.add(f'{tmp_fc[:11]}X000{tmp_fc[15:]}')
+        while len(fake_fiscal_codes) < self.args.num_fc:
+            tmp_fc = fake.ssn()
+            fake_fiscal_codes.add(f'{tmp_fc[:11]}X000{tmp_fc[15:]}')
 
-            fake_fiscal_codes = list(fake_fiscal_codes)
+        fake_fiscal_codes = list(fake_fiscal_codes)
 
-            session = aiohttp.ClientSession()
-            pdv_api = PdvApi(self.args.env, self.args.api_key, session)
+        session = aiohttp.ClientSession()
+        pdv_api = PdvApi(self.args.env, self.args.api_key, session)
 
-            tasks = [
-                pdv_api.tokenize(fc)
-                for fc in fake_fiscal_codes
-            ]
-            results = await asyncio.gather(*tasks)
+        tasks = [
+            pdv_api.tokenize(fc)
+            for fc in fake_fiscal_codes
+        ]
+        results = await asyncio.gather(*tasks)
 
-            for tokenization_response in results:
-                assert tokenization_response.status == 200
-                token = (await tokenization_response.json())['token']
-                pdv_tokens.append(token)
+        for tokenization_response in results:
+            assert tokenization_response.status == 200
+            token = (await tokenization_response.json())['token']
+            pdv_tokens.append(token)
 
-            await session.close()
-            random.shuffle(fake_fiscal_codes)
-            random.shuffle(pdv_tokens)
+        await session.close()
+        random.shuffle(fake_fiscal_codes)
+        random.shuffle(pdv_tokens)
 
-            curr_output_path = os.path.join(self.args.out_dir, str(datetime.now().strftime('%Y%m%d-%H%M%S')))
+        curr_output_path = os.path.join(self.args.out_dir, str(datetime.now().strftime('%Y%m%d-%H%M%S')))
 
-            serialize(fake_fiscal_codes, fc_columns, os.path.join(curr_output_path, 'fake_fc.csv'))
-            serialize(pdv_tokens, pdv_columns, os.path.join(curr_output_path, 'pdv_tokens.csv'))
-
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(_fc_and_pdv_tokens())
+        serialize(fake_fiscal_codes, fc_columns, os.path.join(curr_output_path, 'fake_fc.csv'))
+        serialize(pdv_tokens, pdv_columns, os.path.join(curr_output_path, 'pdv_tokens.csv'))
 
 
     def dataset_and_transactions(self):
