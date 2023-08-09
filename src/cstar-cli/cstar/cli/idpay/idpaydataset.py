@@ -28,7 +28,7 @@ fc_columns = [
     "FC"
 ]
 pdv_columns = [
-    "token"
+    "ID"
 ]
 fc_iban_columns = [
     "FC",
@@ -211,8 +211,7 @@ class IDPayDataset:
         curr_output_path = os.path.join(self.args.out_dir, str(datetime.now().strftime('%Y%m%d-%H%M%S')))
 
         serialize(fake_fiscal_codes, fc_columns, os.path.join(curr_output_path, 'fake_fc.csv'))
-        serialize(pdv_tokens, pdv_columns, os.path.join(curr_output_path, 'pdv_tokens.csv'))
-
+        serialize(pdv_tokens, pdv_columns, os.path.join(curr_output_path, 'userIdList.csv'), have_header=True)
 
     def dataset_and_transactions(self):
         fc_pan = fc_pan_couples(self.args.num_fc, self.args.min_pan_per_fc, self.args.max_pan_per_fc)
