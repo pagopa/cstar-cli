@@ -22,7 +22,7 @@ class RateLimiter:
         now = time.monotonic()
         diff_from_last_token_update = now - self.updated_at
         new_tokens = diff_from_last_token_update * self.rps
-        if new_tokens >= 1:
+        if self.available_tokens + new_tokens >= 1:
             self.available_tokens = min(self.available_tokens + new_tokens, self.max_tokens)  # clamp to max_tokens
             self.updated_at = now
 
