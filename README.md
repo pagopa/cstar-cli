@@ -315,8 +315,8 @@ Parameters: </br>
 
 - `reward-dispositive-<DATE>T<TIME>.csv`: Contains rewards based on uniqueID of payment provision provided.
 
-
 ### Creates synthetic fiscal code and pdv id's files.
+
 ```bash
 cst idpay idpaydataset --action fc_and_pdv_tokens --num-fc 10000 --env uat --api-key aaa000aaa --pdv-rate-limit 290
 ```
@@ -327,3 +327,23 @@ Parameters: </br>
 - `--env ENV`: PDV environment
 - `--api-key PDV_API_KEY`: A valid PDV api key
 - `--pdv-rate-limit REQUEST_PER_SECONDS`: Set maximum requests per seconds to PDV
+
+### The ouptut produced is:
+
+- `fake_fc.csv`: A file, with header, containing fake fiscal codes.
+- `userIdList.csv`: A file, with header, containing associated PDV tokens (shuffled).
+
+### Creates merchants data for testing.
+
+```bash
+cst idpay idpaydataset --action merchants_data --num-fc 10 --acquirer-id PAGOPA
+```
+
+Parameters: </br>
+
+- `--num-fc NUM_FC`: Number of merchants generated.
+- `--acquirer-id ACQUIRER_ID`: Acquirer ID through which the merchants will be uploaded.
+
+### The ouptut produced is:
+
+- `merchants.csv`: A file, with header, containing complete merchants data.

@@ -1,12 +1,13 @@
 import os.path
 import random
+import zipfile
 from datetime import datetime
 from hashlib import sha256
 
 import pandas as pd
 from .idpay_utilities import serialize
 
-reward_columnds = [
+reward_columns = [
     'uniqueID',
     'result',
     'rejectionReason',
@@ -27,7 +28,12 @@ class IDPayRewards:
         self.args = args
 
     def rewards(self):
-        with open(self.args.payment_provisions_export, 'r') as input_file:
+        new_input_file_name = self.args.payment_provisions_export
+        if self.args.payment_provisions_export.endswith('.zip'):
+            with zipfile.ZipFile(self.args.payment_provisions_export) as ziped_input_file:
+                new_input_file_name = self.args.payment_provisions_export.replace('.zip', '.csv')
+                ziped_input_file.extract(os.path.basename(new_input_file_name))
+        with open(new_input_file_name, 'r') as input_file:
             input_file.seek(0)
             payments = pd.read_csv(input_file, quotechar='"', usecols=['uniqueID'], sep=';')
 
@@ -59,11 +65,15 @@ class IDPayRewards:
                     curr_execution_date
                 ])
 
+            output_file_name = 'rewards-dispositive-' + datetime.now().strftime('%Y%m%dT%H%M%S')
+            ourput_file_path = os.path.join('.', self.args.out_dir, output_file_name)
+
             # Insert desired duplicates
             duplicates = random.sample(rewards, round(self.args.perc_dupl * len(rewards)))
             for d in duplicates:
                 rewards.append(d)
 
-            serialize(rewards, reward_columnds, os.path.join('.', self.args.out_dir,
-                                                             'rewards-dispositive-' + datetime.now().strftime(
-                                                                 '%Y%m%dT%H%M%S') + '.csv'), True)
+            serialize(rewards, reward_columns, ourput_file_path + '.csv', True)
+
+            with zipfile.ZipFile(ourput_file_path + '.zip', 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+                zf.write(ourput_file_path + '.csv', arcname=output_file_name + '.csv')
