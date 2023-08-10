@@ -188,11 +188,11 @@ def parser():
                                       help='Environment')
     idpay_dataset_parser.add_argument("--api-key", type=str, default="aaa", required=True,
                                       help='API key capable of using RTD_API_Product')
-    idpay_dataset_parser.add_argument("--key", type=str, default="~/certificates/private.key", required=True,
-                                      help='Private key of the mutual authentication certificate')
-    idpay_dataset_parser.add_argument("--cert", type=str, default="~/certificates/public.key", required=True,
-                                      help='Public key of the mutual authentication certificate')
-    idpay_dataset_parser.add_argument("--PM-pubk", type=str, default="./PM-public.asc", required=True,
+    idpay_dataset_parser.add_argument("--key", type=str, default="~/certificates/private.key", required=False,
+                                      help='Private key of the RTD mutual authentication certificate')
+    idpay_dataset_parser.add_argument("--cert", type=str, default="~/certificates/public.key", required=False,
+                                      help='Public key of the RTD mutual authentication certificate')
+    idpay_dataset_parser.add_argument("--PM-pubk", type=str, default="./PM-public.asc", required=False,
                                       help='Path to the public key of the Payment Manager')
     idpay_dataset_parser.add_argument("--PM-salt", type=str, required=False,
                                       help='Current salt of the Payment Manager, if not specified the API is called')
@@ -200,6 +200,7 @@ def parser():
                                            help='Path to the public key of the RTD, if not specified the API is called')
     idpay_dataset_parser.add_argument("--IBAN-ABI", type=str, default='00001',
                                       help='ABI code used to generate test IBANs')
+    idpay_dataset_parser.add_argument("--pdv-rate-limit", type=int, default=250, help="Request per second for PDV calls")
 
     # -Rewards
     idpay_reward_parser = idpay_parser.add_parser("idpayrewards")
