@@ -186,7 +186,7 @@ def parser():
                                       help='Output destination of files generated')
     idpay_dataset_parser.add_argument("--env", type=str, choices=['dev', 'uat', 'prod'], default="dev",
                                       help='Environment')
-    idpay_dataset_parser.add_argument("--api-key", type=str, default="aaa", required=True,
+    idpay_dataset_parser.add_argument("--api-key", type=str, default="aaa",
                                       help='API key capable of using RTD_API_Product')
     idpay_dataset_parser.add_argument("--key", type=str, default="~/certificates/private.key", required=False,
                                       help='Private key of the RTD mutual authentication certificate')
@@ -200,7 +200,8 @@ def parser():
                                       help='Path to the public key of the RTD, if not specified the API is called')
     idpay_dataset_parser.add_argument("--IBAN-ABI", type=str, default='00001',
                                       help='ABI code used to generate test IBANs')
-    idpay_dataset_parser.add_argument("--pdv-rate-limit", type=int, default=250, help="Request per second for PDV calls")
+    idpay_dataset_parser.add_argument("--pdv-rate-limit", type=int, default=250,
+                                      help="Request per second for PDV calls")
     idpay_dataset_parser.add_argument("--acquirer-id", type=str, default='PAGOPA',
                                       help='Acquirer ID through which the merchants will be uploaded')
 
