@@ -1,7 +1,10 @@
 import asyncio
+import logging
 import time
 
 import aiohttp
+
+logger = logging.getLogger(__name__)
 
 
 # Simple token bucket
@@ -28,6 +31,12 @@ class RateLimiter:
 
 
 class PdvApi:
+    # DEV and UAT share the same url
+    _PDV_BASE_URL = {
+        "dev": "https://api.uat.tokenizer.pdv.pagopa.it",
+        "uat": "https://api.uat.tokenizer.pdv.pagopa.it",
+        "prod": "https://api.tokenizer.pdv.pagopa.it"
+    }
 
     def __init__(
             self,
@@ -40,12 +49,15 @@ class PdvApi:
         self.env = env
         self.api_key = api_key
         self.limiter = RateLimiter(rate_limit_per_sec, rate_limit_per_sec)
+        self.base_url = self._PDV_BASE_URL[self.env]
+        if self.env == "dev":
+            logger.warning("Detect PDV usage with DEV environment. DEV and UAT environment share the same url")
 
     async def tokenize(self, fc: str) -> str:
         await self.limiter.wait_for_token()
         tokenization_response = await self.session.request(
             method='PUT',
-            url=f'https://api.{self.env}.tokenizer.pdv.pagopa.it/tokenizer/v1/tokens',
+            url=f'{self.base_url}/tokenizer/v1/tokens',
             headers={
                 'Content-Type': 'application/json',
                 'x-api-key': self.api_key,
