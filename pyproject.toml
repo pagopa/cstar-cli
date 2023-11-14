@@ -16,7 +16,7 @@ requests = "^2.31.0"
 pgpy = "^0.6.0"
 schwifty = "^2023.2.0"
 asyncio = "^3.4.3"
-aiohttp = "^3.8.5"
+aiohttp = "^3.8.6"
 [tool.poetry.dev-dependencies]
 black = "^23.1.0"
 
