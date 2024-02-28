@@ -257,4 +257,18 @@ def parser():
     idpay_transactions_parser.add_argument("--hpans-head", type=int, help="Takes the first N HPANs from HPANs file")
     idpay_transactions_parser.add_argument("--RTD-pubk", type=str,
                                            help='Path to the public key of the RTD, if not specified the API is called')
+
+    wallet_parser = subsystem_parser.add_parser("wallet").add_subparsers(dest="command")
+
+    wallet_argument_parser = wallet_parser.add_parser("contracts")
+
+    # This will be used to call the methods through CLI
+    wallet_argument_parser.add_argument("--action", required=True,
+                                        help="Action to perform with the invocation of the command")
+    wallet_argument_parser.add_argument("--contracts-qty", type=int, default=1, help="Number of contracts desired")
+    wallet_argument_parser.add_argument("--out-dir", type=str, default='./generated',
+                                        help='Output destination of file generated')
+    wallet_argument_parser.add_argument("--pgp", action="store_true")
+    wallet_argument_parser.add_argument("--key", type=str, default="./public.key")
+
     return argparser
