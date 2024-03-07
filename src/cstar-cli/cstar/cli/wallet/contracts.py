@@ -77,8 +77,7 @@ class Contracts:
                     reason_message = random.choice(KO_REASON_MESSAGES)
                     original_contract_identifier = uuid.uuid4().hex
                     random_broken_char_position = random.randint(1, len(original_contract_identifier))
-                    print(original_contract_identifier)
-                    print(random_broken_char_position)
+
                     contracts.append(
                         {
                             "action": action,
