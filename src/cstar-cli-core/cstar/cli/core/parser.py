@@ -270,5 +270,8 @@ def parser():
                                         help='Output destination of file generated')
     wallet_argument_parser.add_argument("--pgp", action="store_true")
     wallet_argument_parser.add_argument("--key", type=str, default="./public.key")
+    wallet_argument_parser.add_argument("--ratio-delete-contract", type=int, default=10)
+    wallet_argument_parser.add_argument("--ratio-ko-delete-contract", type=int, default=5)
+
 
     return argparser

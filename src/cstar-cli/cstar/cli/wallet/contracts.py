@@ -2,6 +2,7 @@ import base64
 import hashlib
 import hmac
 import random
+import string
 import uuid
 
 import json
@@ -11,17 +12,20 @@ import warnings
 from faker import Faker
 from datetime import datetime, timedelta
 
+warnings.filterwarnings("ignore")
+
 ACTIONS = ["CREATE", "DELETE"]
 IMPORT_OUTCOMES = ["OK", "KO"]
 PAYMENT_CIRCUITS = ['visa', 'mastercard', 'maestro', 'amex']
 
-warnings.filterwarnings("ignore")
+KO_REASON_MESSAGES = ['Invalid contract identifier format', 'Contract does not exist']
 
 CONTRACTS_FILE_EXTENSION = ".json"
 ENCRYPTED_FILE_EXTENSION = "pgp"
 EXPORT_PREFIX = 'PAGOPAPM_NPG_CONTRACTS_'
 PAYMENT_METHOD_CARD = 'CARD'
 FAKE_HMAC_KEY = '211267819F06608404372185CBB9780DA0E66FBBED5CD395FFD9EE168AAB229F'.encode('utf-8')
+INVALID_CONTRACT_IDENTIFIER_CHARACTERS = string.punctuation
 
 PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
@@ -62,30 +66,69 @@ class Contracts:
 
         contracts = []
 
-        for i in range(self.args.contracts_qty):
-            action = ACTIONS[0]
-            import_outcome = IMPORT_OUTCOMES[0]
-            payment_method = PAYMENT_METHOD_CARD
-            pan = fake.credit_card_number(random.choice(PAYMENT_CIRCUITS))
-            method_attributes = {
-                "pan_tail": pan[-4:],
-                "expdate": fake.credit_card_expire(),
-                "card_id_4": base64.b64encode(
-                    hmac.new(FAKE_HMAC_KEY, pan.encode('utf-8'), hashlib.sha256).digest()).hex(),
-                "card_payment_circuit": str.upper(random.choice(PAYMENT_CIRCUITS)),
-                "new_contract_identifier": uuid.uuid4().hex,
-                "original_contract_identifier": uuid.uuid4().hex,
-                "card_bin": pan[:4]
-            }
+        j = 0
 
-            contracts.append(
-                {
-                    "action": action,
-                    "import_outcome": import_outcome,
-                    "payment_method": payment_method,
-                    "method_attributes": method_attributes
+        for i in range(self.args.contracts_qty):
+            if i % self.args.ratio_delete_contract == 1:
+                action = ACTIONS[1]
+
+                if j % self.args.ratio_ko_delete_contract == 1:
+                    import_outcome = IMPORT_OUTCOMES[1]
+                    reason_message = random.choice(KO_REASON_MESSAGES)
+                    original_contract_identifier = uuid.uuid4().hex
+                    random_broken_char_position = random.randint(1, len(original_contract_identifier))
+                    print(original_contract_identifier)
+                    print(random_broken_char_position)
+                    contracts.append(
+                        {
+                            "action": action,
+                            "import_outcome": import_outcome,
+                            "reason_message": reason_message,
+                            "original_contract_identifier": original_contract_identifier[
+                                                            :random_broken_char_position] + random.choice(
+                                INVALID_CONTRACT_IDENTIFIER_CHARACTERS) + original_contract_identifier[
+                                                                          random_broken_char_position:]
+                        }
+                    )
+
+                else:
+                    import_outcome = IMPORT_OUTCOMES[0]
+                    original_contract_identifier = uuid.uuid4().hex
+
+                    contracts.append(
+                        {
+                            "action": action,
+                            "import_outcome": import_outcome,
+                            "original_contract_identifier": original_contract_identifier
+                        }
+                    )
+
+                j = j + 1
+
+            else:
+                action = ACTIONS[0]
+                import_outcome = IMPORT_OUTCOMES[0]
+                payment_method = PAYMENT_METHOD_CARD
+                pan = fake.credit_card_number(random.choice(PAYMENT_CIRCUITS))
+                method_attributes = {
+                    "pan_tail": pan[-4:],
+                    "expdate": fake.credit_card_expire(),
+                    "card_id_4": base64.b64encode(
+                        hmac.new(FAKE_HMAC_KEY, pan.encode('utf-8'), hashlib.sha256).digest()).hex(),
+                    "card_payment_circuit": str.upper(random.choice(PAYMENT_CIRCUITS)),
+                    "new_contract_identifier": uuid.uuid4().hex,
+                    "original_contract_identifier": uuid.uuid4().hex,
+                    "card_bin": pan[:6]
                 }
-            )
+
+                contracts.append(
+                    {
+                        "action": action,
+                        "import_outcome": import_outcome,
+                        "payment_method": payment_method,
+                        "method_attributes": method_attributes
+                    }
+                )
 
         finalfile['contracts'] = contracts
 
