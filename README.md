@@ -368,5 +368,5 @@ Parameters: </br>
 
 ### The ouptut produced is:
 
-- `WALLET.CONTRACTS.<DATE>.<TIME>.001.json`: Export file.
-- `WALLET.CONTRACTS.<DATE>.<TIME>.001.json.pgp`: Export file encrypted with specified public key (RTD one should be used).
+- `PAGOPAPM_NPG_CONTRACTS_<DATE><TIME>_001_OUT.decrypted`: Export file.
+- `PAGOPAPM_NPG_CONTRACTS_<DATE><TIME>_001_OUT`: Export file encrypted with specified public key (RTD one should be used).

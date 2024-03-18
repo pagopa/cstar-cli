@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import hmac
+import os
 import random
 import string
 import uuid
@@ -20,9 +21,9 @@ PAYMENT_CIRCUITS = ['visa', 'mastercard', 'maestro', 'amex']
 
 KO_REASON_MESSAGES = ['Invalid contract identifier format', 'Contract does not exist']
 
-CONTRACTS_FILE_EXTENSION = ".json"
-ENCRYPTED_FILE_EXTENSION = "pgp"
+DECRYPTED_FILE_EXTENSION = ".decrypted"
 EXPORT_PREFIX = 'PAGOPAPM_NPG_CONTRACTS_'
+EXPORT_SUFFIX = '001_OUT'
 PAYMENT_METHOD_CARD = 'CARD'
 FAKE_HMAC_KEY = '211267819F06608404372185CBB9780DA0E66FBBED5CD395FFD9EE168AAB229F'.encode('utf-8')
 INVALID_CONTRACT_IDENTIFIER_CHARACTERS = string.punctuation
@@ -49,14 +50,16 @@ class Contracts:
 
         fake = Faker('it_IT')
 
+        file_id = EXPORT_PREFIX + str(datetime.now().strftime('%Y%m%d%H%M%S')) + '001_OUT'
+
         header = {
-            'file_id': EXPORT_PREFIX + str(datetime.now().strftime('%Y%m%d%H%M%S')) + '_OUT',
+            'file_id': file_id,
             'processing_start_time': str(datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')),
             'processing_end_time': str((datetime.now() + timedelta(seconds=10)).strftime('%Y-%m-%dT%H%M%SZ')),
             'export_id': str(uuid.uuid4()),
-            'import_file_id': 'PAGOPAPM_NPG_CONTRACTS_' + str(datetime.now().strftime('%Y%m%d%H%M%S')),
+            'import_file_id': str(random.randint(1, 99999)),
             'extraction_time': str(datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')),  # extraction time from source system
-            'contract_quantity': self.args.contracts_qty,
+            'contract_quantity': str(self.args.contracts_qty),
             'file_sequence_number': '001'
         }
 
@@ -131,10 +134,10 @@ class Contracts:
 
         finalfile['contracts'] = contracts
 
-        contracts_file_path = self.args.out_dir + "/WALLET.CONTRACTS." + datetime.today().strftime(
-            '%Y%m%d.%H%M%S') + ".001" + CONTRACTS_FILE_EXTENSION
+        contracts_file_path = os.path.join(self.args.out_dir, file_id)
+        decrypted_contracts_file_path = contracts_file_path + DECRYPTED_FILE_EXTENSION
 
-        with open(contracts_file_path, "w") as f:
+        with open(decrypted_contracts_file_path, "w") as f:
             json.dump(finalfile, f, indent=4)
 
         if self.args.pgp:
@@ -144,18 +147,17 @@ class Contracts:
                 print("PGP public key is None")
                 exit(1)
 
-            pgp_file(contracts_file_path, pgp_key)
+            pgp_file(decrypted_contracts_file_path, contracts_file_path, pgp_key)
 
         print(f"Done")
 
 
-def pgp_file(file_path: str, pgp_key_data: str):
+def pgp_file(decrypted_file_path: str, encrypted_file_path: str, pgp_key_data: str):
     key = pgpy.PGPKey.from_blob(pgp_key_data)
-    with open(file_path, "rb") as f:
+    with open(decrypted_file_path, "rb") as f:
         message = pgpy.PGPMessage.new(f.read(), file=True)
     encrypted = key[0].encrypt(message, openpgp=True)
-    output_path = f"{file_path}.{ENCRYPTED_FILE_EXTENSION}"
-    with open(output_path, "wb") as f:
+    with open(encrypted_file_path, "wb") as f:
         f.write(bytes(encrypted))
 
-    return output_path
+    return encrypted_file_path
