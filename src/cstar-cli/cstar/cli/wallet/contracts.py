@@ -23,7 +23,7 @@ KO_REASON_MESSAGES = ['Invalid contract identifier format', 'Contract does not e
 
 DECRYPTED_FILE_EXTENSION = ".decrypted"
 EXPORT_PREFIX = 'PAGOPAPM_NPG_CONTRACTS_'
-EXPORT_SUFFIX = '001_OUT'
+EXPORT_SUFFIX = '_001_OUT'
 PAYMENT_METHOD_CARD = 'CARD'
 FAKE_HMAC_KEY = '211267819F06608404372185CBB9780DA0E66FBBED5CD395FFD9EE168AAB229F'.encode('utf-8')
 INVALID_CONTRACT_IDENTIFIER_CHARACTERS = string.punctuation
@@ -50,7 +50,7 @@ class Contracts:
 
         fake = Faker('it_IT')
 
-        file_id = EXPORT_PREFIX + str(datetime.now().strftime('%Y%m%d%H%M%S')) + '001_OUT'
+        file_id = EXPORT_PREFIX + str(datetime.now().strftime('%Y%m%d%H%M%S')) + EXPORT_SUFFIX
 
         header = {
             'file_id': file_id,
