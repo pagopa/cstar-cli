@@ -18,6 +18,7 @@ warnings.filterwarnings("ignore")
 ACTIONS = ["CREATE", "DELETE"]
 IMPORT_OUTCOMES = ["OK", "KO"]
 PAYMENT_CIRCUITS = ['visa', 'mastercard', 'maestro', 'amex']
+PAYMENT_CIRCUITS_SHORT = ['visa', 'mc', 'maestro', 'amex']
 
 KO_REASON_MESSAGES = ['Invalid contract identifier format', 'Contract does not exist']
 
@@ -111,13 +112,14 @@ class Contracts:
                 action = ACTIONS[0]
                 import_outcome = IMPORT_OUTCOMES[0]
                 payment_method = PAYMENT_METHOD_CARD
-                pan = fake.credit_card_number(random.choice(PAYMENT_CIRCUITS))
+                current_payment_circuit = random.randint(0, len(PAYMENT_CIRCUITS)-1)
+                pan = fake.credit_card_number(PAYMENT_CIRCUITS[current_payment_circuit])
                 method_attributes = {
                     "pan_tail": pan[-4:],
                     "expdate": fake.credit_card_expire(),
                     "card_id_4": base64.b64encode(
                         hmac.new(FAKE_HMAC_KEY, pan.encode('utf-8'), hashlib.sha256).digest()).hex(),
-                    "card_payment_circuit": str.upper(random.choice(PAYMENT_CIRCUITS)),
+                    "card_payment_circuit": str.upper(PAYMENT_CIRCUITS_SHORT[current_payment_circuit]),
                     "new_contract_identifier": uuid.uuid4().hex,
                     "original_contract_identifier": uuid.uuid4().hex,
                     "card_bin": pan[:6]
