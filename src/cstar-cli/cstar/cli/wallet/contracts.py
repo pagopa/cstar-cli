@@ -76,13 +76,21 @@ class Contracts:
         j = 0
 
         for i in range(self.args.contracts_qty):
-            if i % self.args.ratio_delete_contract == 1:
+
+            if self.args.true_ids:
+                if self.args.wallet_api_key is None:
+                    sys.exit(f"No valid Wallet API key provided")
+                else:
+                    original_contract_identifier = real_contract_id(self.args.wallet_api_key)
+            else:
+                original_contract_identifier = uuid.uuid4().hex
+
+            if self.args.ratio_delete_contract and i % self.args.ratio_delete_contract == 1:
                 action = ACTIONS[1]
 
-                if j % self.args.ratio_ko_delete_contract == 1:
+                if self.args.ratio_ko_delete_contract and j % self.args.ratio_ko_delete_contract == 1:
                     import_outcome = IMPORT_OUTCOMES[1]
                     reason_message = random.choice(KO_REASON_MESSAGES)
-                    original_contract_identifier = uuid.uuid4().hex
                     random_broken_char_position = random.randint(1, len(original_contract_identifier))
 
                     contracts.append(
@@ -99,7 +107,6 @@ class Contracts:
 
                 else:
                     import_outcome = IMPORT_OUTCOMES[0]
-                    original_contract_identifier = uuid.uuid4().hex
 
                     contracts.append(
                         {
@@ -117,13 +124,6 @@ class Contracts:
                 payment_method = PAYMENT_METHOD_CARD
                 current_payment_circuit = random.randint(0, len(PAYMENT_CIRCUITS) - 1)
                 pan = fake.credit_card_number(PAYMENT_CIRCUITS[current_payment_circuit])
-                if self.args.true_ids:
-                    if self.args.wallet_api_key is None:
-                        sys.exit(f"No valid Wallet API key provided")
-                    else:
-                        original_contract_identifier = real_contract_id(self.args.wallet_api_key)
-                else:
-                    original_contract_identifier = uuid.uuid4().hex
                 method_attributes = {
                     "pan_tail": pan[-4:],
                     "expdate": fake.credit_card_expire(),
