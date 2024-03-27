@@ -20,8 +20,8 @@ warnings.filterwarnings("ignore")
 
 ACTIONS = ["CREATE", "DELETE"]
 IMPORT_OUTCOMES = ["OK", "KO"]
-PAYMENT_CIRCUITS = ['visa', 'mastercard', 'maestro', 'amex']
-PAYMENT_CIRCUITS_SHORT = ['visa', 'mc', 'maestro', 'amex']
+PAYMENT_CIRCUITS = ['visa', 'mastercard', 'maestro', 'amex', 'diners']
+PAYMENT_CIRCUITS_SHORT = ['visa', 'mc', 'maestro', 'amex', 'diners']
 
 KO_REASON_MESSAGES = ['Invalid contract identifier format', 'Contract does not exist']
 
