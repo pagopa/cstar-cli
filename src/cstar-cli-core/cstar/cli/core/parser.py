@@ -268,10 +268,12 @@ def parser():
     wallet_argument_parser.add_argument("--contracts-qty", type=int, default=1, help="Number of contracts desired")
     wallet_argument_parser.add_argument("--out-dir", type=str, default='./generated',
                                         help='Output destination of file generated')
-    wallet_argument_parser.add_argument("--pgp", action="store_true")
+    wallet_argument_parser.add_argument("--pgp", action="store_true", default=False)
     wallet_argument_parser.add_argument("--key", type=str, default="./public.key")
     wallet_argument_parser.add_argument("--ratio-delete-contract", type=int, default=10)
     wallet_argument_parser.add_argument("--ratio-ko-delete-contract", type=int, default=5)
-
+    wallet_argument_parser.add_argument("--true-ids", action="store_true", default=False,
+                                        help='Generate coherent contract ids by calling Wallet API with fake data.')
+    wallet_argument_parser.add_argument("--wallet-api-key", type=str, help='API key capable of using Wallet Product')
 
     return argparser

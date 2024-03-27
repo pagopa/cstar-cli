@@ -3,13 +3,16 @@ import hashlib
 import hmac
 import os
 import random
+import time
 import string
+import sys
 import uuid
 
 import json
 import pgpy
 import warnings
 
+import requests
 from faker import Faker
 from datetime import datetime, timedelta
 
@@ -33,6 +36,8 @@ PAYMENT_REVERSAL_RATIO = 100
 POS_PHYSICAL_ECOMMERCE_RATIO = 5
 PERSON_NATURAL_LEGAL_RATIO = 3
 
+fake = Faker('it_IT')
+
 
 class Contracts:
     """Utilities related to the migration of Payment Manager wallets"""
@@ -48,8 +53,6 @@ class Contracts:
           --ratio-delete: the ratio between CREATE and DELETE action (expressed as 1/ratio) ( default = 1 )
           --ratio-ko: the ratio between OK and KO import_outcome (expressed as 1/ratio) ( default = 1 )
         """
-
-        fake = Faker('it_IT')
 
         file_id = EXPORT_PREFIX + str(datetime.now().strftime('%Y%m%d%H%M%S')) + EXPORT_SUFFIX
 
@@ -112,8 +115,15 @@ class Contracts:
                 action = ACTIONS[0]
                 import_outcome = IMPORT_OUTCOMES[0]
                 payment_method = PAYMENT_METHOD_CARD
-                current_payment_circuit = random.randint(0, len(PAYMENT_CIRCUITS)-1)
+                current_payment_circuit = random.randint(0, len(PAYMENT_CIRCUITS) - 1)
                 pan = fake.credit_card_number(PAYMENT_CIRCUITS[current_payment_circuit])
+                if self.args.true_ids:
+                    if self.args.wallet_api_key is None:
+                        sys.exit(f"No valid Wallet API key provided")
+                    else:
+                        original_contract_identifier = real_contract_id(self.args.wallet_api_key)
+                else:
+                    original_contract_identifier = uuid.uuid4().hex
                 method_attributes = {
                     "pan_tail": pan[-4:],
                     "expdate": fake.credit_card_expire(),
@@ -121,7 +131,7 @@ class Contracts:
                         hmac.new(FAKE_HMAC_KEY, pan.encode('utf-8'), hashlib.sha256).digest()).hex(),
                     "card_payment_circuit": str.upper(PAYMENT_CIRCUITS_SHORT[current_payment_circuit]),
                     "new_contract_identifier": uuid.uuid4().hex,
-                    "original_contract_identifier": uuid.uuid4().hex,
+                    "original_contract_identifier": original_contract_identifier,
                     "card_bin": pan[:6]
                 }
 
@@ -152,6 +162,32 @@ class Contracts:
             pgp_file(decrypted_contracts_file_path, contracts_file_path, pgp_key)
 
         print(f"Done")
+
+
+def real_contract_id(wallet_api_key: str) -> str:
+    i = 0
+    tries = 5
+    fake_fc = fake.ssn()
+    fake_fc = f'{fake_fc[:11]}X000{fake_fc[15:]}'
+    while i < tries:
+        res = requests.put(
+            url=f'https://api.dev.platform.pagopa.it/payment-wallet-migrations/v1/migrations/wallets',
+            headers={
+                'Ocp-Apim-Subscription-Key': wallet_api_key
+            },
+            json={
+                "walletIdPm": random.randint(0, 99999999),
+                "fiscalCode": fake_fc
+            },
+            timeout=60000
+        )
+        if res.status_code == 429:
+            time.sleep(res.headers["Retry-After"] / 1000)
+            i += 1
+        elif res.status_code != 200:
+            sys.exit(f"Failed to get contract id from wallet. Status code {res.status_code}", )
+        else:
+            return res.json()['contractId']
 
 
 def pgp_file(decrypted_file_path: str, encrypted_file_path: str, pgp_key_data: str):
