@@ -81,9 +81,9 @@ class Contracts:
                 if self.args.wallet_api_key is None:
                     sys.exit(f"No valid Wallet API key provided")
                 else:
-                    original_contract_identifier = real_contract_id(self.args.wallet_api_key)
+                    contract_identifier = real_contract_id(self.args.wallet_api_key)
             else:
-                original_contract_identifier = uuid.uuid4().hex
+                contract_identifier = uuid.uuid4().hex
 
             if self.args.ratio_delete_contract and i % self.args.ratio_delete_contract == 1:
                 action = ACTIONS[1]
@@ -91,16 +91,16 @@ class Contracts:
                 if self.args.ratio_ko_delete_contract and j % self.args.ratio_ko_delete_contract == 1:
                     import_outcome = IMPORT_OUTCOMES[1]
                     reason_message = random.choice(KO_REASON_MESSAGES)
-                    random_broken_char_position = random.randint(1, len(original_contract_identifier))
+                    random_broken_char_position = random.randint(1, len(contract_identifier))
 
                     contracts.append(
                         {
                             "action": action,
                             "import_outcome": import_outcome,
                             "reason_message": reason_message,
-                            "original_contract_identifier": original_contract_identifier[
+                            "original_contract_identifier": contract_identifier[
                                                             :random_broken_char_position] + random.choice(
-                                INVALID_CONTRACT_IDENTIFIER_CHARACTERS) + original_contract_identifier[
+                                INVALID_CONTRACT_IDENTIFIER_CHARACTERS) + contract_identifier[
                                                                           random_broken_char_position:]
                         }
                     )
@@ -112,7 +112,7 @@ class Contracts:
                         {
                             "action": action,
                             "import_outcome": import_outcome,
-                            "original_contract_identifier": original_contract_identifier
+                            "original_contract_identifier": contract_identifier
                         }
                     )
 
@@ -130,8 +130,8 @@ class Contracts:
                     "card_id_4": base64.b64encode(
                         hmac.new(FAKE_HMAC_KEY, pan.encode('utf-8'), hashlib.sha256).digest()).hex(),
                     "card_payment_circuit": str.upper(PAYMENT_CIRCUITS_SHORT[current_payment_circuit]),
-                    "new_contract_identifier": uuid.uuid4().hex,
-                    "original_contract_identifier": original_contract_identifier,
+                    "new_contract_identifier": contract_identifier,
+                    "original_contract_identifier": contract_identifier,
                     "card_bin": pan[:6]
                 }
 
