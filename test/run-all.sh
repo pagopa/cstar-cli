@@ -94,4 +94,12 @@ then
   echo "FAIL"
 fi
 
+echo "Running contracts"
+mkdir -p "$TEMPORARY_DIR"/contracts
+cst wallet contracts --action fake_wallet_migration --contracts-qty 100 --ratio-delete-contract 5 --ratio-ko-delete-contract 2 --out "$TEMPORARY_DIR"/contracts
+if [ -n "$(find "$TEMPORARY_DIR"/contracts -empty)" ]
+then
+  echo "FAIL"
+fi
+
 rm -rf "$TEMPORARY_DIR"
