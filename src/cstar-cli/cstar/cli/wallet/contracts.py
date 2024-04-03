@@ -81,7 +81,7 @@ class Contracts:
                 if self.args.wallet_api_key is None:
                     sys.exit(f"No valid Wallet API key provided")
                 else:
-                    contract_identifier = real_contract_id(self.args.wallet_api_key)
+                    contract_identifier = real_contract_id(self.args.env, self.args.wallet_api_key)
             else:
                 contract_identifier = uuid.uuid4().hex
 
@@ -164,14 +164,14 @@ class Contracts:
         print(f"Done")
 
 
-def real_contract_id(wallet_api_key: str) -> str:
+def real_contract_id(env: str, wallet_api_key: str) -> str:
     i = 0
     tries = 5
     fake_fc = fake.ssn()
     fake_fc = f'{fake_fc[:11]}X000{fake_fc[15:]}'
     while i < tries:
         res = requests.put(
-            url=f'https://api.dev.platform.pagopa.it/payment-wallet-migrations/v1/migrations/wallets',
+            url=f'https://api.{env}.platform.pagopa.it/payment-wallet-migrations/v1/migrations/wallets',
             headers={
                 'Ocp-Apim-Subscription-Key': wallet_api_key
             },

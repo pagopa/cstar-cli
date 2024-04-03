@@ -274,6 +274,8 @@ def parser():
     wallet_argument_parser.add_argument("--ratio-ko-delete-contract", type=int)
     wallet_argument_parser.add_argument("--true-ids", action="store_true", default=False,
                                         help='Generate coherent contract ids by calling Wallet API with fake data.')
+    wallet_argument_parser.add_argument("--env", type=str, required=True, default='dev',
+                                        help='Environment to call for real contract IDs')
     wallet_argument_parser.add_argument("--wallet-api-key", type=str, help='API key capable of using Wallet Product')
 
     return argparser

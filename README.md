@@ -365,6 +365,7 @@ Parameters: </br>
 - `--ratio-delete-contract DELETE_RATIO`: Generate one entry of contracts with DELETE action every DELETE_RATIO contracts.
 - `--ratio-ko-delete-contract KO_DELETE_RATIO`: Generate one entry of contracts with KO import outcome and DELETE action every KO_DELETE_RATIO contracts with action DELETE.
 - `--true-ids`: Generate coherent contract ids by calling Wallet API with fake data.
+- `--env`: Environment to call for real contract IDs.
 - `--wallet-api-key API_KEY`: API key capable of using Wallet Product.
 
 
