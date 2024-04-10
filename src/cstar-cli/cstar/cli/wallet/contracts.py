@@ -182,7 +182,7 @@ def real_contract_id(env: str, wallet_api_key: str) -> str:
             timeout=60000
         )
         if res.status_code == 429:
-            time.sleep(res.headers["Retry-After"] / 1000)
+            time.sleep(int(res.headers["Retry-After"]) / 1000)
             i += 1
         elif res.status_code != 200:
             sys.exit(f"Failed to get contract id from wallet. Status code {res.status_code}", )
