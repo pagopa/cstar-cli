@@ -277,5 +277,7 @@ def parser():
     wallet_argument_parser.add_argument("--env", type=str, default='dev',
                                         help='Environment to call for real contract IDs')
     wallet_argument_parser.add_argument("--wallet-api-key", type=str, help='API key capable of using Wallet Product')
+    wallet_argument_parser.add_argument("--hmac-key", type=str,
+                                        help='Key used to produce HMAC of contract IDs. If not specified the file containing HMAC is not created.')
 
     return argparser

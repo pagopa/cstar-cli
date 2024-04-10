@@ -26,6 +26,7 @@ PAYMENT_CIRCUITS_SHORT = ['visa', 'mc', 'maestro', 'amex', 'diners']
 KO_REASON_MESSAGES = ['Invalid contract identifier format', 'Contract does not exist']
 
 DECRYPTED_FILE_EXTENSION = ".decrypted"
+HMAC_FILE_EXTENSION = ".hmac"
 EXPORT_PREFIX = 'PAGOPAPM_NPG_CONTRACTS_'
 EXPORT_SUFFIX = '_001_OUT'
 PAYMENT_METHOD_CARD = 'CARD'
@@ -72,6 +73,7 @@ class Contracts:
         }
 
         contracts = []
+        contract_ids = []
 
         j = 0
 
@@ -84,6 +86,8 @@ class Contracts:
                     contract_identifier = real_contract_id(self.args.env, self.args.wallet_api_key)
             else:
                 contract_identifier = uuid.uuid4().hex
+
+            contract_ids.append(contract_identifier)
 
             if self.args.ratio_delete_contract and i % self.args.ratio_delete_contract == 1:
                 action = ACTIONS[1]
@@ -161,6 +165,9 @@ class Contracts:
 
             pgp_file(decrypted_contracts_file_path, contracts_file_path, pgp_key)
 
+        if self.args.hmac_key:
+            hmac_file(contract_ids, contracts_file_path, self.args.hmac_key)
+
         print(f"Done")
 
 
@@ -199,3 +206,16 @@ def pgp_file(decrypted_file_path: str, encrypted_file_path: str, pgp_key_data: s
         f.write(bytes(encrypted))
 
     return encrypted_file_path
+
+
+def hmac_file(contract_ids: [], encrypted_file_path: str, hmac_key: str):
+    hmac_file_path = encrypted_file_path + HMAC_FILE_EXTENSION
+
+    hmacs = []
+
+    for contract_id in contract_ids:
+        hmacs.append(hmac.HMAC(key=hmac_key.encode('utf-8'), msg=contract_id.encode('utf-8'),
+                               digestmod=hashlib.sha256).digest().hex())
+
+    with open(hmac_file_path, "w") as f:
+        json.dump(hmacs, f, indent=4)
