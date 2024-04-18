@@ -208,13 +208,14 @@ def pgp_file(decrypted_file_path: str, encrypted_file_path: str, pgp_key_data: s
     return encrypted_file_path
 
 
-def hmac_file(contract_ids: [], encrypted_file_path: str, hmac_key: str):
+def hmac_file(contract_ids: [], encrypted_file_path: str, hmac_key_base64: str):
     hmac_file_path = encrypted_file_path + HMAC_FILE_EXTENSION
+    hmac_key_bytes = base64.b64decode(hmac_key_base64)
 
     hmacs = []
 
     for contract_id in contract_ids:
-        hmacs.append(hmac.HMAC(key=hmac_key.encode('utf-8'), msg=contract_id.encode('utf-8'),
+        hmacs.append(hmac.HMAC(key=hmac_key_bytes, msg=contract_id.encode('utf-8'),
                                digestmod=hashlib.sha256).digest().hex())
 
     with open(hmac_file_path, "w") as f:
