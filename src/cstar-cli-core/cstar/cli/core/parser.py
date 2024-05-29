@@ -257,4 +257,27 @@ def parser():
     idpay_transactions_parser.add_argument("--hpans-head", type=int, help="Takes the first N HPANs from HPANs file")
     idpay_transactions_parser.add_argument("--RTD-pubk", type=str,
                                            help='Path to the public key of the RTD, if not specified the API is called')
+
+    wallet_parser = subsystem_parser.add_parser("wallet").add_subparsers(dest="command")
+
+    wallet_argument_parser = wallet_parser.add_parser("contracts")
+
+    # This will be used to call the methods through CLI
+    wallet_argument_parser.add_argument("--action", required=True,
+                                        help="Action to perform with the invocation of the command")
+    wallet_argument_parser.add_argument("--contracts-qty", type=int, default=1, help="Number of contracts desired")
+    wallet_argument_parser.add_argument("--out-dir", type=str, default='./generated',
+                                        help='Output destination of file generated')
+    wallet_argument_parser.add_argument("--pgp", action="store_true", default=False)
+    wallet_argument_parser.add_argument("--key", type=str, default="./public.key")
+    wallet_argument_parser.add_argument("--ratio-delete-contract", type=int)
+    wallet_argument_parser.add_argument("--ratio-ko-delete-contract", type=int)
+    wallet_argument_parser.add_argument("--true-ids", action="store_true", default=False,
+                                        help='Generate coherent contract ids by calling Wallet API with fake data.')
+    wallet_argument_parser.add_argument("--env", type=str, default='dev',
+                                        help='Environment to call for real contract IDs')
+    wallet_argument_parser.add_argument("--wallet-api-key", type=str, help='API key capable of using Wallet Product')
+    wallet_argument_parser.add_argument("--hmac-key", type=str,
+                                        help='Key used to produce HMAC of contract IDs. If not specified the file containing HMAC is not created.')
+
     return argparser

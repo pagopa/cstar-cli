@@ -347,3 +347,32 @@ Parameters: </br>
 ### The ouptut produced is:
 
 - `merchants.csv`: A file, with header, containing complete merchants data.
+
+## WALLET
+
+### Creates fake contracts export for wallet migration testing purposes.
+
+```bash
+cst wallet contracts --action fake_wallet_migration --contracts-qty 10000 --pgp --key ~/certificates/public.key
+```
+
+Parameters: </br>
+
+- `--action ACTION`: Action to perform with the invocation of the command.
+- `--contracts-qty NUM_CONTRACTS`: Number of contracts generated.
+- `--out-dir OUT_DIR`: Output destination of files generated.
+- `--pgp`: Encrypt the generated file with file specified with argument `--key`.
+- `--ratio-delete-contract DELETE_RATIO`: Generate one entry of contracts with DELETE action every DELETE_RATIO
+  contracts.
+- `--ratio-ko-delete-contract KO_DELETE_RATIO`: Generate one entry of contracts with KO import outcome and DELETE action
+  every KO_DELETE_RATIO contracts with action DELETE.
+- `--true-ids`: Generate coherent contract ids by calling Wallet API with fake data.
+- `--env`: Environment to call for real contract IDs.
+- `--wallet-api-key API_KEY`: API key capable of using Wallet Product.
+- `--hmac-key`: Key used to produce HMAC of contract IDs. If not specified the file containing HMAC is not created.
+
+### The ouptut produced is:
+
+- `PAGOPAPM_NPG_CONTRACTS_<DATE><TIME>_001_OUT.decrypted`: Export file.
+- `PAGOPAPM_NPG_CONTRACTS_<DATE><TIME>_001_OUT`: Export file encrypted with specified public key (RTD one should be
+  used).
