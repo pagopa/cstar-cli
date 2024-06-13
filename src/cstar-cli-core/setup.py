@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
    name='cstar-cli-core',
-   version='1.0.0',
+   version='1.0.1',
    description='Cstar Command Line Interface - Core Package',
    author='CSTAR Team',
    author_email='cstar@pagopa.it',
