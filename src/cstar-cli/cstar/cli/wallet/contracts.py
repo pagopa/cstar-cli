@@ -59,6 +59,9 @@ class Contracts:
 
         header = {
             'file_id': file_id,
+            'tenant_id': str(uuid.uuid4()),
+            'merchant_id': str(uuid.uuid4()),
+            'terminal_id': str(uuid.uuid4()),
             'processing_start_time': str(datetime.now().strftime('%Y-%m-%dT%H:%M:%SZ')),
             'processing_end_time': str((datetime.now() + timedelta(seconds=10)).strftime('%Y-%m-%dT%H%M%SZ')),
             'export_id': str(uuid.uuid4()),
