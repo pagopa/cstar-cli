@@ -82,8 +82,6 @@ class Contracts:
         contracts = []
         contract_ids = []
 
-        j = 0
-
         for i in range(self.args.contracts_qty):
 
             if self.args.true_ids:
@@ -101,7 +99,7 @@ class Contracts:
             else:
                 action = ACTIONS[0]
 
-            if self.args.ratio_ko_outcome and j % self.args.ratio_ko_outcome == 1:
+            if self.args.ratio_ko_outcome and i % self.args.ratio_ko_outcome == 1:
                 import_outcome = IMPORT_OUTCOMES[1]
                 reason_message = random.choice(KO_REASON_MESSAGES).safe_substitute(contractId=contract_identifier)
                 random_broken_char_position = random.randint(1, len(contract_identifier))
@@ -151,8 +149,6 @@ class Contracts:
                         "original_contract_identifier": contract_identifier
                     }
                 )
-
-            j = j + 1
 
         finalfile['contracts'] = contracts
 
