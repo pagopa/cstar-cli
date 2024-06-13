@@ -271,7 +271,7 @@ def parser():
     wallet_argument_parser.add_argument("--pgp", action="store_true", default=False)
     wallet_argument_parser.add_argument("--key", type=str, default="./public.key")
     wallet_argument_parser.add_argument("--ratio-delete-contract", type=int)
-    wallet_argument_parser.add_argument("--ratio-ko-delete-contract", type=int)
+    wallet_argument_parser.add_argument("--ratio-ko-outcome", type=int)
     wallet_argument_parser.add_argument("--true-ids", action="store_true", default=False,
                                         help='Generate coherent contract ids by calling Wallet API with fake data.')
     wallet_argument_parser.add_argument("--env", type=str, default='dev',

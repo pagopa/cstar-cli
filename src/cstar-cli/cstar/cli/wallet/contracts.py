@@ -23,7 +23,11 @@ IMPORT_OUTCOMES = ["OK", "KO"]
 PAYMENT_CIRCUITS = ['visa', 'mastercard', 'maestro', 'amex', 'diners']
 PAYMENT_CIRCUITS_SHORT = ['visa', 'mc', 'maestro', 'amex', 'diners']
 
-KO_REASON_MESSAGES = ['Invalid contract identifier format', 'Contract does not exist']
+KO_REASON_MESSAGES = [
+    string.Template('Invalid contract identifier format'),
+    string.Template('Contract does not exist'),
+    string.Template('No payment circuit could be found for contract with id $contractId')
+]
 
 DECRYPTED_FILE_EXTENSION = ".decrypted"
 HMAC_FILE_EXTENSION = ".hmac"
@@ -94,40 +98,30 @@ class Contracts:
 
             if self.args.ratio_delete_contract and i % self.args.ratio_delete_contract == 1:
                 action = ACTIONS[1]
-
-                if self.args.ratio_ko_delete_contract and j % self.args.ratio_ko_delete_contract == 1:
-                    import_outcome = IMPORT_OUTCOMES[1]
-                    reason_message = random.choice(KO_REASON_MESSAGES)
-                    random_broken_char_position = random.randint(1, len(contract_identifier))
-
-                    contracts.append(
-                        {
-                            "action": action,
-                            "import_outcome": import_outcome,
-                            "reason_message": reason_message,
-                            "original_contract_identifier": contract_identifier[
-                                                            :random_broken_char_position] + random.choice(
-                                INVALID_CONTRACT_IDENTIFIER_CHARACTERS) + contract_identifier[
-                                                                          random_broken_char_position:]
-                        }
-                    )
-
-                else:
-                    import_outcome = IMPORT_OUTCOMES[0]
-
-                    contracts.append(
-                        {
-                            "action": action,
-                            "import_outcome": import_outcome,
-                            "original_contract_identifier": contract_identifier
-                        }
-                    )
-
-                j = j + 1
-
             else:
                 action = ACTIONS[0]
+
+            if self.args.ratio_ko_outcome and j % self.args.ratio_ko_outcome == 1:
+                import_outcome = IMPORT_OUTCOMES[1]
+                reason_message = random.choice(KO_REASON_MESSAGES).safe_substitute(contractId=contract_identifier)
+                random_broken_char_position = random.randint(1, len(contract_identifier))
+
+                contracts.append(
+                    {
+                        "action": action,
+                        "import_outcome": import_outcome,
+                        "reason_message": reason_message,
+                        "original_contract_identifier": contract_identifier[
+                                                        :random_broken_char_position] + random.choice(
+                            INVALID_CONTRACT_IDENTIFIER_CHARACTERS) + contract_identifier[
+                                                                      random_broken_char_position:]
+                    }
+                )
+
+            else:
                 import_outcome = IMPORT_OUTCOMES[0]
+
+            if action == ACTIONS[0] and import_outcome == IMPORT_OUTCOMES[0]:
                 payment_method = PAYMENT_METHOD_CARD
                 current_payment_circuit = random.randint(0, len(PAYMENT_CIRCUITS) - 1)
                 pan = fake.credit_card_number(PAYMENT_CIRCUITS[current_payment_circuit])
@@ -141,7 +135,6 @@ class Contracts:
                     "original_contract_identifier": contract_identifier,
                     "card_bin": pan[:6]
                 }
-
                 contracts.append(
                     {
                         "action": action,
@@ -150,6 +143,16 @@ class Contracts:
                         "method_attributes": method_attributes
                     }
                 )
+            elif action == ACTIONS[1] and import_outcome == IMPORT_OUTCOMES[0]:
+                contracts.append(
+                    {
+                        "action": action,
+                        "import_outcome": import_outcome,
+                        "original_contract_identifier": contract_identifier
+                    }
+                )
+
+            j = j + 1
 
         finalfile['contracts'] = contracts
 
